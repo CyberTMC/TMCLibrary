@@ -57,7 +57,7 @@
             padding-bottom: calc(15px + var(--safe-area-inset-bottom));
         }
 
-        /* Video Background */
+        /* Video Background - FIX CHO iOS */
         .video-background {
             position: fixed;
             top: 0;
@@ -66,6 +66,7 @@
             height: 100%;
             z-index: -1;
             overflow: hidden;
+            background: var(--bg-dark); /* Fallback color */
         }
 
         .video-background iframe {
@@ -73,6 +74,17 @@
             height: 100%;
             object-fit: cover;
             pointer-events: none;
+        }
+
+        /* Fallback image cho iOS */
+        .video-fallback {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1e293b 100%);
         }
 
         /* Overlay để làm tối background video */
@@ -752,10 +764,13 @@
 </head>
 
 <body>
-    <!-- Video Background -->
-    <div class="video-background">
+    <!-- Video Background với fallback cho iOS -->
+    <div class="video-background" id="videoBackground">
         <!-- Video sẽ được chèn tự động từ JavaScript -->
     </div>
+    
+    <!-- Fallback background cho iOS -->
+    <div class="video-fallback" id="videoFallback"></div>
     
     <!-- Overlay để làm tối background -->
     <div class="video-overlay"></div>
@@ -819,7 +834,7 @@
         </header>
 
         <div class="filters">
-            <input type="text" id="search" class="search-bar" placeholder="🔍 Tìm kiếm code snippets...">
+            <input type="text" id="search" class="search-bar" placeholder="🔍 Tìm kiếm">
             <select id="sort">
                 <option value="title-asc">A → Z</option>
                 <option value="title-desc">Z → A</option>
@@ -845,7 +860,8 @@
             baseUrl: "https://cybertmc.github.io/TMCLibrary",
             
             // Link nhúng YouTube CLEAN - không quảng cáo, không tiêu đề
-            youtubeEmbedUrl: "https://www.youtube-nocookie.com/embed/9vntypeV5QU?si=nUgUGR0c_aZbxH5H&autoplay=1&mute=1&loop=1&playlist=9vntypeV5QU&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3",
+            // ĐÃ SỬA: Loại bỏ autoplay để hoạt động trên iOS
+            youtubeEmbedUrl: "https://www.youtube-nocookie.com/embed/9vntypeV5QU?si=nUgUGR0c_aZbxH5H&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1",
             
             // Liên kết mạng xã hội - ĐÃ THAY ĐỔI THEO YÊU CẦU
             socialLinks: [
@@ -930,8 +946,9 @@
         const pageTitle = document.querySelector('h1');
         const footerText = document.querySelector('footer p');
         const socialLinksContainer = document.querySelector('.social-links');
-        const videoBackground = document.querySelector('.video-background');
-        
+        const videoBackground = document.getElementById('videoBackground');
+        const videoFallback = document.getElementById('videoFallback');
+
         // Modal elements
         const modal = document.getElementById('detailModal');
         const modalTitle = document.getElementById('modalTitle');
@@ -952,19 +969,43 @@
         pageTitle.textContent = CONFIG.siteTitle;
         footerText.textContent = CONFIG.footerText;
         
-        // Cập nhật video background với link nhúng CLEAN - KHÔNG THAY ĐỔI
-        if (CONFIG.youtubeEmbedUrl) {
-            videoBackground.innerHTML = `
-                <iframe 
-                    src="${CONFIG.youtubeEmbedUrl}" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-                </iframe>
-            `;
+        // Kiểm tra iOS và xử lý video background
+        function isIOS() {
+            return [
+                'iPad Simulator',
+                'iPhone Simulator',
+                'iPod Simulator',
+                'iPad',
+                'iPhone',
+                'iPod'
+            ].includes(navigator.platform) || 
+            (navigator.userAgent.includes("Mac") && "ontouchend" in document);
         }
 
-        // Tạo liên kết mạng xã hội - ĐÃ THAY ĐỔI
+        // Cập nhật video background với xử lý cho iOS
+        function setupVideoBackground() {
+            if (CONFIG.youtubeEmbedUrl && !isIOS()) {
+                // Chỉ hiển thị video trên các thiết bị không phải iOS
+                videoBackground.innerHTML = `
+                    <iframe 
+                        src="${CONFIG.youtubeEmbedUrl}" 
+                        frameborder="0" 
+                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                `;
+                videoFallback.style.display = 'none';
+            } else {
+                // Trên iOS, ẩn video và chỉ hiển thị fallback background
+                videoBackground.style.display = 'none';
+                videoFallback.style.display = 'block';
+            }
+        }
+
+        // Khởi tạo video background
+        setupVideoBackground();
+
+        // Tạo liên kết mạng xã hội
         socialLinksContainer.innerHTML = '';
         CONFIG.socialLinks.forEach(link => {
             const socialLink = document.createElement('a');
