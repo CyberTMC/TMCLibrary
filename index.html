@@ -726,9 +726,8 @@
 
 <body>
     <!-- Audio Element ẩn cho nhạc nền -->
-    <audio id="backgroundMusic" loop>
-        <source src="background-music.mp3" type="audio/mpeg">
-        <!-- Audio sẽ được cập nhật từ file MP3 trong repo -->
+    <audio id="backgroundMusic" loop style="display: none;">
+        <!-- Audio sẽ được cập nhật từ YouTube -->
     </audio>
 
     <!-- Audio Control - ĐÃ CẢI TIẾN -->
@@ -840,8 +839,8 @@
             // Link nhúng YouTube CLEAN - không quảng cáo, không tiêu đề
             youtubeEmbedUrl: "https://www.youtube-nocookie.com/embed/9vntypeV5QU?si=nUgUGR0c_aZbxH5H&autoplay=1&mute=1&loop=1&playlist=9vntypeV5QU&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3",
             
-            // Audio từ file MP3 trong repo của bạn - THAY ĐƯỜNG DẪN NÀY
-            backgroundMusic: "background-music.mp3",
+            // Audio từ YouTube - LINK NHÚNG MỚI
+            youtubeAudio: "https://www.youtube.com/embed/zwX1hJu9Lds?si=XHCjvmjallxF5BgU&controls=0&start=70&autoplay=1&mute=1&loop=1&playlist=zwX1hJu9Lds",
             
             // Liên kết mạng xã hội - ĐÃ THAY ĐỔI THEO YÊU CẦU
             socialLinks: [
@@ -926,7 +925,7 @@
         pageTitle.textContent = CONFIG.siteTitle;
         footerText.textContent = CONFIG.footerText;
         
-        // Cập nhật video background với link nhúng CLEAN
+        // Cập nhật video background với link nhúng CLEAN - KHÔNG THAY ĐỔI
         if (CONFIG.youtubeEmbedUrl) {
             videoBackground.innerHTML = `
                 <iframe 
@@ -938,12 +937,14 @@
             `;
         }
 
-        // Cập nhật audio từ file MP3
-        if (CONFIG.backgroundMusic) {
-            backgroundMusic.src = CONFIG.backgroundMusic;
-        }
+        // Tạo iframe ẩn cho audio YouTube
+        const audioIframe = document.createElement('iframe');
+        audioIframe.src = CONFIG.youtubeAudio;
+        audioIframe.style.display = 'none';
+        audioIframe.allow = 'autoplay';
+        document.body.appendChild(audioIframe);
         
-        // Tạo liên kết mạng xã hội
+        // Tạo liên kết mạng xã hội - ĐÃ THAY ĐỔI
         socialLinksContainer.innerHTML = '';
         CONFIG.socialLinks.forEach(link => {
             const socialLink = document.createElement('a');
@@ -956,35 +957,39 @@
         });
 
         // Audio Control Functions - ĐÃ SỬA HOÀN TOÀN
+        let isAudioPlaying = false;
+        
         function toggleAudio() {
-            if (backgroundMusic.paused) {
-                backgroundMusic.play().then(() => {
-                    console.log("Nhạc đang phát");
-                    audioControl.classList.remove('muted');
-                    updateAudioIcon();
-                }).catch(e => {
-                    console.log('Lỗi phát nhạc:', e);
-                });
+            if (!isAudioPlaying) {
+                // Bật nhạc - chuyển iframe về không mute
+                audioIframe.src = CONFIG.youtubeAudio.replace('mute=1', 'mute=0');
+                isAudioPlaying = true;
+                audioControl.classList.remove('muted');
+                console.log("Nhạc đang phát");
             } else {
-                backgroundMusic.pause();
+                // Tắt nhạc - chuyển iframe về mute
+                audioIframe.src = CONFIG.youtubeAudio;
+                isAudioPlaying = false;
                 audioControl.classList.add('muted');
-                updateAudioIcon();
+                console.log("Nhạc đã tắt");
             }
+            updateAudioIcon();
         }
 
         function updateVolume() {
             const volume = volumeSlider.value / 100;
-            backgroundMusic.volume = volume;
             volumeValue.textContent = volumeSlider.value + '%';
             updateAudioIcon();
         }
 
         function updateAudioIcon() {
-            if (backgroundMusic.paused || volumeSlider.value == 0) {
+            if (!isAudioPlaying) {
                 audioIcon.className = 'fas fa-volume-mute';
             } else {
                 const volume = volumeSlider.value;
-                if (volume < 33) {
+                if (volume == 0) {
+                    audioIcon.className = 'fas fa-volume-mute';
+                } else if (volume < 33) {
                     audioIcon.className = 'fas fa-volume-off';
                 } else if (volume < 66) {
                     audioIcon.className = 'fas fa-volume-down';
@@ -996,29 +1001,16 @@
 
         // Audio event listeners
         audioControl.addEventListener('click', function(e) {
+            // Ngăn sự kiện lan ra ngoài
             e.stopPropagation();
             toggleAudio();
         });
-
+        
         volumeSlider.addEventListener('input', updateVolume);
 
         // Khởi tạo volume
         updateVolume();
         updateAudioIcon();
-            // Thử autoplay nhạc khi load trang
-    window.addEventListener('DOMContentLoaded', () => {
-        backgroundMusic.play().catch(e => {
-            // Nếu autoplay bị chặn, chờ người dùng click bất kỳ chỗ nào trên trang
-            document.body.addEventListener('click', () => {
-                backgroundMusic.play().then(() => {
-                    audioControl.classList.remove('muted');
-                    updateAudioIcon();
-                }).catch(err => console.log('Không thể phát nhạc:', err));
-            }, { once: true });
-        });
-    });
-
-
 
         // Hàm mở modal chi tiết
         function openDetailModal(code) {
