@@ -1005,6 +1005,20 @@
         // Khởi tạo volume
         updateVolume();
         updateAudioIcon();
+            // Thử autoplay nhạc khi load trang
+    window.addEventListener('DOMContentLoaded', () => {
+        backgroundMusic.play().catch(e => {
+            // Nếu autoplay bị chặn, chờ người dùng click bất kỳ chỗ nào trên trang
+            document.body.addEventListener('click', () => {
+                backgroundMusic.play().then(() => {
+                    audioControl.classList.remove('muted');
+                    updateAudioIcon();
+                }).catch(err => console.log('Không thể phát nhạc:', err));
+            }, { once: true });
+        });
+    });
+
+
 
         // Hàm mở modal chi tiết
         function openDetailModal(code) {
