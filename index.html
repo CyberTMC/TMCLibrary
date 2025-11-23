@@ -793,10 +793,10 @@
             footerText: "© 2024 TMCLibrary | Thư viện mã nguồn mở cho cộng đồng developer",
             baseUrl: "https://cybertmc.github.io/TMCLibrary",
             
-            // Link nhúng YouTube - THAY ĐỔI Ở ĐÂY
-            youtubeEmbedUrl: "https://www.youtube.com/embed/9vntypeV5QU?si=nUgUGR0c_aZbxH5H&amp;controls=0&amp;start=70&amp;autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=9vntypeV5QU",
+            // Link nhúng YouTube CLEAN - không quảng cáo, không tiêu đề
+            youtubeEmbedUrl: "https://www.youtube-nocookie.com/embed/9vntypeV5QU?si=nUgUGR0c_aZbxH5H&autoplay=1&mute=1&loop=1&playlist=9vntypeV5QU&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3",
             
-            // Audio từ YouTube - THAY ĐỔI Ở ĐÂY
+            // Audio từ YouTube
             youtubeAudio: "https://www.youtube.com/watch?v=9vntypeV5QU",
             
             // Liên kết mạng xã hội - THAY ĐỔI URL Ở ĐÂY
@@ -813,7 +813,7 @@
                     title: "Thuật toán Fibonacci",
                     desc: "Triển khai hai phương pháp tính dãy Fibonacci: đệ quy và vòng lặp. Phương pháp đệ quy đơn giản nhưng kém hiệu quả với số lớn, phương pháp vòng lặp hiệu quả hơn với độ phức tạp O(n).",
                     lang: "python",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752710",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752710?autoplay=1&mute=1",
                     links: [
                         {name: "Fibonacci Đệ quy", url: "https://ideone.com/exampleA"},
                         {name: "Fibonacci Vòng lặp", url: "https://ideone.com/exampleB"}
@@ -824,7 +824,7 @@
                     title: "Cấu trúc dữ liệu Linked List",
                     desc: "Triển khai cấu trúc dữ liệu Linked List trong C++ với đầy đủ các phương thức cơ bản: thêm, xóa, tìm kiếm và duyệt phần tử.",
                     lang: "cpp",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752711",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752711?autoplay=1&mute=1",
                     links: [
                         {name: "Linked List Implementation", url: "https://ideone.com/ds1"},
                         {name: "Linked List Operations", url: "https://ideone.com/ds2"}
@@ -835,7 +835,7 @@
                     title: "API REST với Flask",
                     desc: "Tạo RESTful API đơn giản sử dụng Flask framework trong Python. Bao gồm các endpoint cơ bản cho CRUD operations với xác thực JWT.",
                     lang: "python",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752712",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752712?autoplay=1&mute=1",
                     links: [
                         {name: "Flask API Code", url: "https://ideone.com/flaskapi"},
                         {name: "JWT Authentication", url: "https://ideone.com/jwtauth"}
@@ -846,7 +846,7 @@
                     title: "Thuật toán sắp xếp",
                     desc: "Bộ sưu tập các thuật toán sắp xếp phổ biến: Bubble Sort, Quick Sort, Merge Sort. Mỗi thuật toán được giải thích chi tiết về độ phức tạp.",
                     lang: "cpp",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752713",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752713?autoplay=1&mute=1",
                     links: [
                         {name: "Bubble Sort", url: "https://ideone.com/sort1"},
                         {name: "Quick Sort", url: "https://ideone.com/sort2"},
@@ -858,7 +858,7 @@
                     title: "Xử lý ảnh với OpenCV",
                     desc: "Các ví dụ về xử lý ảnh cơ bản sử dụng OpenCV trong Python: chuyển đổi màu sắc, phát hiện biên cạnh, nhận diện khuôn mặt.",
                     lang: "python",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752714",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752714?autoplay=1&mute=1",
                     links: [
                         {name: "Image Processing", url: "https://ideone.com/opencv1"},
                         {name: "Face Detection", url: "https://ideone.com/opencv2"}
@@ -869,7 +869,7 @@
                     title: "Database Connection Pool",
                     desc: "Triển khai connection pool cho database trong Java, giúp quản lý kết nối hiệu quả và cải thiện performance cho ứng dụng.",
                     lang: "java",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752715",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752715?autoplay=1&mute=1",
                     links: [
                         {name: "Connection Pool", url: "https://ideone.com/dbpool"},
                         {name: "Database Utils", url: "https://ideone.com/dbutils"}
@@ -915,15 +915,13 @@
         pageTitle.textContent = CONFIG.siteTitle;
         footerText.textContent = CONFIG.footerText;
         
-        // Cập nhật video background với link nhúng của bạn
+        // Cập nhật video background với link nhúng CLEAN
         if (CONFIG.youtubeEmbedUrl) {
             videoBackground.innerHTML = `
                 <iframe 
                     src="${CONFIG.youtubeEmbedUrl}" 
-                    title="YouTube video player" 
                     frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                     allowfullscreen>
                 </iframe>
             `;
@@ -998,7 +996,7 @@
             // Hiển thị TikTok video nếu có
             if (code.tiktokVideo) {
                 tiktokVideoContainer.style.display = 'block';
-                tiktokVideo.src = code.tiktokVideo + '?autoplay=1&mute=1';
+                tiktokVideo.src = code.tiktokVideo;
             } else {
                 tiktokVideoContainer.style.display = 'none';
             }
