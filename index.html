@@ -725,7 +725,7 @@
 </head>
 
 <body>
-    <!-- Audio Element cho nhạc nền từ GitHub -->
+    <!-- Audio Element cho nhạc nền local -->
     <audio id="backgroundMusic" loop autoplay style="display: none;">
         <source src="https://raw.githubusercontent.com/CyberTMC/TMCLibrary/main/background-music.mp3" type="audio/mpeg">
         Trình duyệt của bạn không hỗ trợ thẻ audio.
@@ -738,8 +738,8 @@
         </div>
         <div class="volume-controls">
             <div class="volume-slider-container">
-                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="0">
-                <div class="volume-percentage" id="volumeValue">0%</div>
+                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
+                <div class="volume-percentage" id="volumeValue">50%</div>
             </div>
             <div class="volume-info">Âm lượng nhạc nền</div>
         </div>
@@ -947,37 +947,35 @@
             socialLinksContainer.appendChild(socialLink);
         });
 
-        // Audio Control Functions - CHẠY NGẦM NHƯNG MUTED
-        let isAudioPlaying = true; // Mặc định là đang phát
+        // Audio Control Functions - ĐÃ SỬA HOÀN TOÀN
+        let isAudioPlaying = true;
         let userInteracted = false;
-
-        // Tự động phát nhạc khi trang load (nhưng muted)
-        document.addEventListener('DOMContentLoaded', function() {
-            backgroundMusic.volume = 0; // Volume = 0 nhưng vẫn chạy
-            backgroundMusic.play().then(() => {
-                isAudioPlaying = true;
-                audioControl.classList.add('muted'); // Hiển thị là muted
-                console.log("Nhạc đang chạy ngầm (muted)");
-            }).catch(error => {
-                console.log("Không thể phát nhạc:", error);
-            });
-            updateAudioIcon();
-        });
-
+        
         function toggleAudio() {
-            userInteracted = true;
-            
-            if (isAudioPlaying) {
-                if (backgroundMusic.volume === 0) {
-                    // Đang muted -> bật âm thanh
-                    backgroundMusic.volume = volumeSlider.value / 100;
+            if (!userInteracted) {
+                userInteracted = true;
+                // Bật nhạc lần đầu
+                backgroundMusic.volume = volumeSlider.value / 100;
+                backgroundMusic.play().then(() => {
+                    isAudioPlaying = true;
                     audioControl.classList.remove('muted');
-                    console.log("Đã bật âm thanh");
+                    console.log("Nhạc đang phát - không delay");
+                }).catch(error => {
+                    console.log("Lỗi khi phát nhạc:", error);
+                });
+            } else {
+                if (!isAudioPlaying) {
+                    // Bật nhạc
+                    backgroundMusic.play();
+                    isAudioPlaying = true;
+                    audioControl.classList.remove('muted');
+                    console.log("Nhạc đang phát");
                 } else {
-                    // Đang có âm thanh -> muted
-                    backgroundMusic.volume = 0;
+                    // Tắt nhạc
+                    backgroundMusic.pause();
+                    isAudioPlaying = false;
                     audioControl.classList.add('muted');
-                    console.log("Đã tắt âm thanh (muted)");
+                    console.log("Nhạc đã tắt");
                 }
             }
             updateAudioIcon();
@@ -988,23 +986,13 @@
             backgroundMusic.volume = volume;
             volumeValue.textContent = volumeSlider.value + '%';
             updateAudioIcon();
-            
-            // Nếu volume > 0 và đang muted, bỏ muted
-            if (volume > 0 && audioControl.classList.contains('muted')) {
-                audioControl.classList.remove('muted');
-            }
-            // Nếu volume = 0 và không muted, thêm muted
-            else if (volume === 0 && !audioControl.classList.contains('muted')) {
-                audioControl.classList.add('muted');
-            }
         }
 
         function updateAudioIcon() {
-            const volume = volumeSlider.value;
-            
-            if (backgroundMusic.volume === 0 || audioControl.classList.contains('muted')) {
+            if (!isAudioPlaying) {
                 audioIcon.className = 'fas fa-volume-mute';
             } else {
+                const volume = volumeSlider.value;
                 if (volume == 0) {
                     audioIcon.className = 'fas fa-volume-mute';
                 } else if (volume < 33) {
