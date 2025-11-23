@@ -725,8 +725,8 @@
 </head>
 
 <body>
-    <!-- Audio Element cho nhạc nền từ GitHub -->
-    <audio id="backgroundMusic" loop autoplay style="display: none;">
+    <!-- Audio Element - ĐÃ SỬA CHO GITHUB PAGES -->
+    <audio id="backgroundMusic" loop style="display: none;">
         <source src="https://raw.githubusercontent.com/CyberTMC/TMCLibrary/main/background-music.mp3" type="audio/mpeg">
         Trình duyệt của bạn không hỗ trợ thẻ audio.
     </audio>
@@ -947,36 +947,69 @@
             socialLinksContainer.appendChild(socialLink);
         });
 
-        // Audio Control Functions - CHỈ TẮT ÂM THANH, KHÔNG DỪNG FILE
-        let isMuted = true; // Mặc định là muted
+        // Audio Control Functions - FIX CHO GITHUB PAGES
+        let isMuted = true;
         let userInteracted = false;
+        let audioStarted = false;
 
-        // Tự động phát nhạc khi trang load (nhưng muted)
+        // Xử lý audio cho GitHub Pages
         document.addEventListener('DOMContentLoaded', function() {
-            backgroundMusic.volume = 0; // Volume = 0 nhưng file vẫn chạy
-            backgroundMusic.play().then(() => {
-                console.log("Nhạc đang chạy ngầm (muted)");
-            }).catch(error => {
-                console.log("Không thể phát nhạc:", error);
-            });
+            // Không tự động phát nhạc, đợi user interaction
+            backgroundMusic.volume = 0;
             updateAudioIcon();
+            
+            // Thêm sự kiện click toàn trang để bắt đầu audio
+            document.addEventListener('click', function initAudio() {
+                if (!audioStarted && userInteracted) {
+                    audioStarted = true;
+                    
+                    backgroundMusic.play().then(() => {
+                        console.log("Nhạc đã bắt đầu (muted)");
+                        updateAudioIcon();
+                    }).catch(error => {
+                        console.log("Lỗi phát nhạc:", error);
+                    });
+                    
+                    // Xóa sự kiện sau khi đã khởi tạo
+                    document.removeEventListener('click', initAudio);
+                }
+            });
         });
 
         function toggleAudio() {
             userInteracted = true;
             
+            if (!audioStarted) {
+                // Nếu audio chưa bắt đầu, bắt đầu nó
+                audioStarted = true;
+                
+                backgroundMusic.play().then(() => {
+                    console.log("Nhạc đã bắt đầu từ nút âm thanh");
+                    // Sau khi bắt đầu, toggle mute/unmute
+                    if (isMuted) {
+                        backgroundMusic.volume = volumeSlider.value / 100;
+                        isMuted = false;
+                        audioControl.classList.remove('muted');
+                        console.log("Đã bật âm thanh");
+                    }
+                    updateAudioIcon();
+                }).catch(error => {
+                    console.log("Lỗi phát nhạc:", error);
+                });
+                return;
+            }
+            
+            // Nếu audio đã bắt đầu, toggle mute/unmute
             if (isMuted) {
-                // Bật âm thanh - volume = giá trị của slider
                 backgroundMusic.volume = volumeSlider.value / 100;
                 isMuted = false;
                 audioControl.classList.remove('muted');
                 console.log("Đã bật âm thanh");
             } else {
-                // Tắt âm thanh - volume = 0 nhưng file vẫn chạy
                 backgroundMusic.volume = 0;
                 isMuted = true;
                 audioControl.classList.add('muted');
-                console.log("Đã tắt âm thanh (muted)");
+                console.log("Đã tắt âm thanh");
             }
             updateAudioIcon();
         }
@@ -986,7 +1019,7 @@
             volumeValue.textContent = volumeSlider.value + '%';
             
             // Nếu không muted, cập nhật volume
-            if (!isMuted) {
+            if (!isMuted && audioStarted) {
                 backgroundMusic.volume = volume;
             }
             
@@ -996,7 +1029,7 @@
             if (volumeSlider.value == 0 && !isMuted) {
                 isMuted = true;
                 audioControl.classList.add('muted');
-            } else if (volumeSlider.value > 0 && isMuted) {
+            } else if (volumeSlider.value > 0 && isMuted && audioStarted) {
                 isMuted = false;
                 audioControl.classList.remove('muted');
                 backgroundMusic.volume = volume;
@@ -1004,7 +1037,7 @@
         }
 
         function updateAudioIcon() {
-            if (isMuted || volumeSlider.value == 0) {
+            if (isMuted || volumeSlider.value == 0 || !audioStarted) {
                 audioIcon.className = 'fas fa-volume-mute';
             } else {
                 const volume = volumeSlider.value;
@@ -1026,6 +1059,11 @@
         });
         
         volumeSlider.addEventListener('input', updateVolume);
+
+        // Đánh dấu user interaction khi có bất kỳ click nào
+        document.addEventListener('click', function() {
+            userInteracted = true;
+        });
 
         // Khởi tạo volume
         updateVolume();
