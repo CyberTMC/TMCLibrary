@@ -725,7 +725,7 @@
 </head>
 
 <body>
-    <!-- Audio Element cho nhạc nền local -->
+    <!-- Audio Element cho nhạc nền từ GitHub -->
     <audio id="backgroundMusic" loop autoplay style="display: none;">
         <source src="https://raw.githubusercontent.com/CyberTMC/TMCLibrary/main/background-music.mp3" type="audio/mpeg">
         Trình duyệt của bạn không hỗ trợ thẻ audio.
@@ -947,55 +947,68 @@
             socialLinksContainer.appendChild(socialLink);
         });
 
-        // Audio Control Functions - ĐÃ SỬA HOÀN TOÀN
-        let isAudioPlaying = true;
+        // Audio Control Functions - CHỈ TẮT ÂM THANH, KHÔNG DỪNG FILE
+        let isMuted = true; // Mặc định là muted
         let userInteracted = false;
-        
+
+        // Tự động phát nhạc khi trang load (nhưng muted)
+        document.addEventListener('DOMContentLoaded', function() {
+            backgroundMusic.volume = 0; // Volume = 0 nhưng file vẫn chạy
+            backgroundMusic.play().then(() => {
+                console.log("Nhạc đang chạy ngầm (muted)");
+            }).catch(error => {
+                console.log("Không thể phát nhạc:", error);
+            });
+            updateAudioIcon();
+        });
+
         function toggleAudio() {
-            if (!userInteracted) {
-                userInteracted = true;
-                // Bật nhạc lần đầu
+            userInteracted = true;
+            
+            if (isMuted) {
+                // Bật âm thanh - volume = giá trị của slider
                 backgroundMusic.volume = volumeSlider.value / 100;
-                backgroundMusic.play().then(() => {
-                    isAudioPlaying = true;
-                    audioControl.classList.remove('muted');
-                    console.log("Nhạc đang phát - không delay");
-                }).catch(error => {
-                    console.log("Lỗi khi phát nhạc:", error);
-                });
+                isMuted = false;
+                audioControl.classList.remove('muted');
+                console.log("Đã bật âm thanh");
             } else {
-                if (!isAudioPlaying) {
-                    // Bật nhạc
-                    backgroundMusic.play();
-                    isAudioPlaying = true;
-                    audioControl.classList.remove('muted');
-                    console.log("Nhạc đang phát");
-                } else {
-                    // Tắt nhạc
-                    backgroundMusic.pause();
-                    isAudioPlaying = false;
-                    audioControl.classList.add('muted');
-                    console.log("Nhạc đã tắt");
-                }
+                // Tắt âm thanh - volume = 0 nhưng file vẫn chạy
+                backgroundMusic.volume = 0;
+                isMuted = true;
+                audioControl.classList.add('muted');
+                console.log("Đã tắt âm thanh (muted)");
             }
             updateAudioIcon();
         }
 
         function updateVolume() {
             const volume = volumeSlider.value / 100;
-            backgroundMusic.volume = volume;
             volumeValue.textContent = volumeSlider.value + '%';
+            
+            // Nếu không muted, cập nhật volume
+            if (!isMuted) {
+                backgroundMusic.volume = volume;
+            }
+            
             updateAudioIcon();
+            
+            // Tự động bật/tắt muted dựa trên volume
+            if (volumeSlider.value == 0 && !isMuted) {
+                isMuted = true;
+                audioControl.classList.add('muted');
+            } else if (volumeSlider.value > 0 && isMuted) {
+                isMuted = false;
+                audioControl.classList.remove('muted');
+                backgroundMusic.volume = volume;
+            }
         }
 
         function updateAudioIcon() {
-            if (!isAudioPlaying) {
+            if (isMuted || volumeSlider.value == 0) {
                 audioIcon.className = 'fas fa-volume-mute';
             } else {
                 const volume = volumeSlider.value;
-                if (volume == 0) {
-                    audioIcon.className = 'fas fa-volume-mute';
-                } else if (volume < 33) {
+                if (volume < 33) {
                     audioIcon.className = 'fas fa-volume-off';
                 } else if (volume < 66) {
                     audioIcon.className = 'fas fa-volume-down';
