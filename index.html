@@ -70,85 +70,105 @@
             z-index: -1;
         }
 
-        /* Audio Control */
+        /* Audio Control - ĐÃ CẢI TIẾN */
         .audio-control {
             position: fixed;
             bottom: 25px;
             right: 25px;
             z-index: 1000;
             background: rgba(30, 41, 59, 0.95);
-            border-radius: 50%;
-            width: 55px;
-            height: 55px;
+            border-radius: 16px;
+            padding: 15px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 15px;
             cursor: pointer;
             border: 2px solid var(--primary);
             box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
             transition: all 0.3s ease;
             backdrop-filter: blur(20px);
+            min-width: 180px;
         }
 
         .audio-control:hover {
-            transform: scale(1.15) rotate(5deg);
+            transform: translateY(-3px);
             box-shadow: 0 12px 30px rgba(37, 99, 235, 0.5);
             border-color: var(--accent);
         }
 
-        .audio-control i {
-            font-size: 1.4rem;
-            color: var(--primary);
+        .audio-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
             transition: all 0.3s ease;
+            flex-shrink: 0;
         }
 
-        .audio-control.muted i {
-            color: var(--text-secondary);
+        .audio-control.muted .audio-icon {
+            background: var(--text-secondary);
         }
 
-        .audio-control .volume-slider {
-            position: absolute;
-            bottom: 65px;
-            right: 0;
-            background: rgba(30, 41, 59, 0.95);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            display: none;
-            backdrop-filter: blur(20px);
-            min-width: 160px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        .volume-controls {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .audio-control:hover .volume-slider {
-            display: block;
-            animation: slideUp 0.3s ease;
+        .volume-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .volume-slider input {
-            width: 100%;
-            margin: 12px 0;
-            accent-color: var(--primary);
+        .volume-slider {
+            flex: 1;
             height: 6px;
             border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .volume-percentage {
+            font-size: 0.8rem;
+            color: var(--text);
+            font-weight: 600;
+            min-width: 35px;
+            text-align: center;
         }
 
         .volume-info {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
             text-align: center;
-            margin-top: 8px;
             font-weight: 500;
         }
 
@@ -226,10 +246,25 @@
         }
 
         .social-link:hover {
-            background: var(--primary);
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Màu sắc riêng cho từng mạng xã hội */
+        .social-link.facebook:hover { 
+            background: #1877f2; 
+            color: white; 
+        }
+
+        .social-link.instagram:hover { 
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: white; 
+        }
+
+        .social-link.tiktok:hover { 
+            background: #000000; 
+            color: white; 
         }
 
         /* Filters */
@@ -655,14 +690,8 @@
             .audio-control {
                 bottom: 15px;
                 right: 15px;
-                width: 50px;
-                height: 50px;
-            }
-            
-            .audio-control .volume-slider {
-                bottom: 55px;
-                right: -30px;
-                min-width: 140px;
+                min-width: 160px;
+                padding: 12px;
             }
 
             .tiktok-video-container iframe {
@@ -682,22 +711,36 @@
             .card {
                 padding: 20px;
             }
+            
+            .audio-control {
+                min-width: 140px;
+                gap: 10px;
+            }
+            
+            .volume-slider-container {
+                gap: 8px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- Audio Element từ YouTube -->
-    <audio id="backgroundMusic" loop>
+    <!-- Audio Element ẩn cho nhạc nền -->
+    <audio id="backgroundMusic" loop style="display: none;">
         <!-- Audio sẽ được cập nhật từ YouTube -->
     </audio>
 
-    <!-- Audio Control -->
+    <!-- Audio Control - ĐÃ CẢI TIẾN -->
     <div class="audio-control muted">
-        <i class="fas fa-volume-mute"></i>
-        <div class="volume-slider">
-            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
-            <div class="volume-info">Âm lượng: <span id="volumeValue">50%</span></div>
+        <div class="audio-icon">
+            <i class="fas fa-volume-mute"></i>
+        </div>
+        <div class="volume-controls">
+            <div class="volume-slider-container">
+                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
+                <div class="volume-percentage" id="volumeValue">50%</div>
+            </div>
+            <div class="volume-info">Âm lượng nhạc nền</div>
         </div>
     </div>
 
@@ -796,14 +839,14 @@
             // Link nhúng YouTube CLEAN - không quảng cáo, không tiêu đề
             youtubeEmbedUrl: "https://www.youtube-nocookie.com/embed/9vntypeV5QU?si=nUgUGR0c_aZbxH5H&autoplay=1&mute=1&loop=1&playlist=9vntypeV5QU&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3",
             
-            // Audio từ YouTube
-            youtubeAudio: "https://www.youtube.com/watch?v=9vntypeV5QU",
+            // Audio từ YouTube - ĐÃ TÁCH RIÊNG
+            youtubeAudio: "https://www.youtube.com/watch?v=zwX1hJu9Lds",
             
-            // Liên kết mạng xã hội - THAY ĐỔI URL Ở ĐÂY
+            // Liên kết mạng xã hội - ĐÃ THAY ĐỔI THEO YÊU CẦU
             socialLinks: [
-                { name: "GitHub", url: "https://github.com/cybertmc", icon: "fab fa-github" },
-                { name: "Facebook", url: "https://facebook.com", icon: "fab fa-facebook-f" },
-                { name: "YouTube", url: "https://youtube.com", icon: "fab fa-youtube" }
+                { name: "Facebook", url: "https://facebook.com", icon: "fab fa-facebook-f", class: "facebook" },
+                { name: "Instagram", url: "https://instagram.com", icon: "fab fa-instagram", class: "instagram" },
+                { name: "TikTok", url: "https://tiktok.com", icon: "fab fa-tiktok", class: "tiktok" }
             ],
             
             // Danh sách code snippets - THÊM/SỬA CODE Ở ĐÂY
@@ -840,40 +883,6 @@
                         {name: "Flask API Code", url: "https://ideone.com/flaskapi"},
                         {name: "JWT Authentication", url: "https://ideone.com/jwtauth"}
                     ]
-                },
-                {
-                    id: "4",
-                    title: "Thuật toán sắp xếp",
-                    desc: "Bộ sưu tập các thuật toán sắp xếp phổ biến: Bubble Sort, Quick Sort, Merge Sort. Mỗi thuật toán được giải thích chi tiết về độ phức tạp.",
-                    lang: "cpp",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752713?autoplay=1&mute=1",
-                    links: [
-                        {name: "Bubble Sort", url: "https://ideone.com/sort1"},
-                        {name: "Quick Sort", url: "https://ideone.com/sort2"},
-                        {name: "Merge Sort", url: "https://ideone.com/sort3"}
-                    ]
-                },
-                {
-                    id: "5",
-                    title: "Xử lý ảnh với OpenCV",
-                    desc: "Các ví dụ về xử lý ảnh cơ bản sử dụng OpenCV trong Python: chuyển đổi màu sắc, phát hiện biên cạnh, nhận diện khuôn mặt.",
-                    lang: "python",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752714?autoplay=1&mute=1",
-                    links: [
-                        {name: "Image Processing", url: "https://ideone.com/opencv1"},
-                        {name: "Face Detection", url: "https://ideone.com/opencv2"}
-                    ]
-                },
-                {
-                    id: "6",
-                    title: "Database Connection Pool",
-                    desc: "Triển khai connection pool cho database trong Java, giúp quản lý kết nối hiệu quả và cải thiện performance cho ứng dụng.",
-                    lang: "java",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752715?autoplay=1&mute=1",
-                    links: [
-                        {name: "Connection Pool", url: "https://ideone.com/dbpool"},
-                        {name: "Database Utils", url: "https://ideone.com/dbutils"}
-                    ]
                 }
             ]
         };
@@ -894,6 +903,7 @@
         const audioControl = document.querySelector('.audio-control');
         const volumeSlider = document.getElementById('volumeSlider');
         const volumeValue = document.getElementById('volumeValue');
+        const audioIcon = audioControl.querySelector('.audio-icon i');
         
         // Modal elements
         const modal = document.getElementById('detailModal');
@@ -915,7 +925,7 @@
         pageTitle.textContent = CONFIG.siteTitle;
         footerText.textContent = CONFIG.footerText;
         
-        // Cập nhật video background với link nhúng CLEAN
+        // Cập nhật video background với link nhúng CLEAN - KHÔNG THAY ĐỔI
         if (CONFIG.youtubeEmbedUrl) {
             videoBackground.innerHTML = `
                 <iframe 
@@ -927,61 +937,79 @@
             `;
         }
 
-        // Cập nhật audio từ YouTube
+        // Cập nhật audio từ YouTube - RIÊNG BIỆT
         if (CONFIG.youtubeAudio) {
             backgroundMusic.src = CONFIG.youtubeAudio;
         }
         
-        // Tạo liên kết mạng xã hội
+        // Tạo liên kết mạng xã hội - ĐÃ THAY ĐỔI
         socialLinksContainer.innerHTML = '';
         CONFIG.socialLinks.forEach(link => {
             const socialLink = document.createElement('a');
             socialLink.href = link.url;
-            socialLink.className = 'social-link';
+            socialLink.className = `social-link ${link.class}`;
             socialLink.title = link.name;
             socialLink.target = "_blank";
             socialLink.innerHTML = `<i class="${link.icon}"></i>`;
             socialLinksContainer.appendChild(socialLink);
         });
 
-        // Audio Control Functions
-        function toggleAudio() {
-            if (backgroundMusic.paused) {
-                backgroundMusic.play().catch(e => {
-                    console.log('Autoplay prevented:', e);
-                });
-                audioControl.classList.remove('muted');
-                updateAudioIcon();
-            } else {
-                backgroundMusic.pause();
-                audioControl.classList.add('muted');
-                updateAudioIcon();
-            }
+        // Audio Control Functions - ĐÃ CẢI TIẾN
+        // Audio Control Functions - ĐÃ SỬA LỖI
+    function toggleAudio() {
+        if (backgroundMusic.paused) {
+            backgroundMusic.play().catch(e => {
+                console.log('Autoplay prevented:', e);
+                // Nếu bị chặn autoplay, yêu cầu user tương tác
+                alert('Vui lòng click vào trang web trước, sau đó thử bật nhạc lại!');
+            });
+            audioControl.classList.remove('muted');
+        } else {
+            backgroundMusic.pause();
+            audioControl.classList.add('muted');
         }
+        updateAudioIcon();
+    }
 
-        function updateVolume() {
-            const volume = volumeSlider.value;
-            backgroundMusic.volume = volume;
-            volumeValue.textContent = Math.round(volume * 100) + '%';
-            updateAudioIcon();
+    function updateVolume() {
+        const volume = volumeSlider.value / 100;
+        backgroundMusic.volume = volume;
+        volumeValue.textContent = volumeSlider.value + '%';
+        
+        // Nếu âm lượng = 0, coi như muted
+        if (volume == 0) {
+            audioControl.classList.add('muted');
+        } else {
+            audioControl.classList.remove('muted');
         }
+        updateAudioIcon();
+    }
 
-        function updateAudioIcon() {
-            const icon = audioControl.querySelector('i');
-            if (backgroundMusic.paused || backgroundMusic.muted) {
-                icon.className = 'fas fa-volume-mute';
-            } else if (backgroundMusic.volume == 0) {
-                icon.className = 'fas fa-volume-mute';
-            } else if (backgroundMusic.volume < 0.5) {
-                icon.className = 'fas fa-volume-down';
-            } else {
-                icon.className = 'fas fa-volume-up';
-            }
+    function updateAudioIcon() {
+        const volume = volumeSlider.value;
+        
+        if (backgroundMusic.paused || volume == 0) {
+            audioIcon.className = 'fas fa-volume-mute';
+        } else if (volume < 33) {
+            audioIcon.className = 'fas fa-volume-off';
+        } else if (volume < 66) {
+            audioIcon.className = 'fas fa-volume-down';
+        } else {
+            audioIcon.className = 'fas fa-volume-up';
         }
+    }
 
-        // Audio event listeners
-        audioControl.addEventListener('click', toggleAudio);
-        volumeSlider.addEventListener('input', updateVolume);
+    // Audio event listeners - SỬA LẠI
+    audioControl.addEventListener('click', function(e) {
+        // Chỉ toggle khi click vào icon, không phải slider
+        if (!e.target.classList.contains('volume-slider')) {
+            toggleAudio();
+        }
+    });
+    volumeSlider.addEventListener('input', updateVolume);
+
+    // Thêm sự kiện click trực tiếp vào icon
+    document.querySelector('.audio-icon').addEventListener('click', toggleAudio);
 
         // Khởi tạo volume
         updateVolume();
