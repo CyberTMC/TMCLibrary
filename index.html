@@ -725,9 +725,10 @@
 </head>
 
 <body>
-    <!-- Audio Element ẩn cho nhạc nền -->
+    <!-- Audio Element cho nhạc nền local -->
     <audio id="backgroundMusic" loop style="display: none;">
-        <!-- Audio sẽ được cập nhật từ YouTube -->
+        <source src="background-music.mp3" type="audio/mpeg">
+        Trình duyệt của bạn không hỗ trợ thẻ audio.
     </audio>
 
     <!-- Audio Control - ĐÃ CẢI TIẾN -->
@@ -839,9 +840,6 @@
             // Link nhúng YouTube CLEAN - không quảng cáo, không tiêu đề
             youtubeEmbedUrl: "https://www.youtube-nocookie.com/embed/9vntypeV5QU?si=nUgUGR0c_aZbxH5H&autoplay=1&mute=1&loop=1&playlist=9vntypeV5QU&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3",
             
-            // Audio từ YouTube - LINK NHÚNG MỚI
-            youtubeAudio: "https://www.youtube.com/embed/zwX1hJu9Lds?si=XHCjvmjallxF5BgU&controls=0&start=70&autoplay=1&mute=1&loop=1&playlist=zwX1hJu9Lds",
-            
             // Liên kết mạng xã hội - ĐÃ THAY ĐỔI THEO YÊU CẦU
             socialLinks: [
                 { name: "Facebook", url: "https://facebook.com", icon: "fab fa-facebook-f", class: "facebook" },
@@ -937,13 +935,6 @@
             `;
         }
 
-        // Tạo iframe ẩn cho audio YouTube
-        const audioIframe = document.createElement('iframe');
-        audioIframe.src = CONFIG.youtubeAudio;
-        audioIframe.style.display = 'none';
-        audioIframe.allow = 'autoplay';
-        document.body.appendChild(audioIframe);
-        
         // Tạo liên kết mạng xã hội - ĐÃ THAY ĐỔI
         socialLinksContainer.innerHTML = '';
         CONFIG.socialLinks.forEach(link => {
@@ -958,26 +949,41 @@
 
         // Audio Control Functions - ĐÃ SỬA HOÀN TOÀN
         let isAudioPlaying = false;
+        let userInteracted = false;
         
         function toggleAudio() {
-            if (!isAudioPlaying) {
-                // Bật nhạc - chuyển iframe về không mute
-                audioIframe.src = CONFIG.youtubeAudio.replace('mute=1', 'mute=0');
-                isAudioPlaying = true;
-                audioControl.classList.remove('muted');
-                console.log("Nhạc đang phát");
+            if (!userInteracted) {
+                userInteracted = true;
+                // Bật nhạc lần đầu
+                backgroundMusic.volume = volumeSlider.value / 100;
+                backgroundMusic.play().then(() => {
+                    isAudioPlaying = true;
+                    audioControl.classList.remove('muted');
+                    console.log("Nhạc đang phát - không delay");
+                }).catch(error => {
+                    console.log("Lỗi khi phát nhạc:", error);
+                });
             } else {
-                // Tắt nhạc - chuyển iframe về mute
-                audioIframe.src = CONFIG.youtubeAudio;
-                isAudioPlaying = false;
-                audioControl.classList.add('muted');
-                console.log("Nhạc đã tắt");
+                if (!isAudioPlaying) {
+                    // Bật nhạc
+                    backgroundMusic.play();
+                    isAudioPlaying = true;
+                    audioControl.classList.remove('muted');
+                    console.log("Nhạc đang phát");
+                } else {
+                    // Tắt nhạc
+                    backgroundMusic.pause();
+                    isAudioPlaying = false;
+                    audioControl.classList.add('muted');
+                    console.log("Nhạc đã tắt");
+                }
             }
             updateAudioIcon();
         }
 
         function updateVolume() {
             const volume = volumeSlider.value / 100;
+            backgroundMusic.volume = volume;
             volumeValue.textContent = volumeSlider.value + '%';
             updateAudioIcon();
         }
