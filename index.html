@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Snippets Collection</title>
+
+    <!-- Favicon đơn giản - chỉ cần 1 file -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #7c4dff;
+            --secondary: #03dac6;
+            --bg-dark: #121212;
+            --bg-card: rgba(30, 30, 30, 0.85);
+            --text: #e0e0e0;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            color: var(--text);
+            font-family: "Segoe UI", sans-serif;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .video-background iframe {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        /* Overlay để làm tối background video */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+
+        /* Audio Control */
+        .audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid var(--primary);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .audio-control:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(124, 77, 255, 0.4);
+        }
+
+        .audio-control i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .audio-control.muted i {
+            color: #666;
+        }
+
+        .audio-control .volume-slider {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: rgba(30, 30, 30, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            display: none;
+            backdrop-filter: blur(10px);
+            min-width: 150px;
+        }
+
+        .audio-control:hover .volume-slider {
+            display: block;
+        }
+
+        .volume-slider input {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .volume-info {
+            font-size: 0.8rem;
+            color: var(--text);
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            color: transparent;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-bar {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.3);
+        }
+
+        select {
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(30, 30, 30, 0.7);
+            border: 1px solid var(--border);
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.3);
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--text);
+        }
+
+        .lang-badge {
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            border-radius: 10px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .card-desc {
+            margin: 10px 0 20px;
+            line-height: 1.5;
+            color: #ccc;
+            flex-grow: 1;
+        }
+
+        .code-links {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ideone-btn {
+            background: rgba(124, 77, 255, 0.2);
+            color: var(--primary);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ideone-btn:hover {
+            background: rgba(124, 77, 255, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .tiktok-btn {
+            background: rgba(255, 0, 80, 0.2);
+            color: #ff0050;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tiktok-btn:hover {
+            background: rgba(255, 0, 80, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            width: 100%;
+            color: #aaa;
+            grid-column: 1 / -1;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        /* Modal chi tiết */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--text);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .modal-desc {
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .tiktok-video-container {
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .tiktok-video-container iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+
+        .video-note {
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .share-section {
+            margin: 25px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .share-title {
+            margin: 0 0 15px 0;
+            font-size: 1.2rem;
+            color: var(--text);
+        }
+
+        .share-link {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .share-input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: rgba(30, 30, 30, 0.7);
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .copy-btn:hover {
+            background: #6a3dff;
+            transform: translateY(-2px);
+        }
+
+        .social-share {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .social-share-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .social-share-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .facebook-share:hover { background: #1877f2; color: white; }
+        .twitter-share:hover { background: #1da1f2; color: white; }
+        .linkedin-share:hover { background: #0077b5; color: white; }
+        .telegram-share:hover { background: #0088cc; color: white; }
+
+        /* Footer */
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .share-link {
+                flex-direction: column;
+            }
+            
+            .audio-control {
+                bottom: 10px;
+                right: 10px;
+                width: 50px;
+                height: 50px;
+            }
+            
+            .audio-control .volume-slider {
+                bottom: 60px;
+                right: -50px;
+                min-width: 120px;
+            }
+
+            .tiktok-video-container iframe {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tiktok-video-container iframe {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Audio Element từ YouTube -->
+    <audio id="backgroundMusic" loop>
+        <!-- Audio sẽ được cập nhật từ YouTube -->
+    </audio>
+
+    <!-- Audio Control -->
+    <div class="audio-control muted">
+        <i class="fas fa-volume-mute"></i>
+        <div class="volume-slider">
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+            <div class="volume-info">Âm lượng: <span id="volumeValue">50%</span></div>
+        </div>
+    </div>
+
+    <!-- Video Background -->
+    <div class="video-background">
+        <!-- Video sẽ được chèn tự động từ JavaScript -->
+    </div>
+    
+    <!-- Overlay để làm tối background -->
+    <div class="video-overlay"></div>
+
+    <!-- Modal chi tiết -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Tiêu đề</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="lang-badge" id="modalLang">Python</div>
+            <p class="modal-desc" id="modalDesc">Mô tả chi tiết...</p>
+            
+            <!-- TikTok Video -->
+            <div id="tiktokVideoContainer" class="tiktok-video-container" style="display: none;">
+                <iframe id="tiktokVideo" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="video-note">Video tự động phát (không có âm thanh). Bật loa nếu muốn nghe.</div>
+            </div>
+            
+            <div class="code-links" id="modalLinks">
+                <!-- Các link code sẽ được chèn ở đây -->
+            </div>
+            
+            <div class="share-section">
+                <h3 class="share-title">Chia sẻ code này</h3>
+                <div class="share-link">
+                    <input type="text" class="share-input" id="shareUrl" readonly>
+                    <button class="copy-btn" id="copyUrl">Copy</button>
+                </div>
+                <div class="social-share">
+                    <a href="#" class="social-share-btn facebook-share" id="facebookShare">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-share-btn twitter-share" id="twitterShare">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-share-btn linkedin-share" id="linkedinShare">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="social-share-btn telegram-share" id="telegramShare">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>Code Snippets Collection</h1>
+            <div class="social-links">
+                <!-- Social links will be generated by JavaScript -->
+            </div>
+        </header>
+
+        <div class="filters">
+            <input type="text" id="search" class="search-bar" placeholder="Tìm theo tên hoặc mô tả...">
+            <select id="sort">
+                <option value="title-asc">A → Z</option>
+                <option value="title-desc">Z → A</option>
+                <option value="lang-asc">Ngôn ngữ (A-Z)</option>
+                <option value="lang-desc">Ngôn ngữ (Z-A)</option>
+            </select>
+        </div>
+
+        <div id="cards" class="cards"></div>
+        
+        <footer>
+            <p>© 2023 Code Snippets Collection | Liên hệ: example@email.com</p>
+        </footer>
+    </div>
+
+    <script>
+        // ==================== PHẦN CẤU HÌNH - CHỈ CẦN SỬA Ở ĐÂY ====================
+        
+        // Cấu hình chung
+        const CONFIG = {
+            siteTitle: "Code Snippets Collection",
+            footerText: "© 2023 Code Snippets Collection | Liên hệ: example@email.com",
+            baseUrl: "https://yourwebsite.com/codes", // Thay bằng URL thực tế của bạn
+            
+            // Link nhúng YouTube - THAY ĐỔI Ở ĐÂY
+            youtubeEmbedUrl: "https://www.youtube.com/embed/9vntypeV5QU?si=nUgUGR0c_aZbxH5H&amp;controls=0&amp;start=70&amp;autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=9vntypeV5QU",
+            
+            // Audio từ YouTube - THAY ĐỔI Ở ĐÂY
+            youtubeAudio: "https://www.youtube.com/watch?v=9vntypeV5QU",
+            
+            // Liên kết mạng xã hội - THAY ĐỔI URL Ở ĐÂY
+            socialLinks: [
+                { name: "Facebook", url: "https://facebook.com/cuaban", icon: "fab fa-facebook-f" },
+                { name: "Instagram", url: "https://instagram.com/cuaban", icon: "fab fa-instagram" },
+                { name: "TikTok", url: "https://tiktok.com/@cuaban", icon: "fab fa-tiktok" }
+            ],
+            
+            // Danh sách code snippets - THÊM/SỬA CODE Ở ĐÂY
+            codes: [
+                {
+                    id: "1",
+                    title: "Project Fibonacci",
+                    desc: "Dự án này bao gồm hai cách tiếp cận khác nhau để tính dãy Fibonacci: phương pháp đệ quy và phương pháp lặp. Đoạn code đầu tiên sử dụng đệ quy để tính số Fibonacci thứ n, đơn giản nhưng kém hiệu quả với n lớn. Đoạn code thứ hai sử dụng vòng lặp để tính toán, hiệu quả hơn với độ phức tạp O(n).",
+                    lang: "python",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752710", // Thêm link TikTok
+                    links: [
+                        {name: "Fibonacci Recursive", url: "https://ideone.com/exampleA"},
+                        {name: "Fibonacci Iterative", url: "https://ideone.com/exampleB"}
+                    ]
+                },
+                {
+                    id: "2",
+                    title: "Sorting Algorithms",
+                    desc: "Bộ sưu tập các thuật toán sắp xếp phổ biến được triển khai trong C++. Mỗi thuật toán được triển khai trong một file riêng biệt với giải thích chi tiết về cách hoạt động và độ phức tạp thời gian.",
+                    lang: "cpp",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752711", // Thêm link TikTok
+                    links: [
+                        {name: "Bubble Sort", url: "https://ideone.com/sort1"},
+                        {name: "Quick Sort", url: "https://ideone.com/sort2"},
+                        {name: "Merge Sort", url: "https://ideone.com/sort3"}
+                    ]
+                },
+                {
+                    id: "3",
+                    title: "Hello World Program",
+                    desc: "Chương trình cơ bản in ra 'Hello World' trong Python. Chương trình đơn giản này minh họa cú pháp cơ bản của Python và cách sử dụng hàm print().",
+                    lang: "python",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752712", // Thêm link TikTok
+                    links: [
+                        {name: "Hello World", url: "https://ideone.com/hello123"}
+                    ]
+                },
+                {
+                    id: "4",
+                    title: "Data Structures",
+                    desc: "Triển khai các cấu trúc dữ liệu cơ bản trong C++. Mỗi cấu trúc dữ liệu được triển khai với đầy đủ các phương thức cơ bản như thêm, xóa và tìm kiếm phần tử.",
+                    lang: "cpp",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752713", // Thêm link TikTok
+                    links: [
+                        {name: "Linked List", url: "https://ideone.com/ds1"},
+                        {name: "Stack", url: "https://ideone.com/ds2"},
+                        {name: "Queue", url: "https://ideone.com/ds3"}
+                    ]
+                }
+            ]
+        };
+        
+        // ==================== KẾT THÚC PHẦN CẤU HÌNH ====================
+
+        // Khởi tạo các phần tử DOM
+        const searchInput = document.getElementById("search");
+        const sortSelect = document.getElementById("sort");
+        const cardsContainer = document.getElementById("cards");
+        const pageTitle = document.querySelector('h1');
+        const footerText = document.querySelector('footer p');
+        const socialLinksContainer = document.querySelector('.social-links');
+        const videoBackground = document.querySelector('.video-background');
+        
+        // Audio elements
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const audioControl = document.querySelector('.audio-control');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeValue = document.getElementById('volumeValue');
+        
+        // Modal elements
+        const modal = document.getElementById('detailModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalLang = document.getElementById('modalLang');
+        const modalDesc = document.getElementById('modalDesc');
+        const modalLinks = document.getElementById('modalLinks');
+        const tiktokVideoContainer = document.getElementById('tiktokVideoContainer');
+        const tiktokVideo = document.getElementById('tiktokVideo');
+        const shareUrl = document.getElementById('shareUrl');
+        const copyUrlBtn = document.getElementById('copyUrl');
+        const closeModalBtn = document.getElementById('closeModal');
+        const facebookShare = document.getElementById('facebookShare');
+        const twitterShare = document.getElementById('twitterShare');
+        const linkedinShare = document.getElementById('linkedinShare');
+        const telegramShare = document.getElementById('telegramShare');
+
+        // Cập nhật nội dung từ CONFIG
+        pageTitle.textContent = CONFIG.siteTitle;
+        footerText.textContent = CONFIG.footerText;
+        
+        // Cập nhật video background với link nhúng của bạn
+        if (CONFIG.youtubeEmbedUrl) {
+            videoBackground.innerHTML = `
+                <iframe 
+                    src="${CONFIG.youtubeEmbedUrl}" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen>
+                </iframe>
+            `;
+        }
+
+        // Cập nhật audio từ YouTube
+        if (CONFIG.youtubeAudio) {
+            // Sử dụng YouTube audio stream
+            backgroundMusic.src = CONFIG.youtubeAudio;
+        }
+        
+        // Tạo liên kết mạng xã hội
+        socialLinksContainer.innerHTML = '';
+        CONFIG.socialLinks.forEach(link => {
+            const socialLink = document.createElement('a');
+            socialLink.href = link.url;
+            socialLink.className = 'social-link';
+            socialLink.title = link.name;
+            socialLink.target = "_blank";
+            socialLink.innerHTML = `<i class="${link.icon}"></i>`;
+            socialLinksContainer.appendChild(socialLink);
+        });
+
+        // Audio Control Functions
+        function toggleAudio() {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play().catch(e => {
+                    console.log('Autoplay prevented:', e);
+                    // Hiển thị thông báo yêu cầu user tương tác
+                    alert('Vui lòng click vào trang web để cho phép phát nhạc');
+                });
+                audioControl.classList.remove('muted');
+                updateAudioIcon();
+            } else {
+                backgroundMusic.pause();
+                audioControl.classList.add('muted');
+                updateAudioIcon();
+            }
+        }
+
+        function updateVolume() {
+            const volume = volumeSlider.value;
+            backgroundMusic.volume = volume;
+            volumeValue.textContent = Math.round(volume * 100) + '%';
+            updateAudioIcon();
+        }
+
+        function updateAudioIcon() {
+            const icon = audioControl.querySelector('i');
+            if (backgroundMusic.paused || backgroundMusic.muted) {
+                icon.className = 'fas fa-volume-mute';
+            } else if (backgroundMusic.volume == 0) {
+                icon.className = 'fas fa-volume-mute';
+            } else if (backgroundMusic.volume < 0.5) {
+                icon.className = 'fas fa-volume-down';
+            } else {
+                icon.className = 'fas fa-volume-up';
+            }
+        }
+
+        // Audio event listeners
+        audioControl.addEventListener('click', toggleAudio);
+        volumeSlider.addEventListener('input', updateVolume);
+
+        // Khởi tạo volume
+        updateVolume();
+        updateAudioIcon();
+
+        // Hàm mở modal chi tiết
+        function openDetailModal(code) {
+            modalTitle.textContent = code.title;
+            modalLang.textContent = code.lang;
+            modalDesc.textContent = code.desc;
+            
+            // Hiển thị TikTok video nếu có
+            if (code.tiktokVideo) {
+                tiktokVideoContainer.style.display = 'block';
+                tiktokVideo.src = code.tiktokVideo + '?autoplay=1&mute=1'; // Tự động phát không âm thanh
+            } else {
+                tiktokVideoContainer.style.display = 'none';
+            }
+            
+            // Tạo link chia sẻ
+            const shareLink = `${CONFIG.baseUrl}?id=${code.id}`;
+            shareUrl.value = shareLink;
+            
+            // Cập nhật link chia sẻ mạng xã hội
+            const encodedUrl = encodeURIComponent(shareLink);
+            const encodedTitle = encodeURIComponent(code.title);
+            
+            facebookShare.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+            twitterShare.href = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
+            linkedinShare.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+            telegramShare.href = `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`;
+            
+            // Tạo các link code
+            modalLinks.innerHTML = '';
+            code.links.forEach(link => {
+                const btn = document.createElement('button');
+                btn.className = 'ideone-btn';
+                btn.innerHTML = `<i class="fas fa-external-link-alt"></i> ${link.name}`;
+                btn.onclick = () => window.open(link.url, '_blank');
+                modalLinks.appendChild(btn);
+            });
+
+            // Thêm nút TikTok nếu có video
+            if (code.tiktokVideo) {
+                const tiktokBtn = document.createElement('button');
+                tiktokBtn.className = 'tiktok-btn';
+                tiktokBtn.innerHTML = `<i class="fab fa-tiktok"></i> Xem Video Demo`;
+                tiktokBtn.onclick = () => {
+                    tiktokVideoContainer.scrollIntoView({ behavior: 'smooth' });
+                };
+                modalLinks.appendChild(tiktokBtn);
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        // Hàm đóng modal
+        function closeModal() {
+            modal.style.display = 'none';
+            // Dừng video TikTok khi đóng modal
+            tiktokVideo.src = '';
+        }
+
+        // Copy link chia sẻ
+        copyUrlBtn.addEventListener('click', () => {
+            shareUrl.select();
+            document.execCommand('copy');
+            copyUrlBtn.textContent = 'Đã copy!';
+            setTimeout(() => {
+                copyUrlBtn.textContent = 'Copy';
+            }, 2000);
+        });
+
+        // Đóng modal khi click outside
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        closeModalBtn.addEventListener('click', closeModal);
+
+        function renderCards(list) {
+            cardsContainer.innerHTML = "";
+
+            if (list.length === 0) {
+                cardsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-code"></i>
+                        <h3>Không tìm thấy kết quả</h3>
+                        <p>Thử tìm kiếm với từ khóa khác hoặc điều chỉnh bộ lọc</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.addEventListener('click', () => openDetailModal(item));
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3 class="card-title">${item.title}</h3>
+                        <span class="lang-badge">${item.lang}</span>
+                    </div>
+                    <p class="card-desc">${item.desc}</p>
+                    <div class="code-links">
+                        ${item.links.map(link => 
+                            `<button class="ideone-btn" data-url="${link.url}">
+                                <i class="fas fa-external-link-alt"></i> ${link.name}
+                            </button>`
+                        ).join('')}
+                        ${item.tiktokVideo ? 
+                            `<button class="tiktok-btn">
+                                <i class="fab fa-tiktok"></i> Xem Video
+                            </button>` : ''
+                        }
+                    </div>
+                `;
+
+                // Thêm sự kiện click cho các nút (ngăn sự kiện lan ra card)
+                card.querySelectorAll('.ideone-btn, .tiktok-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (btn.classList.contains('tiktok-btn')) {
+                            openDetailModal(item);
+                        } else {
+                            window.open(btn.getAttribute('data-url'), '_blank');
+                        }
+                    });
+                });
+
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        function filterAndSort() {
+            let filtered = CONFIG.codes.filter(x =>
+                x.title.toLowerCase().includes(searchInput.value.toLowerCase()) ||
+                x.desc.toLowerCase().includes(searchInput.value.toLowerCase())
+            );
+
+            // Sắp xếp
+            const sortValue = sortSelect.value;
+            switch(sortValue) {
+                case "title-asc":
+                    filtered.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case "title-desc":
+                    filtered.sort((a, b) => b.title.localeCompare(a.title));
+                    break;
+                case "lang-asc":
+                    filtered.sort((a, b) => a.lang.localeCompare(b.lang));
+                    break;
+                case "lang-desc":
+                    filtered.sort((a, b) => b.lang.localeCompare(a.lang));
+                    break;
+                default:
+                    filtered.sort((a, b) => a.title.localeCompare(b.title));
+            }
+
+            renderCards(filtered);
+        }
+
+        searchInput.addEventListener("input", filterAndSort);
+        sortSelect.addEventListener("change", filterAndSort);
+
+        // Khởi tạo
+        renderCards(CONFIG.codes);
+
+        // Cho phép autoplay sau khi user tương tác
+        document.addEventListener('click', function initAudio() {
+            // Chỉ chạy một lần
+            document.removeEventListener('click', initAudio);
+        });
+    </script>
+</body>
+</html>
