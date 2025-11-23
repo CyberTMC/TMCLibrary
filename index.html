@@ -3,34 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Snippets Collection</title>
+    <title>TMCLibrary - Code Snippets Collection</title>
 
-    <!-- Favicon đơn giản - chỉ cần 1 file -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="apple-touch-icon" href="icon.png">
-    <link rel="shortcut icon" href="favicon.ico">
+    <!-- Favicon từ website của bạn -->
+    <link rel="icon" type="image/x-icon" href="https://cybertmc.github.io/TMCLibrary/favicon.ico">
+    <link rel="icon" type="image/png" href="https://cybertmc.github.io/TMCLibrary/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="https://cybertmc.github.io/TMCLibrary/apple-touch-icon.png">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --primary: #7c4dff;
-            --secondary: #03dac6;
-            --bg-dark: #121212;
-            --bg-card: rgba(30, 30, 30, 0.85);
-            --text: #e0e0e0;
-            --border: rgba(255, 255, 255, 0.1);
+            --primary: #2563eb;
+            --secondary: #06b6d4;
+            --accent: #8b5cf6;
+            --bg-dark: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.9);
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: rgba(100, 116, 139, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             margin: 0;
             padding: 20px;
             color: var(--text);
-            font-family: "Segoe UI", sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             position: relative;
             min-height: 100vh;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1e293b 100%);
         }
 
         /* Video Background */
@@ -58,282 +66,374 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
             z-index: -1;
         }
 
         /* Audio Control */
         .audio-control {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 25px;
+            right: 25px;
             z-index: 1000;
-            background: rgba(30, 30, 30, 0.9);
+            background: rgba(30, 41, 59, 0.95);
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            width: 55px;
+            height: 55px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             border: 2px solid var(--primary);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
         }
 
         .audio-control:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(124, 77, 255, 0.4);
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.5);
+            border-color: var(--accent);
         }
 
         .audio-control i {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: var(--primary);
             transition: all 0.3s ease;
         }
 
         .audio-control.muted i {
-            color: #666;
+            color: var(--text-secondary);
         }
 
         .audio-control .volume-slider {
             position: absolute;
-            bottom: 70px;
+            bottom: 65px;
             right: 0;
-            background: rgba(30, 30, 30, 0.9);
-            padding: 15px;
-            border-radius: 10px;
+            background: rgba(30, 41, 59, 0.95);
+            padding: 20px;
+            border-radius: 16px;
             border: 1px solid var(--border);
             display: none;
-            backdrop-filter: blur(10px);
-            min-width: 150px;
+            backdrop-filter: blur(20px);
+            min-width: 160px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .audio-control:hover .volume-slider {
             display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .volume-slider input {
             width: 100%;
-            margin: 10px 0;
+            margin: 12px 0;
+            accent-color: var(--primary);
+            height: 6px;
+            border-radius: 3px;
         }
 
         .volume-info {
             font-size: 0.8rem;
-            color: var(--text);
+            color: var(--text-secondary);
             text-align: center;
-            margin-top: 5px;
+            margin-top: 8px;
+            font-weight: 500;
         }
 
         .container {
-            max-width: 1200px;
-            margin: auto;
+            max-width: 1400px;
+            margin: 0 auto;
             position: relative;
             z-index: 1;
         }
 
+        /* Header */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
         }
 
         h1 {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
+            background-clip: text;
             color: transparent;
             margin: 0;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 5px;
         }
 
         .social-links {
             display: flex;
-            gap: 15px;
+            gap: 12px;
         }
 
         .social-link {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
             color: var(--text);
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             transition: all 0.3s ease;
             text-decoration: none;
+            border: 1px solid transparent;
         }
 
         .social-link:hover {
             background: var(--primary);
             transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
+        /* Filters */
         .filters {
             display: flex;
-            gap: 15px;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 20px;
-            border-radius: 10px;
+            gap: 20px;
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px;
+            border-radius: 20px;
             border: 1px solid var(--border);
-            margin-bottom: 25px;
-            backdrop-filter: blur(10px);
+            margin-bottom: 35px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
         .search-bar {
             flex: 1;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 15px 20px;
+            border-radius: 12px;
             border: 1px solid var(--border);
-            background: rgba(30, 30, 30, 0.7);
+            background: rgba(15, 23, 42, 0.8);
             color: var(--text);
-            transition: all 0.3s;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
         .search-bar:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.3);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+            background: rgba(15, 23, 42, 0.9);
         }
 
         select {
-            padding: 12px;
-            border-radius: 8px;
-            background: rgba(30, 30, 30, 0.7);
+            padding: 15px 20px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.8);
             border: 1px solid var(--border);
             color: var(--text);
-            transition: all 0.3s;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-width: 200px;
         }
 
         select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.3);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
         }
 
+        /* Cards Grid */
         .cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
         }
 
         .card {
             border: 1px solid var(--border);
             background: var(--bg-card);
-            border-radius: 12px;
-            padding: 25px;
-            transition: 0.3s;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
             display: flex;
             flex-direction: column;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
         }
 
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             border-color: var(--primary);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .card-title {
             margin: 0;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: var(--text);
+            font-weight: 600;
+            line-height: 1.3;
         }
 
         .lang-badge {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
-            padding: 5px 12px;
-            font-size: 0.8rem;
+            padding: 6px 14px;
+            font-size: 0.75rem;
             border-radius: 10px;
             display: inline-block;
             white-space: nowrap;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .card-desc {
-            margin: 10px 0 20px;
-            line-height: 1.5;
-            color: #ccc;
+            margin: 15px 0 25px;
+            line-height: 1.6;
+            color: var(--text-secondary);
             flex-grow: 1;
+            font-size: 0.95rem;
         }
 
         .code-links {
             margin-top: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .ideone-btn {
-            background: rgba(124, 77, 255, 0.2);
+            background: rgba(37, 99, 235, 0.15);
             color: var(--primary);
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: none;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(37, 99, 235, 0.3);
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             font-weight: 600;
             text-align: left;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            font-size: 0.95rem;
         }
 
         .ideone-btn:hover {
-            background: rgba(124, 77, 255, 0.35);
+            background: rgba(37, 99, 235, 0.25);
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
         }
 
         .tiktok-btn {
-            background: rgba(255, 0, 80, 0.2);
+            background: rgba(255, 0, 80, 0.15);
             color: #ff0050;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: none;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 0, 80, 0.3);
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             font-weight: 600;
             text-align: left;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            font-size: 0.95rem;
         }
 
         .tiktok-btn:hover {
-            background: rgba(255, 0, 80, 0.35);
+            background: rgba(255, 0, 80, 0.25);
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 80, 0.2);
         }
 
         .empty-state {
             text-align: center;
-            padding: 40px;
+            padding: 60px 40px;
             width: 100%;
-            color: #aaa;
+            color: var(--text-secondary);
             grid-column: 1 / -1;
-            background: rgba(30, 30, 30, 0.7);
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
         }
 
         .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
+            font-size: 4rem;
+            margin-bottom: 20px;
             color: var(--primary);
+            opacity: 0.7;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text);
         }
 
         /* Modal chi tiết */
@@ -344,9 +444,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(15, 23, 42, 0.95);
             z-index: 1000;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
         }
 
         .modal-content {
@@ -355,123 +455,135 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: var(--bg-card);
-            border-radius: 15px;
-            padding: 30px;
-            width: 90%;
-            max-width: 800px;
+            border-radius: 24px;
+            padding: 40px;
+            width: 95%;
+            max-width: 900px;
             max-height: 90vh;
             overflow-y: auto;
             border: 1px solid var(--border);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            align-items: flex-start;
+            margin-bottom: 25px;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 15px;
+            padding-bottom: 20px;
         }
 
         .modal-title {
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: var(--text);
+            font-weight: 700;
         }
 
         .close-btn {
-            background: none;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             color: var(--text);
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             cursor: pointer;
-            padding: 5px;
-            border-radius: 5px;
-            transition: 0.3s;
+            padding: 8px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .close-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--primary);
+            background: var(--primary);
+            color: white;
+            transform: rotate(90deg);
         }
 
         .modal-desc {
-            margin-bottom: 25px;
-            line-height: 1.6;
-            color: #ccc;
+            margin-bottom: 30px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
         }
 
         .tiktok-video-container {
-            margin: 20px 0;
-            border-radius: 10px;
+            margin: 25px 0;
+            border-radius: 16px;
             overflow: hidden;
             background: #000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
         .tiktok-video-container iframe {
             width: 100%;
-            height: 600px;
+            height: 500px;
             border: none;
         }
 
         .video-note {
             text-align: center;
-            color: #888;
+            color: var(--text-secondary);
             font-size: 0.9rem;
-            margin-top: 10px;
+            margin-top: 12px;
             font-style: italic;
         }
 
         .share-section {
-            margin: 25px 0;
-            padding: 20px;
+            margin: 30px 0;
+            padding: 25px;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
+            border-radius: 16px;
             border: 1px solid var(--border);
         }
 
         .share-title {
-            margin: 0 0 15px 0;
-            font-size: 1.2rem;
+            margin: 0 0 18px 0;
+            font-size: 1.3rem;
             color: var(--text);
+            font-weight: 600;
         }
 
         .share-link {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .share-input {
             flex: 1;
-            padding: 10px;
-            border-radius: 6px;
+            padding: 12px 16px;
+            border-radius: 10px;
             border: 1px solid var(--border);
-            background: rgba(30, 30, 30, 0.7);
+            background: rgba(15, 23, 42, 0.8);
             color: var(--text);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
         .copy-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
+            padding: 12px 20px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             font-weight: 600;
+            min-width: 100px;
         }
 
         .copy-btn:hover {
-            background: #6a3dff;
+            background: #1d4ed8;
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
         }
 
         .social-share {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: center;
         }
 
@@ -479,13 +591,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
             background: rgba(255, 255, 255, 0.1);
             color: var(--text);
             text-decoration: none;
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
         }
 
         .social-share-btn:hover {
@@ -499,36 +612,40 @@
 
         /* Footer */
         footer {
-            margin-top: 50px;
+            margin-top: 60px;
             text-align: center;
-            padding: 20px;
-            color: #aaa;
-            font-size: 0.9rem;
+            padding: 30px 20px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            border-top: 1px solid var(--border);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .filters {
                 flex-direction: column;
+                gap: 15px;
             }
             
             h1 {
-                font-size: 2.2rem;
+                font-size: 2rem;
             }
             
             header {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
+                gap: 20px;
             }
             
             .cards {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
             
             .modal-content {
-                width: 95%;
-                padding: 20px;
+                width: 98%;
+                padding: 25px;
             }
             
             .share-link {
@@ -536,26 +653,34 @@
             }
             
             .audio-control {
-                bottom: 10px;
-                right: 10px;
+                bottom: 15px;
+                right: 15px;
                 width: 50px;
                 height: 50px;
             }
             
             .audio-control .volume-slider {
-                bottom: 60px;
-                right: -50px;
-                min-width: 120px;
+                bottom: 55px;
+                right: -30px;
+                min-width: 140px;
             }
 
             .tiktok-video-container iframe {
-                height: 400px;
+                height: 300px;
             }
         }
 
         @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
             .tiktok-video-container iframe {
-                height: 300px;
+                height: 250px;
+            }
+            
+            .card {
+                padding: 20px;
             }
         }
     </style>
@@ -630,14 +755,20 @@
 
     <div class="container">
         <header>
-            <h1>Code Snippets Collection</h1>
+            <div class="logo-section">
+                <div class="logo">TMC</div>
+                <div>
+                    <h1>TMCLibrary</h1>
+                    <div class="subtitle">Thư viện code snippets cho developer</div>
+                </div>
+            </div>
             <div class="social-links">
                 <!-- Social links will be generated by JavaScript -->
             </div>
         </header>
 
         <div class="filters">
-            <input type="text" id="search" class="search-bar" placeholder="Tìm theo tên hoặc mô tả...">
+            <input type="text" id="search" class="search-bar" placeholder="🔍 Tìm kiếm code snippets...">
             <select id="sort">
                 <option value="title-asc">A → Z</option>
                 <option value="title-desc">Z → A</option>
@@ -649,7 +780,7 @@
         <div id="cards" class="cards"></div>
         
         <footer>
-            <p>© 2023 Code Snippets Collection | Liên hệ: example@email.com</p>
+            <p>© 2024 TMCLibrary | Thư viện mã nguồn mở cho cộng đồng developer</p>
         </footer>
     </div>
 
@@ -658,9 +789,9 @@
         
         // Cấu hình chung
         const CONFIG = {
-            siteTitle: "Code Snippets Collection",
-            footerText: "© 2023 Code Snippets Collection | Liên hệ: example@email.com",
-            baseUrl: "https://yourwebsite.com/codes", // Thay bằng URL thực tế của bạn
+            siteTitle: "TMCLibrary",
+            footerText: "© 2024 TMCLibrary | Thư viện mã nguồn mở cho cộng đồng developer",
+            baseUrl: "https://cybertmc.github.io/TMCLibrary",
             
             // Link nhúng YouTube - THAY ĐỔI Ở ĐÂY
             youtubeEmbedUrl: "https://www.youtube.com/embed/9vntypeV5QU?si=nUgUGR0c_aZbxH5H&amp;controls=0&amp;start=70&amp;autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=9vntypeV5QU",
@@ -670,30 +801,52 @@
             
             // Liên kết mạng xã hội - THAY ĐỔI URL Ở ĐÂY
             socialLinks: [
-                { name: "Facebook", url: "https://facebook.com/cuaban", icon: "fab fa-facebook-f" },
-                { name: "Instagram", url: "https://instagram.com/cuaban", icon: "fab fa-instagram" },
-                { name: "TikTok", url: "https://tiktok.com/@cuaban", icon: "fab fa-tiktok" }
+                { name: "GitHub", url: "https://github.com/cybertmc", icon: "fab fa-github" },
+                { name: "Facebook", url: "https://facebook.com", icon: "fab fa-facebook-f" },
+                { name: "YouTube", url: "https://youtube.com", icon: "fab fa-youtube" }
             ],
             
             // Danh sách code snippets - THÊM/SỬA CODE Ở ĐÂY
             codes: [
                 {
                     id: "1",
-                    title: "Project Fibonacci",
-                    desc: "Dự án này bao gồm hai cách tiếp cận khác nhau để tính dãy Fibonacci: phương pháp đệ quy và phương pháp lặp. Đoạn code đầu tiên sử dụng đệ quy để tính số Fibonacci thứ n, đơn giản nhưng kém hiệu quả với n lớn. Đoạn code thứ hai sử dụng vòng lặp để tính toán, hiệu quả hơn với độ phức tạp O(n).",
+                    title: "Thuật toán Fibonacci",
+                    desc: "Triển khai hai phương pháp tính dãy Fibonacci: đệ quy và vòng lặp. Phương pháp đệ quy đơn giản nhưng kém hiệu quả với số lớn, phương pháp vòng lặp hiệu quả hơn với độ phức tạp O(n).",
                     lang: "python",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752710", // Thêm link TikTok
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752710",
                     links: [
-                        {name: "Fibonacci Recursive", url: "https://ideone.com/exampleA"},
-                        {name: "Fibonacci Iterative", url: "https://ideone.com/exampleB"}
+                        {name: "Fibonacci Đệ quy", url: "https://ideone.com/exampleA"},
+                        {name: "Fibonacci Vòng lặp", url: "https://ideone.com/exampleB"}
                     ]
                 },
                 {
                     id: "2",
-                    title: "Sorting Algorithms",
-                    desc: "Bộ sưu tập các thuật toán sắp xếp phổ biến được triển khai trong C++. Mỗi thuật toán được triển khai trong một file riêng biệt với giải thích chi tiết về cách hoạt động và độ phức tạp thời gian.",
+                    title: "Cấu trúc dữ liệu Linked List",
+                    desc: "Triển khai cấu trúc dữ liệu Linked List trong C++ với đầy đủ các phương thức cơ bản: thêm, xóa, tìm kiếm và duyệt phần tử.",
                     lang: "cpp",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752711", // Thêm link TikTok
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752711",
+                    links: [
+                        {name: "Linked List Implementation", url: "https://ideone.com/ds1"},
+                        {name: "Linked List Operations", url: "https://ideone.com/ds2"}
+                    ]
+                },
+                {
+                    id: "3",
+                    title: "API REST với Flask",
+                    desc: "Tạo RESTful API đơn giản sử dụng Flask framework trong Python. Bao gồm các endpoint cơ bản cho CRUD operations với xác thực JWT.",
+                    lang: "python",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752712",
+                    links: [
+                        {name: "Flask API Code", url: "https://ideone.com/flaskapi"},
+                        {name: "JWT Authentication", url: "https://ideone.com/jwtauth"}
+                    ]
+                },
+                {
+                    id: "4",
+                    title: "Thuật toán sắp xếp",
+                    desc: "Bộ sưu tập các thuật toán sắp xếp phổ biến: Bubble Sort, Quick Sort, Merge Sort. Mỗi thuật toán được giải thích chi tiết về độ phức tạp.",
+                    lang: "cpp",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752713",
                     links: [
                         {name: "Bubble Sort", url: "https://ideone.com/sort1"},
                         {name: "Quick Sort", url: "https://ideone.com/sort2"},
@@ -701,25 +854,25 @@
                     ]
                 },
                 {
-                    id: "3",
-                    title: "Hello World Program",
-                    desc: "Chương trình cơ bản in ra 'Hello World' trong Python. Chương trình đơn giản này minh họa cú pháp cơ bản của Python và cách sử dụng hàm print().",
+                    id: "5",
+                    title: "Xử lý ảnh với OpenCV",
+                    desc: "Các ví dụ về xử lý ảnh cơ bản sử dụng OpenCV trong Python: chuyển đổi màu sắc, phát hiện biên cạnh, nhận diện khuôn mặt.",
                     lang: "python",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752712", // Thêm link TikTok
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752714",
                     links: [
-                        {name: "Hello World", url: "https://ideone.com/hello123"}
+                        {name: "Image Processing", url: "https://ideone.com/opencv1"},
+                        {name: "Face Detection", url: "https://ideone.com/opencv2"}
                     ]
                 },
                 {
-                    id: "4",
-                    title: "Data Structures",
-                    desc: "Triển khai các cấu trúc dữ liệu cơ bản trong C++. Mỗi cấu trúc dữ liệu được triển khai với đầy đủ các phương thức cơ bản như thêm, xóa và tìm kiếm phần tử.",
-                    lang: "cpp",
-                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752713", // Thêm link TikTok
+                    id: "6",
+                    title: "Database Connection Pool",
+                    desc: "Triển khai connection pool cho database trong Java, giúp quản lý kết nối hiệu quả và cải thiện performance cho ứng dụng.",
+                    lang: "java",
+                    tiktokVideo: "https://www.tiktok.com/embed/v2/7329548284011752715",
                     links: [
-                        {name: "Linked List", url: "https://ideone.com/ds1"},
-                        {name: "Stack", url: "https://ideone.com/ds2"},
-                        {name: "Queue", url: "https://ideone.com/ds3"}
+                        {name: "Connection Pool", url: "https://ideone.com/dbpool"},
+                        {name: "Database Utils", url: "https://ideone.com/dbutils"}
                     ]
                 }
             ]
@@ -778,7 +931,6 @@
 
         // Cập nhật audio từ YouTube
         if (CONFIG.youtubeAudio) {
-            // Sử dụng YouTube audio stream
             backgroundMusic.src = CONFIG.youtubeAudio;
         }
         
@@ -799,8 +951,6 @@
             if (backgroundMusic.paused) {
                 backgroundMusic.play().catch(e => {
                     console.log('Autoplay prevented:', e);
-                    // Hiển thị thông báo yêu cầu user tương tác
-                    alert('Vui lòng click vào trang web để cho phép phát nhạc');
                 });
                 audioControl.classList.remove('muted');
                 updateAudioIcon();
@@ -848,7 +998,7 @@
             // Hiển thị TikTok video nếu có
             if (code.tiktokVideo) {
                 tiktokVideoContainer.style.display = 'block';
-                tiktokVideo.src = code.tiktokVideo + '?autoplay=1&mute=1'; // Tự động phát không âm thanh
+                tiktokVideo.src = code.tiktokVideo + '?autoplay=1&mute=1';
             } else {
                 tiktokVideoContainer.style.display = 'none';
             }
@@ -893,7 +1043,6 @@
         // Hàm đóng modal
         function closeModal() {
             modal.style.display = 'none';
-            // Dừng video TikTok khi đóng modal
             tiktokVideo.src = '';
         }
 
@@ -1007,7 +1156,6 @@
 
         // Cho phép autoplay sau khi user tương tác
         document.addEventListener('click', function initAudio() {
-            // Chỉ chạy một lần
             document.removeEventListener('click', initAudio);
         });
     </script>
