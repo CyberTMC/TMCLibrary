@@ -206,6 +206,47 @@
             color: white; 
         }
 
+        /* Banner thông báo */
+        .browser-notice {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .browser-notice i {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .browser-notice p {
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .browser-notice .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: auto;
+            flex-shrink: 0;
+            font-size: 0.8rem;
+        }
+
         /* Filters - TỐI ƯU CHO MOBILE */
         .filters {
             display: flex;
@@ -342,6 +383,21 @@
             color: var(--text-secondary);
             flex-grow: 1;
             font-size: 0.9rem;
+        }
+
+        .card-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .view-count {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .code-links {
@@ -514,6 +570,15 @@
             line-height: 1.6;
             color: var(--text-secondary);
             font-size: 0.95rem;
+        }
+
+        .modal-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
         .tiktok-video-container {
@@ -783,6 +848,9 @@
                 <button class="close-btn" id="closeModal">&times;</button>
             </div>
             <div class="lang-badge" id="modalLang">Python</div>
+            <div class="modal-stats" id="modalStats">
+                <span class="view-count"><i class="fas fa-eye"></i> <span id="modalViewCount">0</span> lượt xem</span>
+            </div>
             <p class="modal-desc" id="modalDesc">Mô tả chi tiết...</p>
             
             <!-- TikTok Video -->
@@ -833,6 +901,13 @@
             </div>
         </header>
 
+        <!-- Banner thông báo mở web trong trình duyệt -->
+        <div class="browser-notice" id="browserNotice">
+            <i class="fas fa-desktop"></i>
+            <p>💡 <strong>Mẹo nhỏ:</strong> Hãy mở web trong trình duyệt để copy code dễ dàng hơn!</p>
+            <button class="close-btn" id="closeNotice">&times;</button>
+        </div>
+
         <div class="filters">
             <input type="text" id="search" class="search-bar" placeholder="🔍 Tìm kiếm">
             <select id="sort">
@@ -840,6 +915,8 @@
                 <option value="title-desc">Z → A</option>
                 <option value="lang-asc">Ngôn ngữ (A-Z)</option>
                 <option value="lang-desc">Ngôn ngữ (Z-A)</option>
+                <option value="views-desc">Lượt xem (Cao nhất)</option>
+                <option value="views-asc">Lượt xem (Thấp nhất)</option>
             </select>
         </div>
 
@@ -948,11 +1025,15 @@
         const socialLinksContainer = document.querySelector('.social-links');
         const videoBackground = document.getElementById('videoBackground');
         const videoFallback = document.getElementById('videoFallback');
+        const browserNotice = document.getElementById('browserNotice');
+        const closeNoticeBtn = document.getElementById('closeNotice');
 
         // Modal elements
         const modal = document.getElementById('detailModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalLang = document.getElementById('modalLang');
+        const modalStats = document.getElementById('modalStats');
+        const modalViewCount = document.getElementById('modalViewCount');
         const modalDesc = document.getElementById('modalDesc');
         const modalLinks = document.getElementById('modalLinks');
         const tiktokVideoContainer = document.getElementById('tiktokVideoContainer');
@@ -964,6 +1045,46 @@
         const twitterShare = document.getElementById('twitterShare');
         const linkedinShare = document.getElementById('linkedinShare');
         const telegramShare = document.getElementById('telegramShare');
+
+        // Biến lưu trữ lượt xem
+        let viewCounts = {};
+
+        // Khởi tạo lượt xem từ localStorage
+        function initializeViewCounts() {
+            const storedViewCounts = localStorage.getItem('tmcLibraryViewCounts');
+            if (storedViewCounts) {
+                viewCounts = JSON.parse(storedViewCounts);
+            }
+            
+            // Đảm bảo mỗi code đều có lượt xem
+            CONFIG.codes.forEach(code => {
+                if (!viewCounts[code.id]) {
+                    viewCounts[code.id] = 0;
+                }
+            });
+            
+            saveViewCounts();
+        }
+
+        // Lưu lượt xem vào localStorage
+        function saveViewCounts() {
+            localStorage.setItem('tmcLibraryViewCounts', JSON.stringify(viewCounts));
+        }
+
+        // Tăng lượt xem cho một code
+        function incrementViewCount(codeId) {
+            if (viewCounts[codeId] !== undefined) {
+                viewCounts[codeId]++;
+                saveViewCounts();
+                return viewCounts[codeId];
+            }
+            return 0;
+        }
+
+        // Lấy lượt xem cho một code
+        function getViewCount(codeId) {
+            return viewCounts[codeId] || 0;
+        }
 
         // Cập nhật nội dung từ CONFIG
         pageTitle.textContent = CONFIG.siteTitle;
@@ -1020,9 +1141,13 @@
 
         // Hàm mở modal chi tiết
         function openDetailModal(code) {
+            // Tăng lượt xem
+            const currentViews = incrementViewCount(code.id);
+            
             modalTitle.textContent = code.title;
             modalLang.textContent = code.lang;
             modalDesc.textContent = code.desc;
+            modalViewCount.textContent = currentViews;
             
             // Hiển thị TikTok video nếu có
             if (code.tiktokVideo) {
@@ -1094,6 +1219,11 @@
 
         closeModalBtn.addEventListener('click', closeModal);
 
+        // Đóng thông báo trình duyệt
+        closeNoticeBtn.addEventListener('click', () => {
+            browserNotice.style.display = 'none';
+        });
+
         function renderCards(list) {
             cardsContainer.innerHTML = "";
 
@@ -1109,6 +1239,8 @@
             }
 
             list.forEach(item => {
+                const viewCount = getViewCount(item.id);
+                
                 const card = document.createElement("div");
                 card.className = "card";
                 card.addEventListener('click', () => openDetailModal(item));
@@ -1119,6 +1251,9 @@
                         <span class="lang-badge">${item.lang}</span>
                     </div>
                     <p class="card-desc">${item.desc}</p>
+                    <div class="card-stats">
+                        <span class="view-count"><i class="fas fa-eye"></i> ${viewCount} lượt xem</span>
+                    </div>
                     <div class="code-links">
                         ${item.links.map(link => 
                             `<button class="ideone-btn" data-url="${link.url}">
@@ -1170,6 +1305,12 @@
                 case "lang-desc":
                     filtered.sort((a, b) => b.lang.localeCompare(a.lang));
                     break;
+                case "views-desc":
+                    filtered.sort((a, b) => getViewCount(b.id) - getViewCount(a.id));
+                    break;
+                case "views-asc":
+                    filtered.sort((a, b) => getViewCount(a.id) - getViewCount(b.id));
+                    break;
                 default:
                     filtered.sort((a, b) => a.title.localeCompare(b.title));
             }
@@ -1181,6 +1322,7 @@
         sortSelect.addEventListener("change", filterAndSort);
 
         // Khởi tạo
+        initializeViewCounts();
         renderCards(CONFIG.codes);
     </script>
 </body>
