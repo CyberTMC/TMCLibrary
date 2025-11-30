@@ -52,7 +52,6 @@
             position: relative;
             min-height: 100vh;
             background: linear-gradient(135deg, var(--bg-dark) 0%, #1e293b 100%);
-            /* Thêm padding cho safe area trên iPhone */
             padding-top: calc(15px + var(--safe-area-inset-top));
             padding-bottom: calc(15px + var(--safe-area-inset-bottom));
         }
@@ -66,7 +65,7 @@
             height: 100%;
             z-index: -1;
             overflow: hidden;
-            background: var(--bg-dark); /* Fallback color */
+            background: var(--bg-dark);
         }
 
         .video-background iframe {
@@ -245,6 +244,28 @@
             margin-left: auto;
             flex-shrink: 0;
             font-size: 0.8rem;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Filters - TỐI ƯU CHO MOBILE */
@@ -920,6 +941,12 @@
             </select>
         </div>
 
+        <!-- Loading indicator -->
+        <div id="loadingIndicator" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Đang tải dữ liệu lượt xem...</p>
+        </div>
+
         <div id="cards" class="cards"></div>
         
         <footer>
@@ -936,11 +963,13 @@
             footerText: "© 2025-2028 TMCLibrary | Thư viện mã nguồn mở cho cộng đồng ",
             baseUrl: "https://cybertmc.github.io/TMCLibrary",
             
+            // 🔥 GOOGLE APPS SCRIPT URL - THAY BẰNG URL CỦA BẠN
+            googleScriptUrl: "https://script.google.com/macros/s/AKfycbxyU5pU2kA-VCHz53R6nq4RgaPJw5EC9DgngiGGz3wPvnxtLyu19r9ueKydOSnzkBYMyg/exec",
+            
             // Link nhúng YouTube CLEAN - không quảng cáo, không tiêu đề
-            // ĐÃ SỬA: Loại bỏ autoplay để hoạt động trên iOS
             youtubeEmbedUrl: "https://www.youtube-nocookie.com/embed/9vntypeV5QU?si=nUgUGR0c_aZbxH5H&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&loop=1&playlist=9vntypeV5QU",
             
-            // Liên kết mạng xã hội - ĐÃ THAY ĐỔI THEO YÊU CẦU
+            // Liên kết mạng xã hội
             socialLinks: [
                 { name: "Facebook", url: "https://www.facebook.com/100053167816454", icon: "fab fa-facebook-f", class: "facebook" },
                 { name: "Instagram", url: "https://www.instagram.com/tran_chuyenhiii/?igsh=MWltcmM3b2ljbWJ3aQ%3D%3D&utm_source=qr#", icon: "fab fa-instagram", class: "instagram" },
@@ -1020,6 +1049,7 @@
         const searchInput = document.getElementById("search");
         const sortSelect = document.getElementById("sort");
         const cardsContainer = document.getElementById("cards");
+        const loadingIndicator = document.getElementById("loadingIndicator");
         const pageTitle = document.querySelector('h1');
         const footerText = document.querySelector('footer p');
         const socialLinksContainer = document.querySelector('.social-links');
@@ -1046,44 +1076,90 @@
         const linkedinShare = document.getElementById('linkedinShare');
         const telegramShare = document.getElementById('telegramShare');
 
-        // Biến lưu trữ lượt xem
-        let viewCounts = {};
+        // Biến lưu trữ lượt xem TOÀN CẤU
+        let globalViewCounts = {};
 
-        // Khởi tạo lượt xem từ localStorage
-        function initializeViewCounts() {
-            const storedViewCounts = localStorage.getItem('tmcLibraryViewCounts');
-            if (storedViewCounts) {
-                viewCounts = JSON.parse(storedViewCounts);
+        // 🔥 Hàm gửi lượt xem lên Google Sheets
+        async function incrementViewCount(codeId) {
+            try {
+                const response = await fetch(CONFIG.googleScriptUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=increment&code_id=${codeId}`
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Cập nhật lượt xem mới nhất
+                    globalViewCounts[codeId] = result.views;
+                    return result.views;
+                } else {
+                    console.error('Lỗi từ server:', result.error);
+                    return globalViewCounts[codeId] || 0;
+                }
+            } catch (error) {
+                console.error('Lỗi kết nối:', error);
+                // Fallback: dùng local storage nếu không kết nối được
+                return incrementLocalViewCount(codeId);
+            }
+        }
+
+        // 🔥 Hàm lấy tất cả lượt xem từ server
+        async function loadViewCounts() {
+            try {
+                loadingIndicator.style.display = 'block';
+                
+                const response = await fetch(`${CONFIG.googleScriptUrl}?action=get_all`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    globalViewCounts = result.viewCounts;
+                    
+                    // Đảm bảo mỗi code đều có lượt xem
+                    CONFIG.codes.forEach(code => {
+                        if (!globalViewCounts[code.id]) {
+                            globalViewCounts[code.id] = 0;
+                        }
+                    });
+                } else {
+                    console.error('Lỗi lấy lượt xem:', result.error);
+                    loadLocalViewCounts();
+                }
+            } catch (error) {
+                console.error('Lỗi kết nối:', error);
+                loadLocalViewCounts();
+            } finally {
+                loadingIndicator.style.display = 'none';
+                filterAndSort(); // Hiển thị cards sau khi có dữ liệu
+            }
+        }
+
+        // Fallback: Local storage khi không kết nối được
+        function loadLocalViewCounts() {
+            const stored = localStorage.getItem('tmcLocalViewCounts');
+            if (stored) {
+                globalViewCounts = JSON.parse(stored);
             }
             
-            // Đảm bảo mỗi code đều có lượt xem
             CONFIG.codes.forEach(code => {
-                if (!viewCounts[code.id]) {
-                    viewCounts[code.id] = 0;
+                if (!globalViewCounts[code.id]) {
+                    globalViewCounts[code.id] = 0;
                 }
             });
-            
-            saveViewCounts();
         }
 
-        // Lưu lượt xem vào localStorage
-        function saveViewCounts() {
-            localStorage.setItem('tmcLibraryViewCounts', JSON.stringify(viewCounts));
-        }
-
-        // Tăng lượt xem cho một code
-        function incrementViewCount(codeId) {
-            if (viewCounts[codeId] !== undefined) {
-                viewCounts[codeId]++;
-                saveViewCounts();
-                return viewCounts[codeId];
-            }
-            return 0;
+        function incrementLocalViewCount(codeId) {
+            globalViewCounts[codeId] = (globalViewCounts[codeId] || 0) + 1;
+            localStorage.setItem('tmcLocalViewCounts', JSON.stringify(globalViewCounts));
+            return globalViewCounts[codeId];
         }
 
         // Lấy lượt xem cho một code
         function getViewCount(codeId) {
-            return viewCounts[codeId] || 0;
+            return globalViewCounts[codeId] || 0;
         }
 
         // Cập nhật nội dung từ CONFIG
@@ -1106,7 +1182,6 @@
         // Cập nhật video background với xử lý cho iOS
         function setupVideoBackground() {
             if (CONFIG.youtubeEmbedUrl && !isIOS()) {
-                // Chỉ hiển thị video trên các thiết bị không phải iOS
                 videoBackground.innerHTML = `
                     <iframe 
                         src="${CONFIG.youtubeEmbedUrl}" 
@@ -1117,7 +1192,6 @@
                 `;
                 videoFallback.style.display = 'none';
             } else {
-                // Trên iOS, ẩn video và chỉ hiển thị fallback background
                 videoBackground.style.display = 'none';
                 videoFallback.style.display = 'block';
             }
@@ -1140,9 +1214,9 @@
         });
 
         // Hàm mở modal chi tiết
-        function openDetailModal(code) {
-            // Tăng lượt xem
-            const currentViews = incrementViewCount(code.id);
+        async function openDetailModal(code) {
+            // Tăng lượt xem TOÀN CẦU
+            const currentViews = await incrementViewCount(code.id);
             
             modalTitle.textContent = code.title;
             modalLang.textContent = code.lang;
@@ -1322,8 +1396,7 @@
         sortSelect.addEventListener("change", filterAndSort);
 
         // Khởi tạo
-        initializeViewCounts();
-        renderCards(CONFIG.codes);
+        loadViewCounts(); // Tải lượt xem từ server
     </script>
 </body>
 </html>
