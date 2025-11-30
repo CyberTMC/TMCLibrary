@@ -157,6 +157,20 @@
             line-height: 1.3;
         }
 
+        /* Tổng lượt truy cập */
+        .total-views {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .total-views i {
+            color: var(--accent);
+        }
+
         .social-links {
             display: flex;
             gap: 8px;
@@ -915,6 +929,11 @@
                 <div>
                     <h1>TMCLibrary</h1>
                     <div class="subtitle">Mọi người cho mình xin 1 fl nhé !!!!</div>
+                    <!-- THÊM TỔNG LƯỢT TRUY CẬP -->
+                    <div class="total-views">
+                        <i class="fas fa-users"></i> 
+                        <span id="totalVisits">0</span> lượt truy cập
+                    </div>
                 </div>
             </div>
             <div class="social-links">
@@ -944,7 +963,7 @@
         <!-- Loading indicator -->
         <div id="loadingIndicator" class="loading">
             <div class="loading-spinner"></div>
-            <p>Đang tải dữ liệu lượt xem...</p>
+            <p>Đang tải dữ liệu...</p>
         </div>
 
         <div id="cards" class="cards"></div>
@@ -963,7 +982,10 @@
             footerText: "© 2025-2028 TMCLibrary | Thư viện mã nguồn mở cho cộng đồng ",
             baseUrl: "https://cybertmc.github.io/TMCLibrary",
             
-            // 🔥 GOOGLE APPS SCRIPT URL - THAY BẰNG URL CỦA BẠN
+            // 🔥 URL CHO TỔNG TRUY CẬP WEB
+            totalViewsScriptUrl: "https://script.google.com/macros/s/AKfycbxoY76BFHb8YNZBMSDRfW0YcOKmzQF6f8rWSmsWYtqCW_3WUzGAXpws_JJqK7nJpUQg/exec",
+            
+            // URL cho lượt xem bài viết
             googleScriptUrl: "https://script.google.com/macros/s/AKfycbxyU5pU2kA-VCHz53R6nq4RgaPJw5EC9DgngiGGz3wPvnxtLyu19r9ueKydOSnzkBYMyg/exec",
             
             // Link nhúng YouTube CLEAN - không quảng cáo, không tiêu đề
@@ -1050,6 +1072,7 @@
         const sortSelect = document.getElementById("sort");
         const cardsContainer = document.getElementById("cards");
         const loadingIndicator = document.getElementById("loadingIndicator");
+        const totalVisitsElement = document.getElementById("totalVisits");
         const pageTitle = document.querySelector('h1');
         const footerText = document.querySelector('footer p');
         const socialLinksContainer = document.querySelector('.social-links');
@@ -1078,8 +1101,51 @@
 
         // Biến lưu trữ lượt xem TOÀN CẤU
         let globalViewCounts = {};
+        let totalWebsiteVisits = 0;
 
-        // 🔥 Hàm gửi lượt xem lên Google Sheets
+        // 🔥 Hàm tăng tổng lượt truy cập website
+        async function incrementTotalVisits() {
+            try {
+                const response = await fetch(CONFIG.totalViewsScriptUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'action=increment_visit'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    totalWebsiteVisits = result.total_visits;
+                    totalVisitsElement.textContent = totalWebsiteVisits;
+                    return totalWebsiteVisits;
+                } else {
+                    console.error('Lỗi từ server:', result.error);
+                    return totalWebsiteVisits;
+                }
+            } catch (error) {
+                console.error('Lỗi kết nối:', error);
+                return totalWebsiteVisits;
+            }
+        }
+
+        // 🔥 Hàm lấy tổng lượt truy cập
+        async function loadTotalVisits() {
+            try {
+                const response = await fetch(`${CONFIG.totalViewsScriptUrl}?action=get_stats`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    totalWebsiteVisits = result.total_visits;
+                    totalVisitsElement.textContent = totalWebsiteVisits;
+                }
+            } catch (error) {
+                console.error('Lỗi lấy tổng lượt truy cập:', error);
+            }
+        }
+
+        // 🔥 Hàm gửi lượt xem bài viết lên Google Sheets
         async function incrementViewCount(codeId) {
             try {
                 const response = await fetch(CONFIG.googleScriptUrl, {
@@ -1396,7 +1462,13 @@
         sortSelect.addEventListener("change", filterAndSort);
 
         // Khởi tạo
-        loadViewCounts(); // Tải lượt xem từ server
+        loadViewCounts(); // Tải lượt xem bài viết
+        loadTotalVisits(); // Tải tổng lượt truy cập
+        
+        // Tăng tổng lượt truy cập khi có người vào web
+        setTimeout(() => {
+            incrementTotalVisits();
+        }, 1000);
     </script>
 </body>
 </html>
