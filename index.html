@@ -713,6 +713,29 @@
         .linkedin-share:hover { background: #0077b5; color: white; }
         .telegram-share:hover { background: #0088cc; color: white; }
 
+        /* Modal Loading */
+        .modal-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .modal-loading .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border-width: 4px;
+            margin-bottom: 15px;
+        }
+
+        .modal-loading p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin: 0;
+        }
+
         /* Footer */
         footer {
             margin-top: 40px;
@@ -864,45 +887,52 @@
     <!-- Modal chi tiết -->
     <div id="detailModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">Tiêu đề</h2>
-                <button class="close-btn" id="closeModal">&times;</button>
-            </div>
-            <div class="lang-badge" id="modalLang">Python</div>
-            <div class="modal-stats" id="modalStats">
-                <span class="view-count"><i class="fas fa-eye"></i> <span id="modalViewCount">0</span> lượt xem</span>
-            </div>
-            <p class="modal-desc" id="modalDesc">Mô tả chi tiết...</p>
-            
-            <!-- TikTok Video -->
-            <div id="tiktokVideoContainer" class="tiktok-video-container" style="display: none;">
-                <iframe id="tiktokVideo" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                <div class="video-note">Cho xin 1 tim ❤️</div>
+            <div id="modalLoading" class="modal-loading">
+                <div class="loading-spinner"></div>
+                <p>Đang tải dữ liệu...</p>
             </div>
             
-            <div class="code-links" id="modalLinks">
-                <!-- Các link code sẽ được chèn ở đây -->
-            </div>
-            
-            <div class="share-section">
-                <h3 class="share-title">Chia sẻ code này</h3>
-                <div class="share-link">
-                    <input type="text" class="share-input" id="shareUrl" readonly>
-                    <button class="copy-btn" id="copyUrl">Copy</button>
+            <div id="modalContent" style="display: none;">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modalTitle">Tiêu đề</h2>
+                    <button class="close-btn" id="closeModal">&times;</button>
                 </div>
-                <div class="social-share">
-                    <a href="#" class="social-share-btn facebook-share" id="facebookShare">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" class="social-share-btn twitter-share" id="twitterShare">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" class="social-share-btn linkedin-share" id="linkedinShare">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a href="#" class="social-share-btn telegram-share" id="telegramShare">
-                        <i class="fab fa-telegram"></i>
-                    </a>
+                <div class="lang-badge" id="modalLang">Python</div>
+                <div class="modal-stats" id="modalStats">
+                    <span class="view-count"><i class="fas fa-eye"></i> <span id="modalViewCount">0</span> lượt xem</span>
+                </div>
+                <p class="modal-desc" id="modalDesc">Mô tả chi tiết...</p>
+                
+                <!-- TikTok Video -->
+                <div id="tiktokVideoContainer" class="tiktok-video-container" style="display: none;">
+                    <iframe id="tiktokVideo" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <div class="video-note">Cho xin 1 tim ❤️</div>
+                </div>
+                
+                <div class="code-links" id="modalLinks">
+                    <!-- Các link code sẽ được chèn ở đây -->
+                </div>
+                
+                <div class="share-section">
+                    <h3 class="share-title">Chia sẻ code này</h3>
+                    <div class="share-link">
+                        <input type="text" class="share-input" id="shareUrl" readonly>
+                        <button class="copy-btn" id="copyUrl">Copy</button>
+                    </div>
+                    <div class="social-share">
+                        <a href="#" class="social-share-btn facebook-share" id="facebookShare">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-share-btn twitter-share" id="twitterShare">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-share-btn linkedin-share" id="linkedinShare">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-share-btn telegram-share" id="telegramShare">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1060,6 +1090,8 @@
 
         // Modal elements
         const modal = document.getElementById('detailModal');
+        const modalLoading = document.getElementById('modalLoading');
+        const modalContent = document.getElementById('modalContent');
         const modalTitle = document.getElementById('modalTitle');
         const modalLang = document.getElementById('modalLang');
         const modalStats = document.getElementById('modalStats');
@@ -1213,59 +1245,76 @@
             socialLinksContainer.appendChild(socialLink);
         });
 
-        // Hàm mở modal chi tiết
+        // Hàm mở modal chi tiết với loading
         async function openDetailModal(code) {
-            // Tăng lượt xem TOÀN CẦU
-            const currentViews = await incrementViewCount(code.id);
-            
-            modalTitle.textContent = code.title;
-            modalLang.textContent = code.lang;
-            modalDesc.textContent = code.desc;
-            modalViewCount.textContent = currentViews;
-            
-            // Hiển thị TikTok video nếu có
-            if (code.tiktokVideo) {
-                tiktokVideoContainer.style.display = 'block';
-                tiktokVideo.src = code.tiktokVideo;
-            } else {
-                tiktokVideoContainer.style.display = 'none';
-            }
-            
-            // Tạo link chia sẻ
-            const shareLink = `${CONFIG.baseUrl}?id=${code.id}`;
-            shareUrl.value = shareLink;
-            
-            // Cập nhật link chia sẻ mạng xã hội
-            const encodedUrl = encodeURIComponent(shareLink);
-            const encodedTitle = encodeURIComponent(code.title);
-            
-            facebookShare.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-            twitterShare.href = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
-            linkedinShare.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
-            telegramShare.href = `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`;
-            
-            // Tạo các link code
-            modalLinks.innerHTML = '';
-            code.links.forEach(link => {
-                const btn = document.createElement('button');
-                btn.className = 'ideone-btn';
-                btn.innerHTML = `<i class="fas fa-external-link-alt"></i> ${link.name}`;
-                btn.onclick = () => window.open(link.url, '_blank');
-                modalLinks.appendChild(btn);
-            });
-
-            // Thêm nút TikTok nếu có video
-            if (code.tiktokVideo) {
-                const tiktokBtn = document.createElement('button');
-                tiktokBtn.className = 'tiktok-btn';
-                tiktokBtn.innerHTML = `<i class="fab fa-tiktok"></i> Xem Video Demo`;
-                tiktokBtn.onclick = () => {
-                    tiktokVideoContainer.scrollIntoView({ behavior: 'smooth' });
-                };
-                modalLinks.appendChild(tiktokBtn);
-            }
-            
+            // Hiển thị modal với loading
             modal.style.display = 'block';
+            modalLoading.style.display = 'flex';
+            modalContent.style.display = 'none';
+            
+            try {
+                // Tăng lượt xem TOÀN CẦU
+                const currentViews = await incrementViewCount(code.id);
+                
+                // Cập nhật nội dung modal
+                modalTitle.textContent = code.title;
+                modalLang.textContent = code.lang;
+                modalDesc.textContent = code.desc;
+                modalViewCount.textContent = currentViews;
+                
+                // Hiển thị TikTok video nếu có
+                if (code.tiktokVideo) {
+                    tiktokVideoContainer.style.display = 'block';
+                    tiktokVideo.src = code.tiktokVideo;
+                } else {
+                    tiktokVideoContainer.style.display = 'none';
+                }
+                
+                // Tạo link chia sẻ
+                const shareLink = `${CONFIG.baseUrl}?id=${code.id}`;
+                shareUrl.value = shareLink;
+                
+                // Cập nhật link chia sẻ mạng xã hội
+                const encodedUrl = encodeURIComponent(shareLink);
+                const encodedTitle = encodeURIComponent(code.title);
+                
+                facebookShare.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+                twitterShare.href = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
+                linkedinShare.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+                telegramShare.href = `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`;
+                
+                // Tạo các link code
+                modalLinks.innerHTML = '';
+                code.links.forEach(link => {
+                    const btn = document.createElement('button');
+                    btn.className = 'ideone-btn';
+                    btn.innerHTML = `<i class="fas fa-external-link-alt"></i> ${link.name}`;
+                    btn.onclick = () => window.open(link.url, '_blank');
+                    modalLinks.appendChild(btn);
+                });
+
+                // Thêm nút TikTok nếu có video
+                if (code.tiktokVideo) {
+                    const tiktokBtn = document.createElement('button');
+                    tiktokBtn.className = 'tiktok-btn';
+                    tiktokBtn.innerHTML = `<i class="fab fa-tiktok"></i> Xem Video Demo`;
+                    tiktokBtn.onclick = () => {
+                        tiktokVideoContainer.scrollIntoView({ behavior: 'smooth' });
+                    };
+                    modalLinks.appendChild(tiktokBtn);
+                }
+                
+                // Ẩn loading và hiển thị nội dung
+                modalLoading.style.display = 'none';
+                modalContent.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Lỗi khi mở modal:', error);
+                // Nếu có lỗi, vẫn hiển thị nội dung nhưng với thông báo lỗi
+                modalLoading.style.display = 'none';
+                modalContent.style.display = 'block';
+                modalDesc.textContent = 'Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại.';
+            }
         }
 
         // Hàm đóng modal
