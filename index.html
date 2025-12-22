@@ -405,44 +405,25 @@
             flex: 1;
         }
 
-        .card-actions {
+        .card-badges {
             display: flex;
             gap: 5px;
-        }
-
-        .pin-btn {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            color: var(--warning);
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            -webkit-touch-callout: none;
         }
 
-        .pin-btn:active {
-            transform: scale(0.9);
-        }
-
-        .pin-btn:hover {
-            background: rgba(245, 158, 11, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .pin-btn.pinned {
-            background: rgba(245, 158, 11, 0.3);
-            color: #fbbf24;
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
-        }
-
-        .pin-btn.pinned i {
-            transform: rotate(45deg);
+        .pin-badge {
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+            color: white;
+            padding: 4px 8px;
+            font-size: 0.65rem;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
         }
 
         .lang-badge {
@@ -618,39 +599,10 @@
             flex: 1;
         }
 
-        .modal-actions {
+        .modal-badges {
             display: flex;
             gap: 10px;
-        }
-
-        .modal-pin-btn {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            color: var(--warning);
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            -webkit-touch-callout: none;
-        }
-
-        .modal-pin-btn:active {
-            transform: scale(0.9);
-        }
-
-        .modal-pin-btn.pinned {
-            background: rgba(245, 158, 11, 0.3);
-            color: #fbbf24;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
-        }
-
-        .modal-pin-btn.pinned i {
-            transform: rotate(45deg);
+            margin-bottom: 10px;
         }
 
         .close-btn {
@@ -989,14 +941,13 @@
             <div id="modalContent" style="display: none;">
                 <div class="modal-header">
                     <h2 class="modal-title" id="modalTitle">Tiêu đề</h2>
-                    <div class="modal-actions">
-                        <button class="modal-pin-btn" id="modalPinBtn" title="Ghim code">
-                            <i class="fas fa-thumbtack"></i>
-                        </button>
-                        <button class="close-btn" id="closeModal">&times;</button>
-                    </div>
+                    <button class="close-btn" id="closeModal">&times;</button>
                 </div>
-                <div class="lang-badge" id="modalLang">Python</div>
+                
+                <div class="modal-badges" id="modalBadges">
+                    <!-- Badge ngôn ngữ và ghim sẽ được chèn ở đây -->
+                </div>
+                
                 <div class="modal-stats" id="modalStats">
                     <span class="view-count"><i class="fas fa-eye"></i> <span id="modalViewCount">0</span> lượt xem</span>
                 </div>
@@ -1111,13 +1062,14 @@
                 { name: "TikTok", url: "https://www.tiktok.com/@tranchinnn", icon: "fab fa-tiktok", class: "tiktok" }
             ],
             
-            // Danh sách code snippets
+            // Danh sách code snippets - THÊM THUỘC TÍNH "pinned: true" VÀO CODE MUỐN GHIMM
             codes: [
                 {
                     id: "1",
                     title: "Hẹn hò nhưng không yêu",
                     desc: "Code hiển thị lời bài hát với hiệu ứng màu sắc đẹp mắt trong Python",
                     lang: "python",
+                    pinned: true, // <-- THÊM DÒNG NÀY ĐỂ GHIMM CODE
                     tiktokVideo: "https://www.tiktok.com/embed/v2/7574464770758216967",
                     links: [
                         {name: "Link code", url: "https://ideone.com/V4JZi6"},
@@ -1128,6 +1080,7 @@
                     title: "Không Buông",
                     desc: "Code Python hiển thị lời bài hát với hiệu ứng chữ màu đỏ ấn tượng",
                     lang: "python",
+                    pinned: false, // <-- KHÔNG GHIMM CODE NÀY
                     tiktokVideo: "https://www.tiktok.com/embed/v2/7565953044748242184",
                     links: [
                         {name: "Link code", url: "https://ideone.com/NdMbUs"},
@@ -1138,6 +1091,7 @@
                     title: "Địa ngục trần gian",
                     desc: "Code Python với hai phiên bản: có pygame và không cần pygame",
                     lang: "python",
+                    pinned: true, // <-- THÊM DÒNG NÀY ĐỂ GHIMM CODE
                     tiktokVideo: "https://www.tiktok.com/embed/v2/7558938762890235144",
                     links: [
                         {name: "Link code (bắt buộc cài pygame)", url: "https://ideone.com/CilekQ"},
@@ -1149,6 +1103,7 @@
                     title: "Vì yêu cứ đâm đầu",
                     desc: "Code Python hiển thị lời bài hát với hiệu ứng độc đáo",
                     lang: "python",
+                    pinned: false, // <-- KHÔNG GHIMM CODE NÀY
                     tiktokVideo: "https://www.tiktok.com/embed/v2/7561892204461952274",
                     links: [
                         {name: "Link code", url: "https://drive.google.com/file/d/1F-trIYKzWzQhepqc-2f3JApdb2WGwp16/view"},
@@ -1159,6 +1114,7 @@
                     title: "Ngày này năm ấy",
                     desc: "Code Python với hai phiên bản hỗ trợ âm thanh và không âm thanh",
                     lang: "python",
+                    pinned: true, // <-- THÊM DÒNG NÀY ĐỂ GHIMM CODE
                     tiktokVideo: "https://www.tiktok.com/embed/v2/7552594723551087880",
                     links: [
                         {name: "Link code (bắt buộc cài pygame)", url: "https://ideone.com/w4yj7t"},
@@ -1170,6 +1126,7 @@
                     title: "Anh vui",
                     desc: "Code Python hiển thị lời bài hát không cần cài đặt thư viện",
                     lang: "python",
+                    pinned: false, // <-- KHÔNG GHIMM CODE NÀY
                     tiktokVideo: "https://www.tiktok.com/embed/v2/7539988102937447688",
                     links: [
                         {name: "Link code (không cần pygame)", url: "https://ideone.com/GSQ8Xn"}
@@ -1203,12 +1160,11 @@
         const modalLoading = document.getElementById('modalLoading');
         const modalContent = document.getElementById('modalContent');
         const modalTitle = document.getElementById('modalTitle');
-        const modalLang = document.getElementById('modalLang');
+        const modalBadges = document.getElementById('modalBadges');
         const modalStats = document.getElementById('modalStats');
         const modalViewCount = document.getElementById('modalViewCount');
         const modalDesc = document.getElementById('modalDesc');
         const modalLinks = document.getElementById('modalLinks');
-        const modalPinBtn = document.getElementById('modalPinBtn');
         const tiktokVideoContainer = document.getElementById('tiktokVideoContainer');
         const tiktokVideo = document.getElementById('tiktokVideo');
         const shareUrl = document.getElementById('shareUrl');
@@ -1221,70 +1177,17 @@
 
         // Biến lưu trữ
         let globalViewCounts = {};
-        let pinnedCodes = new Set();
         let currentFilter = 'all'; // 'all' hoặc 'pinned'
         let currentModalCode = null;
 
-        // 🔥 Tải danh sách code đã ghim từ localStorage
-        function loadPinnedCodes() {
-            try {
-                const saved = localStorage.getItem('tmcPinnedCodes');
-                if (saved) {
-                    pinnedCodes = new Set(JSON.parse(saved));
-                }
-            } catch (error) {
-                console.error('Lỗi khi tải pinned codes:', error);
-                pinnedCodes = new Set();
-            }
-            updatePinnedCount();
-        }
-
-        // 🔥 Lưu danh sách code đã ghim vào localStorage
-        function savePinnedCodes() {
-            try {
-                localStorage.setItem('tmcPinnedCodes', JSON.stringify([...pinnedCodes]));
-                updatePinnedCount();
-            } catch (error) {
-                console.error('Lỗi khi lưu pinned codes:', error);
-            }
+        // 🔥 Hàm đếm số code đã ghim
+        function countPinnedCodes() {
+            return CONFIG.codes.filter(code => code.pinned === true).length;
         }
 
         // 🔥 Cập nhật số lượng code đã ghim
         function updatePinnedCount() {
-            pinnedCount.textContent = pinnedCodes.size;
-        }
-
-        // 🔥 Hàm ghim/bỏ ghim code
-        function togglePin(codeId) {
-            if (pinnedCodes.has(codeId)) {
-                pinnedCodes.delete(codeId);
-            } else {
-                pinnedCodes.add(codeId);
-            }
-            
-            savePinnedCodes();
-            filterAndSort();
-            
-            // Cập nhật nút ghim trong modal nếu đang mở
-            if (currentModalCode && currentModalCode.id === codeId) {
-                updateModalPinButton(codeId);
-            }
-        }
-
-        // 🔥 Kiểm tra code có được ghim không
-        function isPinned(codeId) {
-            return pinnedCodes.has(codeId);
-        }
-
-        // 🔥 Cập nhật trạng thái nút ghim trong modal
-        function updateModalPinButton(codeId) {
-            if (isPinned(codeId)) {
-                modalPinBtn.classList.add('pinned');
-                modalPinBtn.title = "Bỏ ghim code";
-            } else {
-                modalPinBtn.classList.remove('pinned');
-                modalPinBtn.title = "Ghim code";
-            }
+            pinnedCount.textContent = countPinnedCodes();
         }
 
         // 🔥 Hàm gửi lượt xem lên Google Sheets
@@ -1434,12 +1337,25 @@
                 
                 // Cập nhật nội dung modal
                 modalTitle.textContent = code.title;
-                modalLang.textContent = code.lang;
                 modalDesc.textContent = code.desc;
                 modalViewCount.textContent = currentViews;
                 
-                // Cập nhật nút ghim
-                updateModalPinButton(code.id);
+                // Tạo badges cho modal
+                modalBadges.innerHTML = '';
+                
+                // Badge ngôn ngữ
+                const langBadge = document.createElement('span');
+                langBadge.className = 'lang-badge';
+                langBadge.textContent = code.lang;
+                modalBadges.appendChild(langBadge);
+                
+                // Badge ghim nếu code được ghim
+                if (code.pinned === true) {
+                    const pinBadge = document.createElement('span');
+                    pinBadge.className = 'pin-badge';
+                    pinBadge.innerHTML = '<i class="fas fa-thumbtack"></i> Đã ghim';
+                    modalBadges.appendChild(pinBadge);
+                }
                 
                 // Hiển thị TikTok video nếu có
                 if (code.tiktokVideo) {
@@ -1522,13 +1438,6 @@
 
         closeModalBtn.addEventListener('click', closeModal);
 
-        // Sự kiện cho nút ghim trong modal
-        modalPinBtn.addEventListener('click', () => {
-            if (currentModalCode) {
-                togglePin(currentModalCode.id);
-            }
-        });
-
         // Đóng thông báo trình duyệt
         closeNoticeBtn.addEventListener('click', () => {
             browserNotice.style.display = 'none';
@@ -1554,7 +1463,7 @@
 
             if (list.length === 0) {
                 const message = currentFilter === 'pinned' 
-                    ? "Bạn chưa ghim code nào. Hãy nhấn vào biểu tượng 📌 trên card để ghim code yêu thích!"
+                    ? "Không có code nào được ghim. Thêm thuộc tính 'pinned: true' vào code trong danh sách CONFIG."
                     : "Thử tìm kiếm với từ khóa khác hoặc điều chỉnh bộ lọc";
                 
                 cardsContainer.innerHTML = `
@@ -1569,21 +1478,17 @@
 
             list.forEach(item => {
                 const viewCount = getViewCount(item.id);
-                const isCodePinned = isPinned(item.id);
+                const isPinned = item.pinned === true;
                 
                 const card = document.createElement("div");
-                card.className = `card ${isCodePinned ? 'pinned' : ''}`;
+                card.className = `card ${isPinned ? 'pinned' : ''}`;
                 card.addEventListener('click', () => openDetailModal(item));
 
                 card.innerHTML = `
                     <div class="card-header">
                         <h3 class="card-title">${item.title}</h3>
-                        <div class="card-actions">
-                            <button class="pin-btn ${isCodePinned ? 'pinned' : ''}" 
-                                    data-id="${item.id}" 
-                                    title="${isCodePinned ? 'Bỏ ghim' : 'Ghim code'}">
-                                <i class="fas fa-thumbtack"></i>
-                            </button>
+                        <div class="card-badges">
+                            ${isPinned ? '<span class="pin-badge"><i class="fas fa-thumbtack"></i> Đã ghim</span>' : ''}
                             <span class="lang-badge">${item.lang}</span>
                         </div>
                     </div>
@@ -1606,16 +1511,11 @@
                 `;
 
                 // Thêm sự kiện click cho các nút (ngăn sự kiện lan ra card)
-                card.querySelectorAll('.ideone-btn, .tiktok-btn, .pin-btn').forEach(btn => {
+                card.querySelectorAll('.ideone-btn, .tiktok-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         
-                        if (btn.classList.contains('pin-btn')) {
-                            togglePin(btn.getAttribute('data-id'));
-                            e.preventDefault();
-                            e.stopImmediatePropagation();
-                            return false;
-                        } else if (btn.classList.contains('tiktok-btn')) {
+                        if (btn.classList.contains('tiktok-btn')) {
                             openDetailModal(item);
                         } else {
                             window.open(btn.getAttribute('data-url'), '_blank');
@@ -1632,7 +1532,7 @@
             
             // Lọc theo tab hiện tại
             if (currentFilter === 'pinned') {
-                filtered = filtered.filter(code => pinnedCodes.has(code.id));
+                filtered = filtered.filter(code => code.pinned === true);
             }
             
             // Lọc theo tìm kiếm
@@ -1671,8 +1571,8 @@
             // Ưu tiên hiển thị code đã ghim lên đầu khi xem tất cả
             if (currentFilter === 'all') {
                 filtered.sort((a, b) => {
-                    const aPinned = isPinned(a.id);
-                    const bPinned = isPinned(b.id);
+                    const aPinned = a.pinned === true;
+                    const bPinned = b.pinned === true;
                     
                     if (aPinned && !bPinned) return -1;
                     if (!aPinned && bPinned) return 1;
@@ -1687,7 +1587,7 @@
         sortSelect.addEventListener("change", filterAndSort);
 
         // Khởi tạo
-        loadPinnedCodes(); // Tải danh sách code đã ghim
+        updatePinnedCount(); // Cập nhật số lượng code đã ghim
         loadViewCounts(); // Tải lượt xem từ server
     </script>
 </body>
