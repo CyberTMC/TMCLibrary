@@ -254,56 +254,6 @@
             color: var(--text);
         }
 
-        /* Stats header */
-        .stats-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .stats-cards {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .stat-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            padding: 15px 20px;
-            min-width: 160px;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .stat-card .stat-number {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-            line-height: 1;
-            margin-bottom: 5px;
-        }
-
-        .stat-card .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .stat-card .stat-trend {
-            font-size: 0.8rem;
-            margin-top: 5px;
-        }
-
-        .stat-card .stat-trend.up {
-            color: var(--success);
-        }
-
-        .stat-card .stat-trend.down {
-            color: var(--danger);
-        }
-
         /* Tabs filter */
         .filter-tabs {
             display: flex;
@@ -427,7 +377,6 @@
             position: relative;
             overflow: hidden;
             box-shadow: var(--shadow-sm);
-            cursor: pointer;
         }
 
         .card::before {
@@ -817,34 +766,6 @@
             margin: 0;
         }
 
-        /* Toast thông báo */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--success);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 5px;
-            box-shadow: var(--shadow-lg);
-            z-index: 1001;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast.error {
-            background: var(--danger);
-        }
-
         /* Footer */
         footer {
             margin-top: 50px;
@@ -877,21 +798,6 @@
             
             .title-section h1 {
                 font-size: 1.8rem;
-            }
-            
-            .stats-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .stats-cards {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .stat-card {
-                flex: 1;
-                min-width: 120px;
             }
             
             .cards {
@@ -929,15 +835,6 @@
                 font-size: 1.1rem;
             }
             
-            .stat-card {
-                min-width: 100px;
-                padding: 12px 15px;
-            }
-            
-            .stat-card .stat-number {
-                font-size: 1.5rem;
-            }
-            
             .card-title {
                 font-size: 1.2rem;
             }
@@ -970,12 +867,6 @@
     
     <!-- Hiệu ứng hạt -->
     <div class="particles" id="particles"></div>
-
-    <!-- Toast thông báo -->
-    <div id="toast" class="toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMessage">Thành công!</span>
-    </div>
 
     <!-- Modal chi tiết -->
     <div id="detailModal" class="modal">
@@ -1017,16 +908,16 @@
                         <button class="copy-btn" id="copyUrl">Copy</button>
                     </div>
                     <div class="social-share">
-                        <a href="#" class="social-share-btn facebook-share" id="facebookShare" target="_blank">
+                        <a href="#" class="social-share-btn facebook-share" id="facebookShare">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="#" class="social-share-btn twitter-share" id="twitterShare" target="_blank">
+                        <a href="#" class="social-share-btn twitter-share" id="twitterShare">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="#" class="social-share-btn linkedin-share" id="linkedinShare" target="_blank">
+                        <a href="#" class="social-share-btn linkedin-share" id="linkedinShare">
                             <i class="fab fa-linkedin-in"></i>
                         </a>
-                        <a href="#" class="social-share-btn telegram-share" id="telegramShare" target="_blank">
+                        <a href="#" class="social-share-btn telegram-share" id="telegramShare">
                             <i class="fab fa-telegram"></i>
                         </a>
                     </div>
@@ -1058,28 +949,6 @@
             <button class="close-btn" id="closeNotice">&times;</button>
         </div>
 
-        <!-- Thống kê -->
-        <div class="stats-header">
-            <div class="stats-cards">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalCodes">0</div>
-                    <div class="stat-label">Tổng số code</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="pinnedCodes">0</div>
-                    <div class="stat-label">Code đã ghim</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="totalViews">0</div>
-                    <div class="stat-label">Tổng lượt xem</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="pythonCodes">0</div>
-                    <div class="stat-label">Code Python</div>
-                </div>
-            </div>
-        </div>
-
         <!-- Tabs để chuyển đổi giữa tất cả và code đã ghim -->
         <div class="filter-tabs">
             <button class="filter-tab active" id="tabAll">Tất cả</button>
@@ -1107,20 +976,24 @@
         <div id="cards" class="cards"></div>
         
         <footer>
-            <p id="footerText">© 2025-2028 TMCLibrary | Thư viện mã nguồn mở cho cộng đồng</p>
+            <p>© 2025-2028 TMCLibrary | Thư viện mã nguồn mở cho cộng đồng</p>
         </footer>
     </div>
 
     <script>
         // ==================== PHẦN CẤU HÌNH ====================
         
+        // Cấu hình chung
         const CONFIG = {
             siteTitle: "TMCLibrary",
             footerText: "© 2025-2028 TMCLibrary | Thư viện mã nguồn mở cho cộng đồng",
             baseUrl: "https://cybertmc.github.io/TMCLibrary",
             
-            // 🔥 GOOGLE APPS SCRIPT URL
+            // 🔥 GOOGLE APPS SCRIPT URL - THAY BẰNG URL CỦA BẠN
             googleScriptUrl: "https://script.google.com/macros/s/AKfycbxyU5pU2kA-VCHz53R6nq4RgaPJw5EC9DgngiGGz3wPvnxtLyu19r9ueKydOSnzkBYMyg/exec",
+            
+            // Link nhúng YouTube CLEAN - không quảng cáo, không tiêu đề
+            youtubeEmbedUrl: "https://www.youtube-nocookie.com/embed/9vntypeV5QU?si=nUgUGR0c_aZbxH5H&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&loop=1&playlist=9vntypeV5QU",
             
             // Liên kết mạng xã hội
             socialLinks: [
@@ -1232,24 +1105,16 @@
         const cardsContainer = document.getElementById("cards");
         const loadingIndicator = document.getElementById("loadingIndicator");
         const pageTitle = document.querySelector('h1');
-        const footerText = document.getElementById('footerText');
+        const footerText = document.querySelector('footer p');
         const socialLinksContainer = document.querySelector('.social-links');
         const browserNotice = document.getElementById('browserNotice');
         const closeNoticeBtn = document.getElementById('closeNotice');
         const particlesContainer = document.getElementById('particles');
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toastMessage');
         
         // Tab elements
         const tabAll = document.getElementById("tabAll");
         const tabPinned = document.getElementById("tabPinned");
         const pinnedCount = document.getElementById("pinnedCount");
-
-        // Stats elements
-        const totalCodesElement = document.getElementById('totalCodes');
-        const pinnedCodesElement = document.getElementById('pinnedCodes');
-        const totalViewsElement = document.getElementById('totalViews');
-        const pythonCodesElement = document.getElementById('pythonCodes');
 
         // Modal elements
         const modal = document.getElementById('detailModal');
@@ -1275,20 +1140,101 @@
         let globalViewCounts = {};
         let currentFilter = 'all';
         let currentModalCode = null;
-        let lastViewUpdate = {};
 
-        // ==================== HÀM TIỆN ÍCH ====================
+        // ==================== TÍNH NĂNG ĐẾM LƯỢT XEM (TỪ CODE CŨ) ====================
 
-        // Hiển thị toast thông báo
-        function showToast(message, isError = false) {
-            toastMessage.textContent = message;
-            toast.className = isError ? 'toast error' : 'toast';
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+        // 🔥 Hàm đếm số code đã ghim
+        function countPinnedCodes() {
+            return CONFIG.codes.filter(code => code.pinned === true).length;
         }
+
+        // 🔥 Cập nhật số lượng code đã ghim
+        function updatePinnedCount() {
+            pinnedCount.textContent = countPinnedCodes();
+        }
+
+        // 🔥 Hàm gửi lượt xem lên Google Sheets
+        async function incrementViewCount(codeId) {
+            try {
+                const response = await fetch(CONFIG.googleScriptUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=increment&code_id=${codeId}`
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    globalViewCounts[codeId] = result.views;
+                    return result.views;
+                } else {
+                    console.error('Lỗi từ server:', result.error);
+                    return globalViewCounts[codeId] || 0;
+                }
+            } catch (error) {
+                console.error('Lỗi kết nối:', error);
+                return incrementLocalViewCount(codeId);
+            }
+        }
+
+        // 🔥 Hàm lấy tất cả lượt xem từ server
+        async function loadViewCounts() {
+            try {
+                loadingIndicator.style.display = 'block';
+                
+                const response = await fetch(`${CONFIG.googleScriptUrl}?action=get_all`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    globalViewCounts = result.viewCounts;
+                    
+                    // Đảm bảo mỗi code đều có lượt xem
+                    CONFIG.codes.forEach(code => {
+                        if (!globalViewCounts[code.id]) {
+                            globalViewCounts[code.id] = 0;
+                        }
+                    });
+                } else {
+                    console.error('Lỗi lấy lượt xem:', result.error);
+                    loadLocalViewCounts();
+                }
+            } catch (error) {
+                console.error('Lỗi kết nối:', error);
+                loadLocalViewCounts();
+            } finally {
+                loadingIndicator.style.display = 'none';
+                filterAndSort();
+            }
+        }
+
+        // Fallback: Local storage khi không kết nối được
+        function loadLocalViewCounts() {
+            const stored = localStorage.getItem('tmcLocalViewCounts');
+            if (stored) {
+                globalViewCounts = JSON.parse(stored);
+            }
+            
+            CONFIG.codes.forEach(code => {
+                if (!globalViewCounts[code.id]) {
+                    globalViewCounts[code.id] = 0;
+                }
+            });
+        }
+
+        function incrementLocalViewCount(codeId) {
+            globalViewCounts[codeId] = (globalViewCounts[codeId] || 0) + 1;
+            localStorage.setItem('tmcLocalViewCounts', JSON.stringify(globalViewCounts));
+            return globalViewCounts[codeId];
+        }
+
+        // Lấy lượt xem cho một code
+        function getViewCount(codeId) {
+            return globalViewCounts[codeId] || 0;
+        }
+
+        // ==================== GIAO DIỆN VÀ CHỨC NĂNG KHÁC (TỪ CODE MỚI) ====================
 
         // Tạo hiệu ứng hạt
         function createParticles() {
@@ -1307,134 +1253,24 @@
             }
         }
 
-        // Cập nhật thống kê
-        function updateStats() {
-            const totalCodes = CONFIG.codes.length;
-            const pinnedCodes = CONFIG.codes.filter(code => code.pinned === true).length;
-            const pythonCodes = CONFIG.codes.filter(code => code.lang.toLowerCase() === 'python').length;
-            
-            // Tính tổng lượt xem
-            let totalViews = 0;
-            CONFIG.codes.forEach(code => {
-                totalViews += globalViewCounts[code.id] || 0;
-            });
-            
-            totalCodesElement.textContent = totalCodes;
-            pinnedCodesElement.textContent = pinnedCodes;
-            pythonCodesElement.textContent = pythonCodes;
-            totalViewsElement.textContent = totalViews;
-            
-            // Cập nhật số code đã ghim trong tab
-            pinnedCount.textContent = pinnedCodes;
-        }
+        // Cập nhật nội dung từ CONFIG
+        pageTitle.textContent = CONFIG.siteTitle;
+        footerText.textContent = CONFIG.footerText;
+        
+        // Tạo liên kết mạng xã hội
+        socialLinksContainer.innerHTML = '';
+        CONFIG.socialLinks.forEach(link => {
+            const socialLink = document.createElement('a');
+            socialLink.href = link.url;
+            socialLink.className = `social-link ${link.class}`;
+            socialLink.title = link.name;
+            socialLink.target = "_blank";
+            socialLink.rel = "noopener noreferrer";
+            socialLink.innerHTML = `<i class="${link.icon}"></i>`;
+            socialLinksContainer.appendChild(socialLink);
+        });
 
-        // ==================== HÀM XỬ LÝ LƯỢT XEM ====================
-
-        // 🔥 Hàm gửi lượt xem lên Google Sheets (FIXED)
-        async function incrementViewCount(codeId) {
-            try {
-                // Tăng lượt xem cục bộ ngay
-                globalViewCounts[codeId] = (globalViewCounts[codeId] || 0) + 1;
-                
-                // Cập nhật thống kê
-                updateStats();
-                
-                // Lưu vào localStorage
-                localStorage.setItem('tmcLocalViewCounts', JSON.stringify(globalViewCounts));
-                
-                // Kiểm tra thời gian lần cập nhật cuối (tránh spam)
-                const now = Date.now();
-                const lastUpdate = lastViewUpdate[codeId] || 0;
-                
-                // Chỉ gửi lên server nếu đã qua 5 giây kể từ lần cập nhật cuối
-                if (now - lastUpdate > 5000) {
-                    lastViewUpdate[codeId] = now;
-                    
-                    // Gửi request lên server (sử dụng no-cors cho Google Apps Script)
-                    fetch(CONFIG.googleScriptUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            action: 'increment',
-                            code_id: codeId,
-                            timestamp: new Date().toISOString(),
-                            source: 'tmc_library'
-                        })
-                    }).catch(error => {
-                        console.log('Không thể gửi lượt xem lên server, sử dụng bản local');
-                    });
-                }
-                
-                return globalViewCounts[codeId];
-            } catch (error) {
-                console.error('Lỗi khi tăng lượt xem:', error);
-                return globalViewCounts[codeId] || 0;
-            }
-        }
-
-        // 🔥 Hàm lấy tất cả lượt xem từ server (FIXED)
-        async function loadViewCounts() {
-            try {
-                loadingIndicator.style.display = 'block';
-                
-                // Thử lấy từ server với timestamp để tránh cache
-                const response = await fetch(`${CONFIG.googleScriptUrl}?action=get_all&t=${Date.now()}`);
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    
-                    if (result && result.success && result.viewCounts) {
-                        globalViewCounts = result.viewCounts;
-                        console.log('Đã tải lượt xem từ server:', globalViewCounts);
-                    }
-                }
-            } catch (error) {
-                console.log('Không thể tải lượt xem từ server, sử dụng bản local');
-            }
-            
-            // Luôn tải từ localStorage để có dữ liệu hiển thị ngay
-            loadFromLocalStorage();
-            
-            // Đảm bảo mỗi code đều có lượt xem
-            CONFIG.codes.forEach(code => {
-                if (!globalViewCounts[code.id] && globalViewCounts[code.id] !== 0) {
-                    globalViewCounts[code.id] = 0;
-                }
-            });
-            
-            loadingIndicator.style.display = 'none';
-            updateStats();
-            filterAndSort();
-        }
-
-        // 🔥 Hàm tải từ localStorage
-        function loadFromLocalStorage() {
-            const stored = localStorage.getItem('tmcLocalViewCounts');
-            if (stored) {
-                try {
-                    const localViewCounts = JSON.parse(stored);
-                    // Merge với globalViewCounts, ưu tiên giá trị cao hơn
-                    Object.keys(localViewCounts).forEach(key => {
-                        if (!globalViewCounts[key] || localViewCounts[key] > globalViewCounts[key]) {
-                            globalViewCounts[key] = localViewCounts[key];
-                        }
-                    });
-                } catch (e) {
-                    console.error('Lỗi khi parse localStorage:', e);
-                }
-            }
-        }
-
-        // 🔥 Lấy lượt xem cho một code
-        function getViewCount(codeId) {
-            return globalViewCounts[codeId] || 0;
-        }
-
-        // ==================== HÀM MỞ MODAL ====================
-
+        // Hàm mở modal chi tiết với loading
         async function openDetailModal(code) {
             currentModalCode = code;
             
@@ -1443,16 +1279,14 @@
             modalContent.style.display = 'none';
             
             try {
-                // Tăng lượt xem ngay lập tức
                 const currentViews = await incrementViewCount(code.id);
                 
-                // Cập nhật UI
                 modalTitle.textContent = code.title;
                 modalDesc.textContent = code.desc;
                 modalViewCount.textContent = currentViews;
                 
-                // Cập nhật badge ngôn ngữ
                 modalBadges.innerHTML = '';
+                
                 const langBadge = document.createElement('span');
                 langBadge.className = 'lang-badge';
                 langBadge.textContent = code.lang;
@@ -1465,7 +1299,6 @@
                     modalBadges.appendChild(pinBadge);
                 }
                 
-                // Cập nhật video TikTok nếu có
                 if (code.tiktokVideo) {
                     tiktokVideoContainer.style.display = 'block';
                     tiktokVideo.src = code.tiktokVideo;
@@ -1473,29 +1306,23 @@
                     tiktokVideoContainer.style.display = 'none';
                 }
                 
-                // Cập nhật link chia sẻ
                 const shareLink = `${CONFIG.baseUrl}?id=${code.id}`;
                 shareUrl.value = shareLink;
                 
                 const encodedUrl = encodeURIComponent(shareLink);
                 const encodedTitle = encodeURIComponent(code.title);
-                const encodedText = encodeURIComponent(`Check out this code: ${code.title}`);
                 
                 facebookShare.href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-                twitterShare.href = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`;
+                twitterShare.href = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
                 linkedinShare.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
                 telegramShare.href = `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`;
                 
-                // Cập nhật link code
                 modalLinks.innerHTML = '';
                 code.links.forEach(link => {
                     const btn = document.createElement('button');
                     btn.className = 'ideone-btn';
                     btn.innerHTML = `<i class="fas fa-external-link-alt"></i> ${link.name}`;
-                    btn.onclick = (e) => {
-                        e.stopPropagation();
-                        window.open(link.url, '_blank');
-                    };
+                    btn.onclick = () => window.open(link.url, '_blank');
                     modalLinks.appendChild(btn);
                 });
 
@@ -1503,30 +1330,73 @@
                     const tiktokBtn = document.createElement('button');
                     tiktokBtn.className = 'tiktok-btn';
                     tiktokBtn.innerHTML = `<i class="fab fa-tiktok"></i> Xem Video Demo`;
-                    tiktokBtn.onclick = (e) => {
-                        e.stopPropagation();
+                    tiktokBtn.onclick = () => {
                         tiktokVideoContainer.scrollIntoView({ behavior: 'smooth' });
                     };
                     modalLinks.appendChild(tiktokBtn);
                 }
                 
-                // Hiển thị nội dung modal
                 modalLoading.style.display = 'none';
                 modalContent.style.display = 'block';
-                
-                // Focus vào modal để có thể đóng bằng ESC
-                modalContent.focus();
                 
             } catch (error) {
                 console.error('Lỗi khi mở modal:', error);
                 modalLoading.style.display = 'none';
                 modalContent.style.display = 'block';
-                modalDesc.textContent = code.desc;
-                showToast('Đã tăng lượt xem!', false);
+                modalDesc.textContent = 'Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại.';
             }
         }
 
-        // ==================== HÀM RENDER CARD ====================
+        // Hàm đóng modal
+        function closeModal() {
+            modal.style.display = 'none';
+            tiktokVideo.src = '';
+            currentModalCode = null;
+        }
+
+        // Copy link chia sẻ
+        copyUrlBtn.addEventListener('click', () => {
+            shareUrl.select();
+            document.execCommand('copy');
+            
+            const originalText = copyUrlBtn.textContent;
+            copyUrlBtn.textContent = 'Đã copy!';
+            copyUrlBtn.style.background = '#10b981';
+            
+            setTimeout(() => {
+                copyUrlBtn.textContent = originalText;
+                copyUrlBtn.style.background = '';
+            }, 2000);
+        });
+
+        // Đóng modal khi click outside
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        closeModalBtn.addEventListener('click', closeModal);
+
+        // Đóng thông báo trình duyệt
+        closeNoticeBtn.addEventListener('click', () => {
+            browserNotice.style.display = 'none';
+        });
+
+        // Sự kiện cho các tab
+        tabAll.addEventListener('click', () => {
+            currentFilter = 'all';
+            tabAll.classList.add('active');
+            tabPinned.classList.remove('active');
+            filterAndSort();
+        });
+
+        tabPinned.addEventListener('click', () => {
+            currentFilter = 'pinned';
+            tabAll.classList.remove('active');
+            tabPinned.classList.add('active');
+            filterAndSort();
+        });
 
         function renderCards(list) {
             cardsContainer.innerHTML = "";
@@ -1552,9 +1422,6 @@
                 
                 const card = document.createElement("div");
                 card.className = `card ${isPinned ? 'pinned' : ''}`;
-                card.setAttribute('data-id', item.id);
-                
-                // Thêm sự kiện click cho toàn bộ card
                 card.addEventListener('click', () => openDetailModal(item));
 
                 card.innerHTML = `
@@ -1583,18 +1450,15 @@
                     </div>
                 `;
 
-                // Xử lý sự kiện click cho các button (stopPropagation để không trigger sự kiện click của card)
-                card.querySelectorAll('.ideone-btn').forEach(btn => {
+                card.querySelectorAll('.ideone-btn, .tiktok-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
-                        window.open(btn.getAttribute('data-url'), '_blank');
-                    });
-                });
-
-                card.querySelectorAll('.tiktok-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        openDetailModal(item);
+                        
+                        if (btn.classList.contains('tiktok-btn')) {
+                            openDetailModal(item);
+                        } else {
+                            window.open(btn.getAttribute('data-url'), '_blank');
+                        }
                     });
                 });
 
@@ -1602,21 +1466,17 @@
             });
         }
 
-        // ==================== HÀM LỌC VÀ SẮP XẾP ====================
-
         function filterAndSort() {
-            let filtered = [...CONFIG.codes];
+            let filtered = CONFIG.codes;
             
             if (currentFilter === 'pinned') {
                 filtered = filtered.filter(code => code.pinned === true);
             }
             
             if (searchInput.value) {
-                const searchTerm = searchInput.value.toLowerCase();
                 filtered = filtered.filter(x =>
-                    x.title.toLowerCase().includes(searchTerm) ||
-                    x.desc.toLowerCase().includes(searchTerm) ||
-                    x.lang.toLowerCase().includes(searchTerm)
+                    x.title.toLowerCase().includes(searchInput.value.toLowerCase()) ||
+                    x.desc.toLowerCase().includes(searchInput.value.toLowerCase())
                 );
             }
 
@@ -1658,143 +1518,13 @@
             renderCards(filtered);
         }
 
-        // ==================== SỰ KIỆN ====================
-
-        // Hàm đóng modal
-        function closeModal() {
-            modal.style.display = 'none';
-            tiktokVideo.src = '';
-            currentModalCode = null;
-        }
-
-        // Copy link chia sẻ
-        copyUrlBtn.addEventListener('click', () => {
-            shareUrl.select();
-            shareUrl.setSelectionRange(0, 99999); // For mobile devices
-            
-            try {
-                navigator.clipboard.writeText(shareUrl.value).then(() => {
-                    showToast('Đã copy link chia sẻ!');
-                });
-            } catch (err) {
-                // Fallback cho các trình duyệt cũ
-                document.execCommand('copy');
-                showToast('Đã copy link chia sẻ!');
-            }
-        });
-
-        // Đóng modal khi click outside hoặc ESC
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modal.style.display === 'block') {
-                closeModal();
-            }
-        });
-
-        closeModalBtn.addEventListener('click', closeModal);
-
-        // Đóng thông báo trình duyệt
-        closeNoticeBtn.addEventListener('click', () => {
-            browserNotice.style.display = 'none';
-            localStorage.setItem('tmcNoticeClosed', 'true');
-        });
-
-        // Kiểm tra nếu đã đóng thông báo trước đó
-        if (localStorage.getItem('tmcNoticeClosed') === 'true') {
-            browserNotice.style.display = 'none';
-        }
-
-        // Sự kiện cho các tab
-        tabAll.addEventListener('click', () => {
-            currentFilter = 'all';
-            tabAll.classList.add('active');
-            tabPinned.classList.remove('active');
-            filterAndSort();
-        });
-
-        tabPinned.addEventListener('click', () => {
-            currentFilter = 'pinned';
-            tabAll.classList.remove('active');
-            tabPinned.classList.add('active');
-            filterAndSort();
-        });
-
-        // Sự kiện tìm kiếm và sắp xếp
         searchInput.addEventListener("input", filterAndSort);
         sortSelect.addEventListener("change", filterAndSort);
 
-        // ==================== KHỞI TẠO ====================
-
-        // Khởi tạo trang
-        function initializePage() {
-            // Cập nhật nội dung từ CONFIG
-            pageTitle.textContent = CONFIG.siteTitle;
-            footerText.textContent = CONFIG.footerText;
-            document.title = CONFIG.siteTitle;
-            
-            // Tạo liên kết mạng xã hội
-            socialLinksContainer.innerHTML = '';
-            CONFIG.socialLinks.forEach(link => {
-                const socialLink = document.createElement('a');
-                socialLink.href = link.url;
-                socialLink.className = `social-link ${link.class}`;
-                socialLink.title = link.name;
-                socialLink.target = "_blank";
-                socialLink.rel = "noopener noreferrer";
-                socialLink.innerHTML = `<i class="${link.icon}"></i>`;
-                socialLinksContainer.appendChild(socialLink);
-            });
-            
-            // Khởi tạo thống kê
-            updateStats();
-            
-            // Load lượt xem
-            loadViewCounts();
-            
-            // Tạo hiệu ứng hạt
-            createParticles();
-            
-            // Kiểm tra URL parameter để mở modal ngay
-            const urlParams = new URLSearchParams(window.location.search);
-            const codeId = urlParams.get('id');
-            
-            if (codeId) {
-                const code = CONFIG.codes.find(c => c.id === codeId);
-                if (code) {
-                    setTimeout(() => {
-                        openDetailModal(code);
-                    }, 500);
-                }
-            }
-        }
-
-        // Chạy khi trang load xong
-        document.addEventListener('DOMContentLoaded', initializePage);
-
-        // Thêm CSS cho scrollbar
-        const style = document.createElement('style');
-        style.textContent = `
-            ::-webkit-scrollbar {
-                width: 10px;
-            }
-            ::-webkit-scrollbar-track {
-                background: var(--bg-dark);
-            }
-            ::-webkit-scrollbar-thumb {
-                background: var(--border);
-                border-radius: 5px;
-            }
-            ::-webkit-scrollbar-thumb:hover {
-                background: var(--primary);
-            }
-        `;
-        document.head.appendChild(style);
-
+        // Khởi tạo
+        updatePinnedCount();
+        loadViewCounts();
+        createParticles();
     </script>
 </body>
 </html>
