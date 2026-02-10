@@ -4,12 +4,13 @@ const CONFIG = {
     siteTitle: "TMCLibrary",
     baseUrl: "https://cybertmc.github.io/TMCLibrary",
     
-    // GitHub Configuration (you need to set up these)
-    github: {
-        repo: "cybertmc/TMCLibrary", // Your GitHub repo
-        branch: "main", // Your branch
-        viewsFile: "views.json", // File to store views
-        token: "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" // GitHub Personal Access Token
+    // Google Sheets Configuration
+    googleSheets: {
+        sheetId: "15RyPcYnOP2wUdWPCCjBrIl2KHzrCUGNqz69MiTQmNyQ", // Sheet ID mới
+        apiKey: "AIzaSyCzK2YAVmQu2mTxZvBx_mWt07yU-VG9z_U",
+        sheetName: "Sheet1", // Tên sheet
+        gid: "0", // Sheet ID từ URL
+        scriptUrl: "https://script.google.com/macros/s/AKfycbw6raAOt_nY7_Po12uuaYSYHB5uALKMfBqq7PI8hgZ8Spu9zSINtDS_5nsIcoze3ZL81g/exec"
     },
     
     // Code snippets data
@@ -115,100 +116,104 @@ const CONFIG = {
     ]
 };
 
-// ==================== VIEW COUNTER WITH GITHUB API ====================
+// ==================== GOOGLE SHEETS VIEW COUNTER ====================
 
 let viewsData = {};
 let isUpdatingViews = false;
 
-// Load views data from JSON file
-async function loadViewsData() {
+// Load views data from Google Sheets
+async function loadViewsFromGoogleSheets() {
     try {
-        const response = await fetch('views.json');
-        if (response.ok) {
-            viewsData = await response.json();
-            console.log('Views data loaded:', viewsData);
-        } else {
-            // Initialize empty if file doesn't exist
+        const { sheetId, apiKey } = CONFIG.googleSheets;
+        // Sử dụng ranges để lấy tất cả dữ liệu từ cột A đến C
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1!A:C?key=${apiKey}`;
+        
+        console.log('Fetching from URL:', url);
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Google Sheets API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const rows = data.values || [];
+        
+        console.log('Raw Google Sheets data:', rows);
+        
+        // Reset views data
+        viewsData = {};
+        
+        if (rows.length === 0) {
+            // Sheet is empty, initialize with zeros
+            console.log('Sheet is empty, initializing with zeros');
             CONFIG.codes.forEach(code => {
                 viewsData[code.id] = 0;
             });
-            console.log('Initialized new views data');
+            return;
         }
-    } catch (error) {
-        console.error('Error loading views data:', error);
-        // Initialize with zeros
+        
+        // Parse rows (bỏ qua header nếu có)
+        let startRow = 0;
+        // Kiểm tra nếu hàng đầu tiên là header
+        if (rows[0] && (rows[0][0] === 'ID' || rows[0][0] === 'id' || rows[0][0] === 'Id')) {
+            startRow = 1;
+            console.log('Skipping header row');
+        }
+        
+        for (let i = startRow; i < rows.length; i++) {
+            const row = rows[i];
+            if (row && row.length >= 2) {
+                const id = String(row[0]).trim();
+                const views = parseInt(row[1]) || 0;
+                if (id) {
+                    viewsData[id] = views;
+                }
+            }
+        }
+        
+        console.log('Views data loaded from Google Sheets:', viewsData);
+        
+        // Initialize missing entries
         CONFIG.codes.forEach(code => {
-            viewsData[code.id] = 0;
-        });
-    }
-}
-
-// Save views data to GitHub via API
-async function saveViewsToGitHub() {
-    if (isUpdatingViews) {
-        console.log('Already updating views, skipping...');
-        return;
-    }
-    
-    isUpdatingViews = true;
-    
-    try {
-        // First, get the current file SHA
-        const getUrl = `https://api.github.com/repos/${CONFIG.github.repo}/contents/${CONFIG.github.viewsFile}`;
-        const getResponse = await fetch(getUrl, {
-            headers: {
-                'Authorization': `token ${CONFIG.github.token}`,
-                'Accept': 'application/vnd.github.v3+json'
+            if (!viewsData.hasOwnProperty(code.id)) {
+                viewsData[code.id] = 0;
             }
         });
         
-        let sha = null;
-        if (getResponse.ok) {
-            const fileData = await getResponse.json();
-            sha = fileData.sha;
-        }
-        
-        // Prepare file content
-        const content = JSON.stringify(viewsData, null, 2);
-        const encodedContent = btoa(unescape(encodeURIComponent(content)));
-        
-        // Update file
-        const updateUrl = `https://api.github.com/repos/${CONFIG.github.repo}/contents/${CONFIG.github.viewsFile}`;
-        const updateData = {
-            message: `Update view counts - ${new Date().toISOString()}`,
-            content: encodedContent,
-            branch: CONFIG.github.branch,
-            ...(sha ? { sha } : {})
-        };
-        
-        const updateResponse = await fetch(updateUrl, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `token ${CONFIG.github.token}`,
-                'Accept': 'application/vnd.github.v3+json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updateData)
-        });
-        
-        if (updateResponse.ok) {
-            console.log('Views saved to GitHub successfully');
-            return true;
-        } else {
-            const errorData = await updateResponse.json();
-            console.error('GitHub API error:', errorData);
-            return false;
-        }
+        // Cache for offline use
+        localStorage.setItem('tmc-library-views-cache', JSON.stringify({
+            data: viewsData,
+            timestamp: Date.now()
+        }));
         
     } catch (error) {
-        console.error('Error saving to GitHub:', error);
-        return false;
-    } finally {
-        isUpdatingViews = false;
+        console.error('Error loading views from Google Sheets:', error);
+        // Try to load from cache
+        try {
+            const cache = localStorage.getItem('tmc-library-views-cache');
+            if (cache) {
+                const cacheData = JSON.parse(cache);
+                // Use cache if less than 1 hour old
+                if (Date.now() - cacheData.timestamp < 3600000) {
+                    viewsData = cacheData.data;
+                    console.log('Loaded views from cache');
+                } else {
+                    throw new Error('Cache expired');
+                }
+            } else {
+                throw new Error('No cache available');
+            }
+        } catch (cacheError) {
+            console.error('Cache error:', cacheError);
+            // Initialize with zeros
+            CONFIG.codes.forEach(code => {
+                viewsData[code.id] = 0;
+            });
+        }
     }
 }
 
-// Increment view count
+// Increment view count using Google Apps Script Web App
 async function incrementViewCount(codeId) {
     if (!viewsData[codeId]) {
         viewsData[codeId] = 0;
@@ -220,16 +225,164 @@ async function incrementViewCount(codeId) {
     // Update UI immediately
     updateViewCountInUI(codeId);
     
-    // Save to localStorage as immediate backup
+    // Save to local storage as backup
     localStorage.setItem('tmc-library-views-backup', JSON.stringify({
         data: viewsData,
         timestamp: Date.now()
     }));
     
-    // Try to save to GitHub (async, don't wait)
-    saveViewsToGitHub().catch(error => {
-        console.error('Failed to save to GitHub:', error);
+    // Send to Google Sheets via Apps Script Web App
+    try {
+        await updateViewCountInSheets(codeId, viewsData[codeId]);
+    } catch (error) {
+        console.error('Error updating Google Sheets:', error);
+        // Queue for later update
+        queueViewCountUpdate(codeId, viewsData[codeId]);
+    }
+}
+
+// Update Google Sheets using Google Apps Script Web App
+async function updateViewCountInSheets(codeId, viewCount) {
+    const scriptUrl = CONFIG.googleSheets.scriptUrl;
+    
+    try {
+        // Sử dụng JSONP để tránh CORS
+        const response = await updateViaJSONP(scriptUrl, codeId, viewCount);
+        console.log('Google Sheets update response:', response);
+        return response;
+    } catch (error) {
+        console.error('JSONP failed:', error);
+        // Fallback to fetch with no-cors
+        await updateViaFetch(scriptUrl, codeId, viewCount);
+        return true;
+    }
+}
+
+// Update using JSONP (works with CORS)
+function updateViaJSONP(scriptUrl, codeId, viewCount) {
+    return new Promise((resolve, reject) => {
+        const callbackName = 'callback_' + Date.now() + '_' + Math.random().toString(36).substr(2);
+        const url = `${scriptUrl}?id=${encodeURIComponent(codeId)}&views=${viewCount}&action=updateView&callback=${callbackName}`;
+        
+        // Create script element
+        const script = document.createElement('script');
+        script.src = url;
+        
+        // Define callback
+        window[callbackName] = function(response) {
+            console.log('Google Sheets updated via JSONP:', response);
+            // Clean up
+            delete window[callbackName];
+            if (script.parentNode) {
+                document.body.removeChild(script);
+            }
+            resolve(response);
+        };
+        
+        // Error handling
+        script.onerror = function() {
+            delete window[callbackName];
+            if (script.parentNode) {
+                document.body.removeChild(script);
+            }
+            reject(new Error('JSONP request failed'));
+        };
+        
+        // Add to page
+        document.body.appendChild(script);
+        
+        // Timeout after 10 seconds
+        setTimeout(() => {
+            if (window[callbackName]) {
+                delete window[callbackName];
+                if (script.parentNode) {
+                    document.body.removeChild(script);
+                }
+                reject(new Error('JSONP timeout'));
+            }
+        }, 10000);
     });
+}
+
+// Update using fetch (fallback)
+async function updateViaFetch(scriptUrl, codeId, viewCount) {
+    try {
+        // Use GET request for CORS compatibility
+        const url = `${scriptUrl}?id=${encodeURIComponent(codeId)}&views=${viewCount}&action=updateView`;
+        const response = await fetch(url, {
+            method: 'GET',
+            mode: 'no-cors'
+        });
+        
+        console.log('View count sent via fetch (no-cors)');
+        return true;
+    } catch (error) {
+        console.error('Fetch failed:', error);
+        throw error;
+    }
+}
+
+// Queue view count updates for retry
+function queueViewCountUpdate(codeId, viewCount) {
+    const queue = JSON.parse(localStorage.getItem('tmc-library-views-queue') || '[]');
+    queue.push({
+        id: codeId,
+        views: viewCount,
+        timestamp: Date.now()
+    });
+    
+    // Keep only last 100 items
+    if (queue.length > 100) {
+        queue.splice(0, queue.length - 100);
+    }
+    
+    localStorage.setItem('tmc-library-views-queue', JSON.stringify(queue));
+    
+    console.log('View update queued. Queue size:', queue.length);
+    
+    // Try to process queue
+    setTimeout(processQueue, 3000);
+}
+
+// Process queued updates
+async function processQueue() {
+    if (isUpdatingViews) return;
+    
+    const queue = JSON.parse(localStorage.getItem('tmc-library-views-queue') || '[]');
+    if (queue.length === 0) return;
+    
+    isUpdatingViews = true;
+    console.log('Processing queue with', queue.length, 'items');
+    
+    try {
+        const newQueue = [];
+        
+        for (const item of queue) {
+            try {
+                await updateViewCountInSheets(item.id, item.views);
+                console.log('Successfully updated queued item:', item);
+                // Item processed successfully, don't add back to queue
+            } catch (error) {
+                console.error('Failed to update queued item:', item, error);
+                // Keep in queue for retry (but only if less than 1 day old)
+                if (Date.now() - item.timestamp < 86400000) {
+                    newQueue.push(item);
+                }
+            }
+        }
+        
+        // Save remaining queue
+        localStorage.setItem('tmc-library-views-queue', JSON.stringify(newQueue));
+        
+        if (newQueue.length > 0) {
+            console.log(newQueue.length, 'items remain in queue');
+            // Retry after 30 seconds
+            setTimeout(processQueue, 30000);
+        }
+        
+    } finally {
+        isUpdatingViews = false;
+    }
 }
 
 // Update view count in UI
@@ -538,8 +691,11 @@ document.addEventListener('keydown', (e) => {
 // ==================== INITIALIZATION ====================
 
 async function init() {
-    // Load view counts from JSON file
-    await loadViewsData();
+    // Load view counts from Google Sheets
+    await loadViewsFromGoogleSheets();
+    
+    // Process any queued updates
+    setTimeout(processQueue, 2000);
     
     // Update statistics
     updateStatistics();
