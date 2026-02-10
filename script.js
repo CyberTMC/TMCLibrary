@@ -4,6 +4,14 @@ const CONFIG = {
     siteTitle: "TMCLibrary",
     baseUrl: "https://cybertmc.github.io/TMCLibrary",
     
+    // GitHub Configuration (you need to set up these)
+    github: {
+        repo: "cybertmc/TMCLibrary", // Your GitHub repo
+        branch: "main", // Your branch
+        viewsFile: "views.json", // File to store views
+        token: "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" // GitHub Personal Access Token
+    },
+    
     // Code snippets data
     codes: [
         {
@@ -107,94 +115,121 @@ const CONFIG = {
     ]
 };
 
-// ==================== VIEW COUNTER ====================
+// ==================== VIEW COUNTER WITH GITHUB API ====================
 
 let viewsData = {};
+let isUpdatingViews = false;
 
-// Load views data
+// Load views data from JSON file
 async function loadViewsData() {
     try {
-        // Try to load from localStorage first (for client-side persistence)
-        const savedViews = localStorage.getItem('tmc-library-views');
-        if (savedViews) {
-            viewsData = JSON.parse(savedViews);
-        }
-        
-        // Try to load from JSON file
-        try {
-            const response = await fetch('views.json');
-            if (response.ok) {
-                const jsonData = await response.json();
-                // Merge with localStorage data, prioritizing server data
-                viewsData = { ...viewsData, ...jsonData };
-            }
-        } catch (error) {
-            console.log('Using localStorage data only');
-        }
-        
-        // Initialize missing entries
-        CONFIG.codes.forEach(code => {
-            if (!viewsData[code.id]) {
+        const response = await fetch('views.json');
+        if (response.ok) {
+            viewsData = await response.json();
+            console.log('Views data loaded:', viewsData);
+        } else {
+            // Initialize empty if file doesn't exist
+            CONFIG.codes.forEach(code => {
                 viewsData[code.id] = 0;
-            }
-        });
-        
-        // Save back to localStorage
-        localStorage.setItem('tmc-library-views', JSON.stringify(viewsData));
-        
+            });
+            console.log('Initialized new views data');
+        }
     } catch (error) {
         console.error('Error loading views data:', error);
-        // Initialize if error
+        // Initialize with zeros
         CONFIG.codes.forEach(code => {
             viewsData[code.id] = 0;
         });
     }
 }
 
-// Save views data to JSON file (simulated with localStorage)
-async function saveViewsDataToJSON() {
+// Save views data to GitHub via API
+async function saveViewsToGitHub() {
+    if (isUpdatingViews) {
+        console.log('Already updating views, skipping...');
+        return;
+    }
+    
+    isUpdatingViews = true;
+    
     try {
-        // Save to localStorage
-        localStorage.setItem('tmc-library-views', JSON.stringify(viewsData));
+        // First, get the current file SHA
+        const getUrl = `https://api.github.com/repos/${CONFIG.github.repo}/contents/${CONFIG.github.viewsFile}`;
+        const getResponse = await fetch(getUrl, {
+            headers: {
+                'Authorization': `token ${CONFIG.github.token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
         
-        // In a real server environment, you would send this data to your server
-        // This is a simulation of saving to a JSON file
-        console.log('Views data updated:', viewsData);
+        let sha = null;
+        if (getResponse.ok) {
+            const fileData = await getResponse.json();
+            sha = fileData.sha;
+        }
         
-        // Create a download link for manual backup
-        const dataStr = JSON.stringify(viewsData, null, 2);
-        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        // Prepare file content
+        const content = JSON.stringify(viewsData, null, 2);
+        const encodedContent = btoa(unescape(encodeURIComponent(content)));
         
-        // For demo purposes, create a download link
-        const downloadLink = document.createElement('a');
-        downloadLink.href = URL.createObjectURL(dataBlob);
-        downloadLink.download = 'views_backup.json';
-        downloadLink.style.display = 'none';
-        document.body.appendChild(downloadLink);
+        // Update file
+        const updateUrl = `https://api.github.com/repos/${CONFIG.github.repo}/contents/${CONFIG.github.viewsFile}`;
+        const updateData = {
+            message: `Update view counts - ${new Date().toISOString()}`,
+            content: encodedContent,
+            branch: CONFIG.github.branch,
+            ...(sha ? { sha } : {})
+        };
         
-        // Clean up
-        setTimeout(() => {
-            document.body.removeChild(downloadLink);
-            URL.revokeObjectURL(downloadLink.href);
-        }, 100);
+        const updateResponse = await fetch(updateUrl, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${CONFIG.github.token}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updateData)
+        });
+        
+        if (updateResponse.ok) {
+            console.log('Views saved to GitHub successfully');
+            return true;
+        } else {
+            const errorData = await updateResponse.json();
+            console.error('GitHub API error:', errorData);
+            return false;
+        }
         
     } catch (error) {
-        console.error('Error saving views data:', error);
+        console.error('Error saving to GitHub:', error);
+        return false;
+    } finally {
+        isUpdatingViews = false;
     }
 }
 
 // Increment view count
-function incrementViewCount(codeId) {
+async function incrementViewCount(codeId) {
     if (!viewsData[codeId]) {
         viewsData[codeId] = 0;
     }
+    
+    // Increment locally
     viewsData[codeId]++;
     
-    // Save to localStorage and "JSON file"
-    saveViewsDataToJSON();
-    
-    // Update UI
+    // Update UI immediately
     updateViewCountInUI(codeId);
+    
+    // Save to localStorage as immediate backup
+    localStorage.setItem('tmc-library-views-backup', JSON.stringify({
+        data: viewsData,
+        timestamp: Date.now()
+    }));
+    
+    // Try to save to GitHub (async, don't wait)
+    saveViewsToGitHub().catch(error => {
+        console.error('Failed to save to GitHub:', error);
+    });
 }
 
 // Update view count in UI
@@ -503,7 +538,7 @@ document.addEventListener('keydown', (e) => {
 // ==================== INITIALIZATION ====================
 
 async function init() {
-    // Load view counts
+    // Load view counts from JSON file
     await loadViewsData();
     
     // Update statistics
