@@ -107,6 +107,112 @@ const CONFIG = {
     ]
 };
 
+// ==================== VIEW COUNTER ====================
+
+let viewsData = {};
+
+// Load views data
+async function loadViewsData() {
+    try {
+        // Try to load from localStorage first (for client-side persistence)
+        const savedViews = localStorage.getItem('tmc-library-views');
+        if (savedViews) {
+            viewsData = JSON.parse(savedViews);
+        }
+        
+        // Try to load from JSON file
+        try {
+            const response = await fetch('views.json');
+            if (response.ok) {
+                const jsonData = await response.json();
+                // Merge with localStorage data, prioritizing server data
+                viewsData = { ...viewsData, ...jsonData };
+            }
+        } catch (error) {
+            console.log('Using localStorage data only');
+        }
+        
+        // Initialize missing entries
+        CONFIG.codes.forEach(code => {
+            if (!viewsData[code.id]) {
+                viewsData[code.id] = 0;
+            }
+        });
+        
+        // Save back to localStorage
+        localStorage.setItem('tmc-library-views', JSON.stringify(viewsData));
+        
+    } catch (error) {
+        console.error('Error loading views data:', error);
+        // Initialize if error
+        CONFIG.codes.forEach(code => {
+            viewsData[code.id] = 0;
+        });
+    }
+}
+
+// Save views data to JSON file (simulated with localStorage)
+async function saveViewsDataToJSON() {
+    try {
+        // Save to localStorage
+        localStorage.setItem('tmc-library-views', JSON.stringify(viewsData));
+        
+        // In a real server environment, you would send this data to your server
+        // This is a simulation of saving to a JSON file
+        console.log('Views data updated:', viewsData);
+        
+        // Create a download link for manual backup
+        const dataStr = JSON.stringify(viewsData, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        
+        // For demo purposes, create a download link
+        const downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(dataBlob);
+        downloadLink.download = 'views_backup.json';
+        downloadLink.style.display = 'none';
+        document.body.appendChild(downloadLink);
+        
+        // Clean up
+        setTimeout(() => {
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(downloadLink.href);
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error saving views data:', error);
+    }
+}
+
+// Increment view count
+function incrementViewCount(codeId) {
+    if (!viewsData[codeId]) {
+        viewsData[codeId] = 0;
+    }
+    viewsData[codeId]++;
+    
+    // Save to localStorage and "JSON file"
+    saveViewsDataToJSON();
+    
+    // Update UI
+    updateViewCountInUI(codeId);
+}
+
+// Update view count in UI
+function updateViewCountInUI(codeId) {
+    const viewCount = viewsData[codeId] || 0;
+    
+    // Update in timeline items
+    document.querySelectorAll(`.timeline-item[data-id="${codeId}"] .timeline-views`).forEach(element => {
+        element.textContent = `${viewCount} lượt xem`;
+    });
+    
+    // Update in detail panel
+    const panelViewElement = document.querySelector('.panel-views');
+    if (panelViewElement && currentCodeId === codeId) {
+        panelViewElement.textContent = `${viewCount} lượt xem`;
+    }
+}
+
 // ==================== STATE MANAGEMENT ====================
 
 let currentView = 'timeline';
@@ -163,11 +269,16 @@ function renderCodeTimeline(codes) {
     codeTimeline.style.display = 'block';
     emptyState.style.display = 'none';
     
-    codeTimeline.innerHTML = codes.map(code => `
+    codeTimeline.innerHTML = codes.map(code => {
+        const viewCount = viewsData[code.id] || 0;
+        return `
         <div class="timeline-item ${code.featured ? 'featured' : ''}" data-id="${code.id}">
             <div class="timeline-content">
                 <div class="timeline-header">
-                    <h3 class="timeline-title">${code.title}</h3>
+                    <div class="timeline-title-section">
+                        <h3 class="timeline-title">${code.title}</h3>
+                        <div class="timeline-views">${viewCount} lượt xem</div>
+                    </div>
                     <div class="timeline-badges">
                         ${code.featured ? '<span class="timeline-badge featured">featured</span>' : ''}
                         <span class="timeline-badge language">${code.lang}</span>
@@ -196,7 +307,7 @@ function renderCodeTimeline(codes) {
                 </div>
             </div>
         </div>
-    `).join('');
+    `}).join('');
     
     // Add event listeners to timeline items
     document.querySelectorAll('.timeline-item').forEach(item => {
@@ -241,9 +352,24 @@ function openCodePanel(codeId) {
     
     currentCodeId = codeId;
     
+    // Increment view count
+    incrementViewCount(codeId);
+    
     // Update panel content
     panelTitle.textContent = `${code.title.toLowerCase().replace(/\s+/g, '_')}.py`;
     panelDescription.textContent = code.description;
+    
+    // Update view count in panel
+    const viewCount = viewsData[codeId] || 0;
+    let viewCountElement = document.querySelector('.panel-views');
+    if (!viewCountElement) {
+        // Create view count element if it doesn't exist
+        const panelTitleContainer = document.querySelector('.panel-title');
+        viewCountElement = document.createElement('div');
+        viewCountElement.className = 'panel-views';
+        panelTitleContainer.appendChild(viewCountElement);
+    }
+    viewCountElement.textContent = `${viewCount} lượt xem`;
     
     // Update video section
     if (code.tiktokVideo) {
@@ -325,10 +451,12 @@ function filterAndSortCodes() {
     // Featured codes first
     filteredCodes.sort((a, b) => (b.featured - a.featured));
     
-    // Then sort by title
+    // Then sort by view count (highest first)
     filteredCodes.sort((a, b) => {
         if (a.featured === b.featured) {
-            return a.title.localeCompare(b.title);
+            const viewsA = viewsData[a.id] || 0;
+            const viewsB = viewsData[b.id] || 0;
+            return viewsB - viewsA;
         }
         return 0;
     });
@@ -374,7 +502,10 @@ document.addEventListener('keydown', (e) => {
 
 // ==================== INITIALIZATION ====================
 
-function init() {
+async function init() {
+    // Load view counts
+    await loadViewsData();
+    
     // Update statistics
     updateStatistics();
     
