@@ -327,11 +327,22 @@ body {
     position: relative;
 }
 
+.timeline-title-section {
+    flex: 1;
+}
+
 .timeline-title {
     font-size: 1.3rem;
     font-weight: 600;
     color: var(--text-primary);
     font-family: 'Space Grotesk', sans-serif;
+    margin-bottom: var(--spacing-xs);
+}
+
+.timeline-views {
+    font-size: 0.8rem;
+    color: var(--terminal-accent);
+    opacity: 0.8;
 }
 
 .timeline-badge {
@@ -476,6 +487,7 @@ body {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
+    flex: 1;
 }
 
 .panel-icon {
@@ -487,6 +499,13 @@ body {
     font-size: 1.3rem;
     font-weight: 600;
     color: var(--text-primary);
+    margin-right: var(--spacing-md);
+}
+
+.panel-views {
+    font-size: 0.9rem;
+    color: var(--terminal-accent);
+    opacity: 0.9;
 }
 
 .panel-close {
@@ -782,6 +801,12 @@ body {
         gap: var(--spacing-md);
     }
     
+    .timeline-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+    
     .detail-panel {
         width: 100%;
     }
@@ -810,10 +835,19 @@ body {
 }
 
 @media (max-width: 480px) {
-    .timeline-header {
+    .panel-title {
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--spacing-sm);
+        gap: var(--spacing-xs);
+    }
+    
+    .panel-title h2 {
+        font-size: 1.1rem;
+        margin-right: 0;
+    }
+    
+    .panel-views {
+        font-size: 0.8rem;
     }
     
     .share-actions {
