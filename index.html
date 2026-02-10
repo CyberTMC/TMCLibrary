@@ -3,162 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đang Cập Nhật | Hệ Thống Đang Nâng Cấp</title>
-    <style>
-        :root {
-            --primary-color: #00f2ff;
-            --secondary-color: #7000ff;
-            --bg-dark: #050505;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-        }
-
-        /* Canvas nền hiệu ứng hạt */
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        /* Khung nội dung chính */
-        .glass-container {
-            position: relative;
-            z-index: 10;
-            padding: 50px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            text-align: center;
-            box-shadow: 0 0 50px rgba(0, 242, 255, 0.1);
-            max-width: 90%;
-            width: 600px;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        /* Hiệu ứng chữ Glitch */
-        .glitch {
-            font-size: 3rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            position: relative;
-            text-shadow: 0.05em 0 0 rgba(255, 0, 80, 0.75),
-                         -0.025em -0.05em 0 rgba(0, 255, 0, 0.75),
-                         0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
-            animation: glitch 1.5s infinite;
-        }
-
-        @keyframes glitch {
-            0% { text-shadow: 0.05em 0 0 rgba(255, 0, 80, 0.75), -0.05em -0.025em 0 rgba(0, 255, 0, 0.75); }
-            15% { text-shadow: -0.05em -0.025em 0 rgba(255, 0, 80, 0.75), 0.025em 0.025em 0 rgba(0, 255, 0, 0.75); }
-            100% { text-shadow: -0.025em 0 0 rgba(255, 0, 80, 0.75), -0.025em -0.05em 0 rgba(0, 255, 0, 0.75); }
-        }
-
-        .status-bar {
-            width: 100%;
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            margin: 30px 0;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .status-progress {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            box-shadow: 0 0 15px var(--primary-color);
-            animation: progress 3s infinite;
-        }
-
-        @keyframes progress {
-            0% { width: 0%; left: 0; }
-            50% { width: 100%; left: 0; }
-            100% { width: 0%; left: 100%; }
-        }
-
-        .description {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.6);
-            letter-spacing: 1px;
-            margin-bottom: 30px;
-        }
-
-        /* Nút Neon */
-        .btn-contact {
-            text-decoration: none;
-            color: var(--primary-color);
-            padding: 12px 30px;
-            border: 1px solid var(--primary-color);
-            border-radius: 50px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            transition: 0.3s;
-            box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.2), 0 0 10px rgba(0, 242, 255, 0.2);
-        }
-
-        .btn-contact:hover {
-            background: var(--primary-color);
-            color: black;
-            box-shadow: 0 0 30px var(--primary-color);
-        }
-
-    </style>
+    <title>TMCLibrary | Code Collection</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://cybertmc.github.io/TMCLibrary/favicon.ico">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-
-    <div id="particles-js"></div>
-
-    <div class="glass-container">
-        <h1 class="glitch">Updating...</h1>
-        <div class="status-bar">
-            <div class="status-progress"></div>
+    <!-- Terminal Header -->
+    <div class="terminal-header">
+        <div class="terminal-buttons">
+            <span class="terminal-btn close"></span>
+            <span class="terminal-btn minimize"></span>
+            <span class="terminal-btn maximize"></span>
         </div>
-        <p class="description">Hệ thống đang được nâng cấp lõi công nghệ.<br>Vui lòng quay lại sau ít phút.</p>
-        <a href="mailto:contact@yourweb.com" class="btn-contact">Liên hệ quản trị</a>
+        <div class="terminal-title">
+            <span class="terminal-prompt">$</span> TMCLibrary ~/code-collection
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script>
-        particlesJS("particles-js", {
-            "particles": {
-                "number": { "value": 100, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#00f2ff" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.5, "random": true },
-                "size": { "value": 3, "random": true },
-                "line_linked": { "enable": true, "distance": 150, "color": "#7000ff", "opacity": 0.4, "width": 1 },
-                "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } },
-                "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } } }
-            },
-            "retina_detect": true
-        });
-    </script>
+    <!-- Navigation -->
+    <nav class="nav-line">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <span class="nav-brand-text">TMC<span class="nav-brand-highlight">:</span>Library</span>
+            </div>
+            
+            <div class="nav-controls">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="search code..." class="search-line">
+                </div>
+                
+                <div class="view-controls">
+                    <button class="view-control active" data-view="timeline">
+                        <i class="fas fa-stream"></i>
+                    </button>
+                    <button class="view-control" data-view="compact">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="container">
+            <!-- Stats Bar -->
+            <div class="stats-line">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalCodes">8</span>
+                    <span class="stat-label">codes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="featuredCodes">3</span>
+                    <span class="stat-label">featured</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">python</span>
+                </div>
+            </div>
+
+            <!-- Code Timeline -->
+            <div class="code-timeline" id="codeTimeline">
+                <!-- Code items will be generated here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-terminal" id="emptyState" style="display: none;">
+                <div class="terminal-output">
+                    <span class="terminal-prompt">$</span> find . -name "*.py"
+                    <div class="terminal-result">
+                        <span class="text-muted">No matching files found</span>
+                    </div>
+                    <span class="terminal-prompt">$</span> <span class="cursor">█</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Code Detail Panel -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="panel-header">
+            <div class="panel-title">
+                <span class="panel-icon">></span>
+                <h2 id="panelTitle">code_detail.py</h2>
+            </div>
+            <button class="panel-close" id="panelClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="panel-content">
+            <div class="panel-section">
+                <h3 class="section-title">
+                    <span class="section-icon">#</span> description
+                </h3>
+                <div class="section-content">
+                    <p id="panelDescription" class="panel-text"></p>
+                </div>
+            </div>
+
+            <div class="panel-section" id="videoSection" style="display: none;">
+                <h3 class="section-title">
+                    <span class="section-icon">▶</span> tiktok_demo
+                </h3>
+                <div class="section-content">
+                    <div class="video-wrapper">
+                        <iframe id="tiktokVideo" src="" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <p class="panel-note">// Cho xin 1 tim ❤️</p>
+                </div>
+            </div>
+
+            <div class="panel-section" id="ideoneSection" style="display: none;">
+                <h3 class="section-title">
+                    <span class="section-icon"><i class="fas fa-code"></i></span> code_preview
+                </h3>
+                <div class="section-content">
+                    <div class="ideone-container" id="ideoneContainer">
+                        <!-- Ideone script will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3 class="section-title">
+                    <span class="section-icon">↗</span> code_links
+                </h3>
+                <div class="section-content">
+                    <div class="links-grid" id="codeLinks">
+                        <!-- Code links will be generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3 class="section-title">
+                    <span class="section-icon">📋</span> share_code
+                </h3>
+                <div class="section-content">
+                    <div class="share-actions">
+                        <button class="share-action" id="copyLinkBtn">
+                            <i class="fas fa-copy"></i>
+                            <span>copy link</span>
+                        </button>
+                        <button class="share-action" id="shareFacebook">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>facebook</span>
+                        </button>
+                        <button class="share-action" id="shareTwitter">
+                            <i class="fab fa-twitter"></i>
+                            <span>twitter</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="terminal-footer">
+        <div class="container">
+            <div class="footer-line">
+                <div class="footer-status">
+                    <span class="status-indicator"></span>
+                    <span>python 3.11</span>
+                    <span class="separator">|</span>
+                    <span>8 files</span>
+                    <span class="separator">|</span>
+                    <span>ready</span>
+                </div>
+                
+                <div class="footer-copyright">
+                    <span>© 2025-2028 TMCLibrary</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
 </body>
 </html>
