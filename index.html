@@ -3,107 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đang Cập Nhật | Coming Soon</title>
+    <title>Đang Cập Nhật | Hệ Thống Đang Nâng Cấp</title>
     <style>
+        :root {
+            --primary-color: #00f2ff;
+            --secondary-color: #7000ff;
+            --bg-dark: #050505;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
+            background-color: var(--bg-dark);
             height: 100vh;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            overflow: hidden;
+            color: white;
         }
 
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* Canvas nền hiệu ứng hạt */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
-        .container {
+        /* Khung nội dung chính */
+        .glass-container {
+            position: relative;
+            z-index: 10;
+            padding: 50px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
             text-align: center;
-            padding: 3rem;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            color: white;
+            box-shadow: 0 0 50px rgba(0, 242, 255, 0.1);
             max-width: 90%;
-            width: 500px;
+            width: 600px;
+            animation: float 6s ease-in-out infinite;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Hiệu ứng chữ Glitch */
+        .glitch {
+            font-size: 3rem;
+            font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            position: relative;
+            text-shadow: 0.05em 0 0 rgba(255, 0, 80, 0.75),
+                         -0.025em -0.05em 0 rgba(0, 255, 0, 0.75),
+                         0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+            animation: glitch 1.5s infinite;
         }
 
-        p {
+        @keyframes glitch {
+            0% { text-shadow: 0.05em 0 0 rgba(255, 0, 80, 0.75), -0.05em -0.025em 0 rgba(0, 255, 0, 0.75); }
+            15% { text-shadow: -0.05em -0.025em 0 rgba(255, 0, 80, 0.75), 0.025em 0.025em 0 rgba(0, 255, 0, 0.75); }
+            100% { text-shadow: -0.025em 0 0 rgba(255, 0, 80, 0.75), -0.025em -0.05em 0 rgba(0, 255, 0, 0.75); }
+        }
+
+        .status-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            margin: 30px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 0 15px var(--primary-color);
+            animation: progress 3s infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; left: 0; }
+            50% { width: 100%; left: 0; }
+            100% { width: 0%; left: 100%; }
+        }
+
+        .description {
             font-size: 1.1rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+            margin-bottom: 30px;
         }
 
-        .loader {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 1rem;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .social-links {
-            margin-top: 2rem;
-        }
-
-        .social-links a {
-            color: white;
+        /* Nút Neon */
+        .btn-contact {
             text-decoration: none;
-            margin: 0 10px;
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border: 1px solid var(--primary-color);
+            border-radius: 50px;
             font-size: 0.9rem;
-            padding: 8px 15px;
-            border: 1px solid rgba(255,255,255,0.4);
-            border-radius: 25px;
+            text-transform: uppercase;
             transition: 0.3s;
+            box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.2), 0 0 10px rgba(0, 242, 255, 0.2);
         }
 
-        .social-links a:hover {
-            background: white;
-            color: #e73c7e;
+        .btn-contact:hover {
+            background: var(--primary-color);
+            color: black;
+            box-shadow: 0 0 30px var(--primary-color);
         }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="loader"></div>
-        <h1>Đang Cập Nhật</h1>
-        <p>Chúng mình đang làm mới giao diện để mang lại trải nghiệm tốt nhất cho bạn. Quay lại sau nhé!</p>
-        
-        <div class="social-links">
-            <a href="#">Facebook</a>
-            <a href="#">Email</a>
+    <div id="particles-js"></div>
+
+    <div class="glass-container">
+        <h1 class="glitch">Updating...</h1>
+        <div class="status-bar">
+            <div class="status-progress"></div>
         </div>
+        <p class="description">Hệ thống đang được nâng cấp lõi công nghệ.<br>Vui lòng quay lại sau ít phút.</p>
+        <a href="mailto:contact@yourweb.com" class="btn-contact">Liên hệ quản trị</a>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 100, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#00f2ff" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": true },
+                "size": { "value": 3, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#7000ff", "opacity": 0.4, "width": 1 },
+                "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } },
+                "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } } }
+            },
+            "retina_detect": true
+        });
+    </script>
 </body>
 </html>
