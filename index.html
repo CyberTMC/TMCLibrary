@@ -10,7 +10,208 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMCLibrary | Code Collection</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://cybertmc.github.io/TMCLibrary/favicon.ico">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Terminal Header -->
+    <div class="terminal-header">
+        <div class="terminal-buttons">
+            <span class="terminal-btn close"></span>
+            <span class="terminal-btn minimize"></span>
+            <span class="terminal-btn maximize"></span>
+        </div>
+        <div class="terminal-title">
+            <span class="terminal-prompt">$</span> TMCLibrary ~/code-collection
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-line">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <span class="nav-brand-text">TMC<span class="nav-brand-highlight">:</span>Library</span>
+            </div>
+            
+            <div class="nav-controls">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="search code..." class="search-line">
+                </div>
+                
+                <div class="view-controls">
+                    <button class="view-control active" data-view="timeline">
+                        <i class="fas fa-stream"></i>
+                    </button>
+                    <button class="view-control" data-view="compact">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="container">
+            <!-- Stats Bar -->
+            <div class="stats-line">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalCodes">8</span>
+                    <span class="stat-label">codes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="featuredCodes">3</span>
+                    <span class="stat-label">featured</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">python</span>
+                </div>
+            </div>
+
+            <!-- Code Timeline -->
+            <div class="code-timeline" id="codeTimeline">
+                <!-- Code items will be generated here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-terminal" id="emptyState" style="display: none;">
+                <div class="terminal-output">
+                    <span class="terminal-prompt">$</span> find . -name "*.py"
+                    <div class="terminal-result">
+                        <span class="text-muted">No matching files found</span>
+                    </div>
+                    <span class="terminal-prompt">$</span> <span class="cursor">█</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Code Detail Panel -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="panel-header">
+            <div class="panel-title">
+                <span class="panel-icon">></span>
+                <h2 id="panelTitle">code_detail.py</h2>
+            </div>
+            <button class="panel-close" id="panelClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="panel-content">
+            <div class="panel-section">
+                <h3 class="section-title">
+                    <span class="section-icon">#</span> description
+                </h3>
+                <div class="section-content">
+                    <p id="panelDescription" class="panel-text"></p>
+                </div>
+            </div>
+
+            <div class="panel-section" id="videoSection" style="display: none;">
+                <h3 class="section-title">
+                    <span class="section-icon">▶</span> tiktok_demo
+                </h3>
+                <div class="section-content">
+                    <div class="video-wrapper">
+                        <iframe id="tiktokVideo" src="" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <p class="panel-note">// Cho xin 1 tim ❤️</p>
+                </div>
+            </div>
+
+            <div class="panel-section" id="ideoneSection" style="display: none;">
+                <h3 class="section-title">
+                    <span class="section-icon"><i class="fas fa-code"></i></span> code_preview
+                </h3>
+                <div class="section-content">
+                    <div class="ideone-container" id="ideoneContainer">
+                        <!-- Ideone script will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3 class="section-title">
+                    <span class="section-icon">↗</span> code_links
+                </h3>
+                <div class="section-content">
+                    <div class="links-grid" id="codeLinks">
+                        <!-- Code links will be generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3 class="section-title">
+                    <span class="section-icon">📋</span> share_code
+                </h3>
+                <div class="section-content">
+                    <div class="share-actions">
+                        <button class="share-action" id="copyLinkBtn">
+                            <i class="fas fa-copy"></i>
+                            <span>copy link</span>
+                        </button>
+                        <button class="share-action" id="shareFacebook">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>facebook</span>
+                        </button>
+                        <button class="share-action" id="shareTwitter">
+                            <i class="fab fa-twitter"></i>
+                            <span>twitter</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="terminal-footer">
+        <div class="container">
+            <div class="footer-line">
+                <div class="footer-status">
+                    <span class="status-indicator"></span>
+                    <span>python 3.12</span>
+                    <span class="separator">|</span>
+                    <span>8 files</span>
+                    <span class="separator">|</span>
+                    <span>ready</span>
+                </div>
+                
+                <div class="footer-copyright">
+                    <span>© 2025-2028 TMCLibrary</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
