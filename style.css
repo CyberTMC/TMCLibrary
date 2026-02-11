@@ -725,7 +725,7 @@ body {
     border-radius: 12px;
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-sm);
-    width: 280px;
+    width: 320px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
@@ -762,19 +762,29 @@ body {
 .music-info {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: var(--spacing-md);
     padding-bottom: var(--spacing-sm);
     border-bottom: 1px solid var(--terminal-border);
 }
 
+.music-title-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
 .music-title {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    color: var(--text-primary);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    color: var(--terminal-accent);
     font-family: 'Space Grotesk', sans-serif;
+}
+
+.music-artist {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: lowercase;
 }
 
 .music-status {
@@ -805,6 +815,56 @@ body {
 
 .music-status.paused {
     color: var(--text-muted);
+}
+
+.music-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.music-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    min-width: 40px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--terminal-border);
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--terminal-accent);
+    border-radius: 2px;
+    transition: width 0.1s linear;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: var(--terminal-accent);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.progress-bar:hover .progress-fill::after {
+    opacity: 1;
 }
 
 .music-buttons {
@@ -970,7 +1030,7 @@ body {
     }
     
     .music-player-controls {
-        width: 260px;
+        width: 300px;
     }
 }
 
@@ -990,7 +1050,8 @@ body {
     }
     
     .music-player-controls {
-        width: 240px;
+        width: 280px;
+        right: 10px;
     }
     
     .music-player-mini {
