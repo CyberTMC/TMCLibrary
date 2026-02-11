@@ -171,15 +171,31 @@
         </div>
         <div class="music-player-controls hidden" id="musicControls">
             <div class="music-info">
-                <span class="music-title">background music</span>
+                <div class="music-title-info">
+                    <span class="music-title" id="currentSongTitle">background music</span>
+                    <span class="music-artist" id="currentSongArtist">random playlist</span>
+                </div>
                 <span class="music-status" id="musicStatus">playing</span>
             </div>
+            <div class="music-progress">
+                <span class="music-time" id="currentTime">0:00</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="music-time" id="durationTime">0:00</span>
+            </div>
             <div class="music-buttons">
+                <button class="music-btn" id="prevBtn">
+                    <i class="fas fa-backward"></i>
+                </button>
                 <button class="music-btn" id="playPauseBtn">
                     <i class="fas fa-pause"></i>
                 </button>
                 <button class="music-btn" id="stopBtn">
                     <i class="fas fa-stop"></i>
+                </button>
+                <button class="music-btn" id="nextBtn">
+                    <i class="fas fa-forward"></i>
                 </button>
                 <div class="volume-control">
                     <i class="fas fa-volume-up" id="volumeIcon"></i>
@@ -190,8 +206,8 @@
     </div>
 
     <!-- Audio Element -->
-    <audio id="bgMusic" loop preload="auto">
-        <source src="background-music.mp3" type="audio/mpeg">
+    <audio id="bgMusic" preload="auto">
+        <source src="" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
