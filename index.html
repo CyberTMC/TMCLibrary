@@ -129,17 +129,6 @@
                 </div>
             </div>
 
-            <div class="panel-section" id="ideoneSection" style="display: none;">
-                <h3 class="section-title">
-                    <span class="section-icon"><i class="fas fa-code"></i></span> code_preview
-                </h3>
-                <div class="section-content">
-                    <div class="ideone-container" id="ideoneContainer">
-                        <!-- Ideone script will be loaded here -->
-                    </div>
-                </div>
-            </div>
-
             <div class="panel-section">
                 <h3 class="section-title">
                     <span class="section-icon">↗</span> code_links
@@ -174,6 +163,37 @@
             </div>
         </div>
     </div>
+
+    <!-- Background Music Player -->
+    <div class="music-player-mini" id="musicPlayer">
+        <div class="music-player-toggle" id="musicToggle">
+            <i class="fas fa-music"></i>
+        </div>
+        <div class="music-player-controls" id="musicControls">
+            <div class="music-info">
+                <span class="music-title">background music</span>
+                <span class="music-status" id="musicStatus">playing</span>
+            </div>
+            <div class="music-buttons">
+                <button class="music-btn" id="playPauseBtn">
+                    <i class="fas fa-pause"></i>
+                </button>
+                <button class="music-btn" id="stopBtn">
+                    <i class="fas fa-stop"></i>
+                </button>
+                <div class="volume-control">
+                    <i class="fas fa-volume-up" id="volumeIcon"></i>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="30" class="volume-slider">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="background-music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <!-- Footer -->
     <footer class="terminal-footer">
