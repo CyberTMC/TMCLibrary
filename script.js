@@ -146,6 +146,7 @@ const stopBtn = document.getElementById('stopBtn');
 const volumeSlider = document.getElementById('volumeSlider');
 const volumeIcon = document.getElementById('volumeIcon');
 const musicStatus = document.getElementById('musicStatus');
+const musicPlayer = document.getElementById('musicPlayer');
 
 // ==================== MUSIC PLAYER FUNCTIONS ====================
 
@@ -170,6 +171,9 @@ function initMusicPlayer() {
     
     // Load saved settings from localStorage
     loadMusicSettings();
+    
+    // Initially hide controls
+    musicControls.classList.add('hidden');
 }
 
 // Update music UI based on state
@@ -229,7 +233,7 @@ function updateVolumeIcon(volume) {
     }
 }
 
-// Toggle music controls visibility
+// Toggle music controls
 function toggleMusicControls() {
     musicControls.classList.toggle('hidden');
     musicToggle.classList.toggle('active');
@@ -237,11 +241,15 @@ function toggleMusicControls() {
 
 // ==================== MUSIC EVENT LISTENERS ====================
 
-// Toggle music controls
-musicToggle.addEventListener('click', toggleMusicControls);
+// Toggle music controls when clicking on the circle button
+musicToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMusicControls();
+});
 
 // Play/Pause button
-playPauseBtn.addEventListener('click', () => {
+playPauseBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
     if (bgMusic.paused) {
         bgMusic.play();
     } else {
@@ -251,7 +259,8 @@ playPauseBtn.addEventListener('click', () => {
 });
 
 // Stop button
-stopBtn.addEventListener('click', () => {
+stopBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
     bgMusic.pause();
     bgMusic.currentTime = 0;
     updateMusicUI('paused');
@@ -260,6 +269,7 @@ stopBtn.addEventListener('click', () => {
 
 // Volume slider
 volumeSlider.addEventListener('input', (e) => {
+    e.stopPropagation();
     const volume = e.target.value / 100;
     bgMusic.volume = volume;
     updateVolumeIcon(volume);
@@ -267,23 +277,25 @@ volumeSlider.addEventListener('input', (e) => {
 });
 
 // Mute toggle (click on volume icon)
-volumeIcon.addEventListener('click', () => {
+volumeIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
     bgMusic.muted = !bgMusic.muted;
     const volume = bgMusic.muted ? 0 : bgMusic.volume;
     updateVolumeIcon(volume);
     saveMusicSettings();
 });
 
-// Close music controls when clicking outside
-document.addEventListener('click', (e) => {
-    if (!musicPlayer.contains(e.target) && !musicControls.classList.contains('hidden')) {
-        musicControls.classList.add('hidden');
-    }
-});
-
 // Prevent closing when clicking inside music controls
 musicControls.addEventListener('click', (e) => {
     e.stopPropagation();
+});
+
+// Close controls when clicking outside
+document.addEventListener('click', (e) => {
+    if (!musicPlayer.contains(e.target) && !musicControls.classList.contains('hidden')) {
+        musicControls.classList.add('hidden');
+        musicToggle.classList.remove('active');
+    }
 });
 
 // ==================== UTILITY FUNCTIONS ====================
@@ -372,7 +384,6 @@ function renderCodeTimeline(codes) {
             const codeId = btn.getAttribute('data-id');
             openCodePanel(codeId);
             
-            // Scroll to video section after a short delay
             setTimeout(() => {
                 const videoSection = document.querySelector('#videoSection');
                 if (videoSection) {
@@ -390,11 +401,9 @@ function openCodePanel(codeId) {
     
     currentCodeId = codeId;
     
-    // Update panel content
     panelTitle.textContent = `${code.title.toLowerCase().replace(/\s+/g, '_')}.py`;
     panelDescription.textContent = code.description;
     
-    // Update video section
     if (code.tiktokVideo) {
         videoSection.style.display = 'block';
         tiktokVideo.src = code.tiktokVideo;
@@ -402,7 +411,6 @@ function openCodePanel(codeId) {
         videoSection.style.display = 'none';
     }
     
-    // Update code links
     codeLinks.innerHTML = code.links.map(link => `
         <div class="link-item" onclick="window.open('${link.url}', '_blank')">
             <div class="link-icon">
@@ -415,11 +423,9 @@ function openCodePanel(codeId) {
         </div>
     `).join('');
     
-    // Update share URLs
     const shareUrl = `${CONFIG.baseUrl}?id=${codeId}`;
     const shareText = encodeURIComponent(`Check out this Python code: ${code.title}`);
     
-    // Update copy link button
     copyLinkBtn.onclick = () => {
         navigator.clipboard.writeText(shareUrl).then(() => {
             const originalText = copyLinkBtn.querySelector('span').textContent;
@@ -435,7 +441,6 @@ function openCodePanel(codeId) {
         });
     };
     
-    // Update social share buttons
     shareFacebook.onclick = () => {
         window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
     };
@@ -444,7 +449,6 @@ function openCodePanel(codeId) {
         window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${shareText}`, '_blank');
     };
     
-    // Show panel
     detailPanel.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -461,7 +465,6 @@ function closePanel() {
 function filterAndSortCodes() {
     let filteredCodes = [...CONFIG.codes];
     
-    // Apply search filter
     if (currentFilter) {
         const searchTerm = currentFilter.toLowerCase();
         filteredCodes = filteredCodes.filter(code => 
@@ -471,7 +474,6 @@ function filterAndSortCodes() {
         );
     }
     
-    // Featured codes first
     filteredCodes.sort((a, b) => (b.featured - a.featured));
     
     renderCodeTimeline(filteredCodes);
@@ -491,7 +493,6 @@ viewControls.forEach(control => {
         viewControls.forEach(c => c.classList.remove('active'));
         control.classList.add('active');
         currentView = control.getAttribute('data-view');
-        // In future, we could add different view modes
     });
 });
 
@@ -516,16 +517,10 @@ document.addEventListener('keydown', (e) => {
 // ==================== INITIALIZATION ====================
 
 function init() {
-    // Update statistics
     updateStatistics();
-    
-    // Load initial codes
     filterAndSortCodes();
-    
-    // Initialize music player
     initMusicPlayer();
     
-    // Check URL for code ID
     const urlParams = new URLSearchParams(window.location.search);
     const codeId = urlParams.get('id');
     
@@ -535,7 +530,6 @@ function init() {
         }, 500);
     }
     
-    // Add terminal-like typing effect to search placeholder
     const searchPlaceholders = [
         "search code...",
         "find python files...",
@@ -572,7 +566,6 @@ function init() {
         setTimeout(typePlaceholder, isDeleting ? 50 : 100);
     }
     
-    // Start typing effect after a delay
     setTimeout(typePlaceholder, 1000);
 }
 
