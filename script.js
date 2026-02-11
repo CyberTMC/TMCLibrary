@@ -179,17 +179,32 @@ async function loadMusicPlaylist() {
     // Danh sách nhạc mẫu - bạn có thể thay thế bằng cách quét thư mục thực tế
     // Trong môi trường thực tế, bạn cần API phía server để lấy danh sách file
     const samplePlaylist = [
-        { name: 'Summer Vibes', file: 'summer-vibes.mp3', artist: 'Background Music' },
-        { name: 'Chill Evening', file: 'chill-evening.mp3', artist: 'Background Music' },
-        { name: 'Morning Coffee', file: 'morning-coffee.mp3', artist: 'Background Music' },
-        { name: 'Night Drive', file: 'night-drive.mp3', artist: 'Background Music' },
-        { name: 'Rainy Day', file: 'rainy-day.mp3', artist: 'Background Music' },
-        { name: 'Ocean Waves', file: 'ocean-waves.mp3', artist: 'Background Music' },
-        { name: 'Forest Walk', file: 'forest-walk.mp3', artist: 'Background Music' },
-        { name: 'City Lights', file: 'city-lights.mp3', artist: 'Background Music' },
-        { name: 'Dream Catcher', file: 'dream-catcher.mp3', artist: 'Background Music' },
-        { name: 'Sweet Memory', file: 'sweet-memory.mp3', artist: 'Background Music' }
-    ];
+    { 
+        name: 'Track 06', 
+        file: '[ Lyrics ] Track 06 – Tyronee, VSTRA, Obito.mp3', 
+        artist: 'Tyronee, VSTRA, Obito' 
+    },
+    { 
+        name: 'Chẳng Phải Tình Đầu Sao Đau Đến Thế', 
+        file: 'MIN - chẳng phải tình đầu sao đau đến thế feat. Dangrangto, Antransax (Official Audio).mp3', 
+        artist: 'MIN, Dangrangto, Antransax' 
+    },
+    { 
+        name: 'Trời Giấu Trời Mang Đi', 
+        file: 'Trời Giấu Trời Mang Đi.mp3', 
+        artist: 'Nhạc Trẻ' 
+    },
+    { 
+        name: 'Vẫn Nhớ', 
+        file: 'Vẫn Nhớ - Soobin Hoàng Sơn _ Cover.mp3', 
+        artist: 'Soobin Hoàng Sơn (Cover)' 
+    },
+    { 
+        name: 'Ai Ngoài Anh', 
+        file: 'VSTRA - Ai Ngoài Anh (Official Audio).mp3', 
+        artist: 'VSTRA' 
+    }
+];
     
     // Tạo playlist từ danh sách mẫu
     musicPlaylist = samplePlaylist.map((song, index) => ({
