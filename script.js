@@ -112,6 +112,8 @@ const CONFIG = {
 let currentView = 'timeline';
 let currentFilter = '';
 let currentCodeId = null;
+let autoplayAttempts = 0;
+const MAX_AUTOPLAY_ATTEMPTS = 5;
 
 // ==================== DOM ELEMENTS ====================
 
@@ -152,31 +154,136 @@ const musicPlayer = document.getElementById('musicPlayer');
 
 // Initialize music player
 function initMusicPlayer() {
+    console.log('🎵 Initializing music player...');
+    
     // Set initial volume
     bgMusic.volume = 0.3;
+    volumeSlider.value = 30;
     
-    // Try to autoplay
-    bgMusic.play().catch(error => {
-        console.log('Autoplay prevented. User interaction needed.');
-        updateMusicUI('paused');
-    });
-    
-    // Add event listeners
-    bgMusic.addEventListener('play', () => updateMusicUI('playing'));
-    bgMusic.addEventListener('pause', () => updateMusicUI('paused'));
-    bgMusic.addEventListener('ended', () => {
-        bgMusic.currentTime = 0;
-        bgMusic.play();
-    });
-    
-    // Load saved settings from localStorage
+    // Load saved settings
     loadMusicSettings();
     
     // Initially hide controls
     musicControls.classList.add('hidden');
+    
+    // === AUTO PLAY - THỬ NGAY LẬP TỨC ===
+    bgMusic.load(); // Load lại audio
+    attemptAutoplay();
+    
+    // Add event listeners
+    bgMusic.addEventListener('play', () => {
+        console.log('🎵 Music is playing');
+        updateMusicUI('playing');
+        saveMusicSettings();
+    });
+    
+    bgMusic.addEventListener('pause', () => {
+        console.log('🎵 Music is paused');
+        updateMusicUI('paused');
+        saveMusicSettings();
+    });
+    
+    bgMusic.addEventListener('ended', () => {
+        console.log('🎵 Music ended, replaying');
+        bgMusic.currentTime = 0;
+        bgMusic.play().catch(() => {});
+    });
+    
+    bgMusic.addEventListener('canplaythrough', () => {
+        console.log('🎵 Audio loaded successfully');
+        // Thử phát lại khi audio đã sẵn sàng
+        if (autoplayAttempts < MAX_AUTOPLAY_ATTEMPTS) {
+            attemptAutoplay();
+        }
+    });
 }
 
-// Update music UI based on state
+// Hàm thử tự động phát nhạc
+function attemptAutoplay() {
+    autoplayAttempts++;
+    console.log(`🎵 Autoplay attempt ${autoplayAttempts}/${MAX_AUTOPLAY_ATTEMPTS}`);
+    
+    const playPromise = bgMusic.play();
+    
+    if (playPromise !== undefined) {
+        playPromise
+            .then(() => {
+                console.log('✅ AUTOPLAY SUCCESSFUL!');
+                updateMusicUI('playing');
+                saveMusicSettings();
+                autoplayAttempts = 0; // Reset counter
+            })
+            .catch(error => {
+                console.log(`❌ Autoplay attempt ${autoplayAttempts} failed:`, error.message);
+                
+                // Thử lại với độ trễ tăng dần
+                if (autoplayAttempts < MAX_AUTOPLAY_ATTEMPTS) {
+                    const delay = autoplayAttempts * 500; // 500ms, 1000ms, 1500ms, ...
+                    console.log(`🎵 Retrying in ${delay}ms...`);
+                    setTimeout(() => attemptAutoplay(), delay);
+                } else {
+                    console.log('🎵 Max autoplay attempts reached, waiting for user interaction');
+                    updateMusicUI('paused');
+                    
+                    // Hiển thị thông báo nhỏ (tùy chọn)
+                    showAutoplayNotification();
+                }
+            });
+    }
+}
+
+// Hiển thị thông báo nếu autoplay bị chặn
+function showAutoplayNotification() {
+    // Tạo thông báo nếu chưa có
+    if (!document.querySelector('.autoplay-notice')) {
+        const notice = document.createElement('div');
+        notice.className = 'autoplay-notice';
+        notice.innerHTML = '🔊 Click anywhere to play music';
+        notice.style.cssText = `
+            position: fixed;
+            bottom: 150px;
+            right: 80px;
+            background: var(--ui-surface);
+            border: 1px solid var(--terminal-accent);
+            color: var(--terminal-accent);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 9998;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,255,157,0.2);
+        `;
+        document.body.appendChild(notice);
+        
+        // Tự động ẩn sau 5 giây
+        setTimeout(() => {
+            if (notice && notice.parentNode) {
+                notice.style.opacity = '0';
+                notice.style.transition = 'opacity 0.5s';
+                setTimeout(() => notice.remove(), 500);
+            }
+        }, 5000);
+    }
+}
+
+// Force play music
+function forcePlayMusic() {
+    if (bgMusic.paused) {
+        bgMusic.play()
+            .then(() => {
+                console.log('✅ Music started by user interaction');
+                updateMusicUI('playing');
+                saveMusicSettings();
+                
+                // Xóa thông báo nếu có
+                const notice = document.querySelector('.autoplay-notice');
+                if (notice) notice.remove();
+            })
+            .catch(err => console.log('❌ Cannot play:', err));
+    }
+}
+
+// Update music UI
 function updateMusicUI(state) {
     const playPauseIcon = playPauseBtn.querySelector('i');
     
@@ -210,11 +317,6 @@ function loadMusicSettings() {
             bgMusic.volume = settings.volume;
             bgMusic.muted = settings.isMuted || false;
             volumeSlider.value = settings.volume * 100;
-            
-            if (settings.isPlaying) {
-                bgMusic.play().catch(() => {});
-            }
-            
             updateVolumeIcon(settings.volume);
         } catch (e) {
             console.error('Error loading music settings');
@@ -222,7 +324,7 @@ function loadMusicSettings() {
     }
 }
 
-// Update volume icon based on volume level
+// Update volume icon
 function updateVolumeIcon(volume) {
     if (volume === 0 || bgMusic.muted) {
         volumeIcon.className = 'fas fa-volume-mute';
@@ -241,21 +343,21 @@ function toggleMusicControls() {
 
 // ==================== MUSIC EVENT LISTENERS ====================
 
-// Toggle music controls when clicking on the circle button
+// Toggle music controls
 musicToggle.addEventListener('click', (e) => {
     e.stopPropagation();
     toggleMusicControls();
+    forcePlayMusic();
 });
 
 // Play/Pause button
 playPauseBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     if (bgMusic.paused) {
-        bgMusic.play();
+        bgMusic.play().catch(() => {});
     } else {
         bgMusic.pause();
     }
-    saveMusicSettings();
 });
 
 // Stop button
@@ -276,7 +378,7 @@ volumeSlider.addEventListener('input', (e) => {
     saveMusicSettings();
 });
 
-// Mute toggle (click on volume icon)
+// Volume icon click (mute/unmute)
 volumeIcon.addEventListener('click', (e) => {
     e.stopPropagation();
     bgMusic.muted = !bgMusic.muted;
@@ -285,7 +387,7 @@ volumeIcon.addEventListener('click', (e) => {
     saveMusicSettings();
 });
 
-// Prevent closing when clicking inside music controls
+// Prevent closing when clicking inside controls
 musicControls.addEventListener('click', (e) => {
     e.stopPropagation();
 });
@@ -296,6 +398,101 @@ document.addEventListener('click', (e) => {
         musicControls.classList.add('hidden');
         musicToggle.classList.remove('active');
     }
+});
+
+// ============ AUTO PLAY TRIGGERS - KHÔNG THỂ CHẶN ============
+
+// 1. TRIGGER: Click anywhere on page
+document.addEventListener('click', function playOnClick() {
+    if (bgMusic.paused) {
+        bgMusic.play()
+            .then(() => {
+                console.log('✅ Music started by click');
+                updateMusicUI('playing');
+                saveMusicSettings();
+                
+                // Xóa thông báo
+                const notice = document.querySelector('.autoplay-notice');
+                if (notice) notice.remove();
+            })
+            .catch(() => {});
+    }
+}, { once: true }); // Chỉ chạy 1 lần
+
+// 2. TRIGGER: Scroll
+document.addEventListener('scroll', function playOnScroll() {
+    if (bgMusic.paused) {
+        bgMusic.play()
+            .then(() => {
+                console.log('✅ Music started by scroll');
+                updateMusicUI('playing');
+                saveMusicSettings();
+            })
+            .catch(() => {});
+    }
+}, { once: true });
+
+// 3. TRIGGER: Touch (mobile)
+document.addEventListener('touchstart', function playOnTouch() {
+    if (bgMusic.paused) {
+        bgMusic.play()
+            .then(() => {
+                console.log('✅ Music started by touch');
+                updateMusicUI('playing');
+                saveMusicSettings();
+            })
+            .catch(() => {});
+    }
+}, { once: true });
+
+// 4. TRIGGER: Key press (any key)
+document.addEventListener('keydown', function playOnKey() {
+    if (bgMusic.paused) {
+        bgMusic.play()
+            .then(() => {
+                console.log('✅ Music started by keypress');
+                updateMusicUI('playing');
+                saveMusicSettings();
+            })
+            .catch(() => {});
+    }
+}, { once: true });
+
+// 5. TRIGGER: Mouse move
+document.addEventListener('mousemove', function playOnMouseMove() {
+    if (bgMusic.paused) {
+        bgMusic.play()
+            .then(() => {
+                console.log('✅ Music started by mouse move');
+                updateMusicUI('playing');
+                saveMusicSettings();
+            })
+            .catch(() => {});
+    }
+}, { once: true });
+
+// 6. TRIGGER: Visibility change (quay lại tab)
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && bgMusic.paused) {
+        bgMusic.play()
+            .then(() => {
+                console.log('✅ Music resumed on tab focus');
+                updateMusicUI('playing');
+                saveMusicSettings();
+            })
+            .catch(() => {});
+    }
+});
+
+// 7. TRIGGER: Page fully loaded
+window.addEventListener('load', function() {
+    console.log('📄 Page fully loaded');
+    // Thử autoplay lại khi page đã load xong
+    setTimeout(() => {
+        if (bgMusic.paused) {
+            attemptAutoplay();
+        }
+    }, 1000);
 });
 
 // ==================== UTILITY FUNCTIONS ====================
@@ -517,10 +714,13 @@ document.addEventListener('keydown', (e) => {
 // ==================== INITIALIZATION ====================
 
 function init() {
+    console.log('🚀 TMCLibrary initializing...');
+    
     updateStatistics();
     filterAndSortCodes();
     initMusicPlayer();
     
+    // Check URL for code ID
     const urlParams = new URLSearchParams(window.location.search);
     const codeId = urlParams.get('id');
     
@@ -530,6 +730,7 @@ function init() {
         }, 500);
     }
     
+    // Typing effect for search placeholder
     const searchPlaceholders = [
         "search code...",
         "find python files...",
@@ -569,5 +770,21 @@ function init() {
     setTimeout(typePlaceholder, 1000);
 }
 
-// Initialize when DOM is loaded
+// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', init);
+
+// Final fallback - thử phát nhạc sau 2 giây nếu vẫn chưa phát
+setTimeout(() => {
+    if (bgMusic && bgMusic.paused) {
+        console.log('🎵 Final autoplay attempt...');
+        bgMusic.play()
+            .then(() => {
+                console.log('✅ Final autoplay successful!');
+                updateMusicUI('playing');
+                saveMusicSettings();
+            })
+            .catch(() => {
+                console.log('❌ Final autoplay failed - waiting for user interaction');
+            });
+    }
+}, 2000);
