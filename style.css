@@ -690,41 +690,46 @@ body {
     justify-content: center;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(0, 255, 157, 0.3);
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     animation: pulse 2s infinite;
+    position: relative;
+    z-index: 10000;
 }
 
 .music-player-toggle i {
     color: var(--terminal-bg);
     font-size: 1.2rem;
+    transition: all 0.3s ease;
 }
 
 .music-player-toggle:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(0, 255, 157, 0.5);
+    box-shadow: 0 6px 20px rgba(0, 255, 157, 0.6);
 }
 
-@keyframes pulse {
-    0% {
-        box-shadow: 0 4px 15px rgba(0, 255, 157, 0.3);
-    }
-    50% {
-        box-shadow: 0 4px 25px rgba(0, 255, 157, 0.6);
-    }
-    100% {
-        box-shadow: 0 4px 15px rgba(0, 255, 157, 0.3);
-    }
+.music-player-toggle.active {
+    background: var(--terminal-secondary);
+    animation: none;
+    transform: scale(0.95);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.music-player-toggle.active i {
+    transform: rotate(180deg);
+    color: white;
 }
 
 .music-player-controls {
     background: var(--ui-surface);
     border: 1px solid var(--terminal-accent);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-sm);
     width: 280px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    animation: slideIn 0.3s ease;
+    animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    z-index: 9999;
 }
 
 .music-player-controls.hidden {
@@ -734,11 +739,23 @@ body {
 @keyframes slideIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(20px) scale(0.9);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 4px 15px rgba(0, 255, 157, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 25px rgba(0, 255, 157, 0.7);
+    }
+    100% {
+        box-shadow: 0 4px 15px rgba(0, 255, 157, 0.3);
     }
 }
 
@@ -757,6 +774,7 @@ body {
     color: var(--text-primary);
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-family: 'Space Grotesk', sans-serif;
 }
 
 .music-status {
@@ -764,6 +782,7 @@ body {
     color: var(--terminal-accent);
     position: relative;
     padding-left: 12px;
+    font-weight: 500;
 }
 
 .music-status::before {
@@ -784,6 +803,10 @@ body {
     animation: none;
 }
 
+.music-status.paused {
+    color: var(--text-muted);
+}
+
 .music-buttons {
     display: flex;
     align-items: center;
@@ -796,7 +819,7 @@ body {
     background: var(--ui-bg);
     border: 1px solid var(--terminal-border);
     color: var(--text-secondary);
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -808,12 +831,6 @@ body {
     background: var(--ui-hover);
     border-color: var(--terminal-accent);
     color: var(--terminal-accent);
-}
-
-.music-btn.active {
-    background: var(--terminal-accent);
-    color: var(--ui-bg);
-    border-color: var(--terminal-accent);
 }
 
 .volume-control {
@@ -828,6 +845,12 @@ body {
     color: var(--text-secondary);
     font-size: 0.9rem;
     min-width: 16px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.volume-control i:hover {
+    color: var(--terminal-accent);
 }
 
 .volume-slider {
@@ -841,8 +864,8 @@ body {
 
 .volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     background: var(--terminal-accent);
     border-radius: 50%;
     cursor: pointer;
