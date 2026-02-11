@@ -137,6 +137,155 @@ const copyLinkBtn = document.getElementById('copyLinkBtn');
 const shareFacebook = document.getElementById('shareFacebook');
 const shareTwitter = document.getElementById('shareTwitter');
 
+// Music Player Elements
+const bgMusic = document.getElementById('bgMusic');
+const musicToggle = document.getElementById('musicToggle');
+const musicControls = document.getElementById('musicControls');
+const playPauseBtn = document.getElementById('playPauseBtn');
+const stopBtn = document.getElementById('stopBtn');
+const volumeSlider = document.getElementById('volumeSlider');
+const volumeIcon = document.getElementById('volumeIcon');
+const musicStatus = document.getElementById('musicStatus');
+
+// ==================== MUSIC PLAYER FUNCTIONS ====================
+
+// Initialize music player
+function initMusicPlayer() {
+    // Set initial volume
+    bgMusic.volume = 0.3;
+    
+    // Try to autoplay
+    bgMusic.play().catch(error => {
+        console.log('Autoplay prevented. User interaction needed.');
+        updateMusicUI('paused');
+    });
+    
+    // Add event listeners
+    bgMusic.addEventListener('play', () => updateMusicUI('playing'));
+    bgMusic.addEventListener('pause', () => updateMusicUI('paused'));
+    bgMusic.addEventListener('ended', () => {
+        bgMusic.currentTime = 0;
+        bgMusic.play();
+    });
+    
+    // Load saved settings from localStorage
+    loadMusicSettings();
+}
+
+// Update music UI based on state
+function updateMusicUI(state) {
+    const playPauseIcon = playPauseBtn.querySelector('i');
+    
+    if (state === 'playing') {
+        playPauseIcon.className = 'fas fa-pause';
+        musicStatus.textContent = 'playing';
+        musicStatus.classList.remove('paused');
+    } else {
+        playPauseIcon.className = 'fas fa-play';
+        musicStatus.textContent = 'paused';
+        musicStatus.classList.add('paused');
+    }
+}
+
+// Save music settings
+function saveMusicSettings() {
+    const settings = {
+        volume: bgMusic.volume,
+        isMuted: bgMusic.muted,
+        isPlaying: !bgMusic.paused
+    };
+    localStorage.setItem('tmcMusicSettings', JSON.stringify(settings));
+}
+
+// Load music settings
+function loadMusicSettings() {
+    const saved = localStorage.getItem('tmcMusicSettings');
+    if (saved) {
+        try {
+            const settings = JSON.parse(saved);
+            bgMusic.volume = settings.volume;
+            bgMusic.muted = settings.isMuted || false;
+            volumeSlider.value = settings.volume * 100;
+            
+            if (settings.isPlaying) {
+                bgMusic.play().catch(() => {});
+            }
+            
+            updateVolumeIcon(settings.volume);
+        } catch (e) {
+            console.error('Error loading music settings');
+        }
+    }
+}
+
+// Update volume icon based on volume level
+function updateVolumeIcon(volume) {
+    if (volume === 0 || bgMusic.muted) {
+        volumeIcon.className = 'fas fa-volume-mute';
+    } else if (volume < 0.5) {
+        volumeIcon.className = 'fas fa-volume-down';
+    } else {
+        volumeIcon.className = 'fas fa-volume-up';
+    }
+}
+
+// Toggle music controls visibility
+function toggleMusicControls() {
+    musicControls.classList.toggle('hidden');
+    musicToggle.classList.toggle('active');
+}
+
+// ==================== MUSIC EVENT LISTENERS ====================
+
+// Toggle music controls
+musicToggle.addEventListener('click', toggleMusicControls);
+
+// Play/Pause button
+playPauseBtn.addEventListener('click', () => {
+    if (bgMusic.paused) {
+        bgMusic.play();
+    } else {
+        bgMusic.pause();
+    }
+    saveMusicSettings();
+});
+
+// Stop button
+stopBtn.addEventListener('click', () => {
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+    updateMusicUI('paused');
+    saveMusicSettings();
+});
+
+// Volume slider
+volumeSlider.addEventListener('input', (e) => {
+    const volume = e.target.value / 100;
+    bgMusic.volume = volume;
+    updateVolumeIcon(volume);
+    saveMusicSettings();
+});
+
+// Mute toggle (click on volume icon)
+volumeIcon.addEventListener('click', () => {
+    bgMusic.muted = !bgMusic.muted;
+    const volume = bgMusic.muted ? 0 : bgMusic.volume;
+    updateVolumeIcon(volume);
+    saveMusicSettings();
+});
+
+// Close music controls when clicking outside
+document.addEventListener('click', (e) => {
+    if (!musicPlayer.contains(e.target) && !musicControls.classList.contains('hidden')) {
+        musicControls.classList.add('hidden');
+    }
+});
+
+// Prevent closing when clicking inside music controls
+musicControls.addEventListener('click', (e) => {
+    e.stopPropagation();
+});
+
 // ==================== UTILITY FUNCTIONS ====================
 
 // Count featured codes
@@ -325,14 +474,6 @@ function filterAndSortCodes() {
     // Featured codes first
     filteredCodes.sort((a, b) => (b.featured - a.featured));
     
-    // Then sort by title
-    filteredCodes.sort((a, b) => {
-        if (a.featured === b.featured) {
-            return a.title.localeCompare(b.title);
-        }
-        return 0;
-    });
-    
     renderCodeTimeline(filteredCodes);
 }
 
@@ -380,6 +521,9 @@ function init() {
     
     // Load initial codes
     filterAndSortCodes();
+    
+    // Initialize music player
+    initMusicPlayer();
     
     // Check URL for code ID
     const urlParams = new URLSearchParams(window.location.search);
