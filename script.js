@@ -112,7 +112,7 @@ const CONFIG = {
             lang: "HTML/CSS/JS",
             tags: ["valentine", "3d", "interactive", "camera"],
             featured: true,
-            tiktokVideo: "",
+            tiktokVideo: "https://www.tiktok.com/embed/v2/7605641601842531591",
             links: [
                 {name: "Bản thường (Valentine 3D)", url: "https://drive.google.com/file/d/1NLCtfnBtK2i2cIN93PpJKzWxufw48J2W/view?usp=sharing", icon: "fas fa-download"},
                 {name: "Bản góc quay camera", url: "https://drive.google.com/file/d/1letI6flSAgs5kwFmWgtxCr9Ko_e4r8a4/view?usp=sharing", icon: "fas fa-video"}
