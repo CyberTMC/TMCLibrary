@@ -86,7 +86,7 @@ const CONFIG = {
             description: "Code python hiển thị lời bài hát với hiệu ứng màu sắc lạnh, tạo cảm giác sâu lắng và tinh tế.",
             lang: "Python",
             tags: ["cold colors", "lyrics", "emotional"],
-            featured: true,
+            featured: false,
             tiktokVideo: "https://www.tiktok.com/embed/v2/7586695262454680840",
             links: [
                 {name: "Xem code trên Ideone", url: "https://ideone.com/0JkI9w", icon: "fas fa-code"},
@@ -102,6 +102,20 @@ const CONFIG = {
             tiktokVideo: "https://www.tiktok.com/embed/v2/7599379786640706834",
             links: [
                 {name: "Xem code trên Ideone", url: "https://ideone.com/cCLbHQ", icon: "fas fa-code"},
+            ]
+        },
+        // Valentine 3D với hai phiên bản (thường và góc quay camera)
+        {
+            id: "9",
+            title: "Valentine 3D - Bản thường & Góc quay",
+            description: "Mã nguồn HTML/CSS/JS tạo thiệp Valentine với hiệu ứng 3D. Bao gồm hai phiên bản: bản thường và bản có góc quay camera. Phù hợp để gửi tặng người thương.",
+            lang: "HTML/CSS/JS",
+            tags: ["valentine", "3d", "interactive", "camera"],
+            featured: true,
+            tiktokVideo: "",
+            links: [
+                {name: "Bản thường (Valentine 3D)", url: "https://drive.google.com/file/d/1NLCtfnBtK2i2cIN93PpJKzWxufw48J2W/view?usp=sharing", icon: "fas fa-download"},
+                {name: "Bản góc quay camera", url: "https://drive.google.com/file/d/1letI6flSAgs5kwFmWgtxCr9Ko_e4r8a4/view?usp=sharing", icon: "fas fa-video"}
             ]
         }
     ],
