@@ -108,7 +108,7 @@ const CONFIG = {
         {
             id: "9",
             title: "Valentine 3D - Bản thường & Góc quay",
-            description: "Mã nguồn HTML/CSS/JS tạo thiệp Valentine với hiệu ứng 3D. Bao gồm hai phiên bản: bản thường và bản có góc quay camera. Phù hợp để gửi tặng người thương.",
+            description: "Mã nguồn HTML/CSS/JS tạo thiệp Valentine với hiệu ứng 3D. Bao gồm hai phiên bản: bản thường và bản có góc quay camera. Phù hợp để gửi tặng người thương.[tải về nhớ giải nén ra nhé!!]",
             lang: "HTML/CSS/JS",
             tags: ["valentine", "3d", "interactive", "camera"],
             featured: true,
