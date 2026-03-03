@@ -24,7 +24,7 @@ const CONFIG = {
             description: "Code Python hiển thị lời bài hát với hiệu ứng chữ màu đỏ ấn tượng. Sử dụng thư viện chuẩn, không cần cài đặt thêm.",
             lang: "Python",
             tags: ["music", "lyrics", "red theme"],
-            featured: false,
+            featured: true,
             tiktokVideo: "https://www.tiktok.com/embed/v2/7565953044748242184",
             links: [
                 {name: "Xem code trên Ideone", url: "https://ideone.com/NdMbUs", icon: "fas fa-code"},
@@ -112,10 +112,23 @@ const CONFIG = {
             lang: "HTML/CSS/JS",
             tags: ["valentine", "3d", "interactive", "camera"],
             featured: true,
-            tiktokVideo: "https://www.tiktok.com/embed/v2/7605641601842531591",
+            tiktokVideo: "https://www.tiktok.com/embed/v2/7612518932695518471",
             links: [
                 {name: "Bản thường (Valentine 3D)", url: "https://drive.google.com/file/d/1NLCtfnBtK2i2cIN93PpJKzWxufw48J2W/view?usp=sharing", icon: "fas fa-download"},
                 {name: "Bản góc quay camera", url: "https://drive.google.com/file/d/1letI6flSAgs5kwFmWgtxCr9Ko_e4r8a4/view?usp=sharing", icon: "fas fa-video"}
+            ]
+        },
+        // Hoa sữa 
+        {
+            id: "10",
+            title: "Hoa sữa",
+            description: "Code Python hiển thị lời bài hát Hoa sữa với hiệu ứng màu sắc và chuyển động đẹp mắt. Phù hợp cho những ai yêu thích nhạc trữ tình.",
+            lang: "Python",
+            tags: ["music", "lyrics", "romantic", "slow"],
+            featured: true,
+            tiktokVideo: "https://www.tiktok.com/embed/v2/7612675489421004040",  
+            links: [
+                {name: "Xem code trên Ideone", url: "https://ideone.com/qYTtzr", icon: "fas fa-code"},
             ]
         }
     ],
@@ -217,6 +230,11 @@ async function loadMusicPlaylist() {
         name: 'Ai Ngoài Anh', 
         file: 'VSTRA - Ai Ngoài Anh (Official Audio).mp3', 
         artist: 'VSTRA' 
+    },
+    {
+        name: 'Hoa Sữa',
+        file: 'Hoa Sữa - Nhạc Trữ Tình.mp3',
+        artist: 'Nhạc Trữ Tình'
     }
 ];
     
