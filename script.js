@@ -233,8 +233,8 @@ async function loadMusicPlaylist() {
     },
     {
         name: 'Hoa Sữa',
-        file: 'Hoa Sữa - Nhạc Trữ Tình.mp3',
-        artist: 'Nhạc Trữ Tình'
+        file: 'Hoa Sữa ( HNT Remix ) __ Hot TikTok 2025 - Audio Lyrics Video.mp3',
+        artist: ' HNT Remix '
     }
 ];
     
