@@ -24,7 +24,7 @@ const CONFIG = {
             description: "Code Python hiển thị lời bài hát với hiệu ứng chữ màu đỏ ấn tượng. Sử dụng thư viện chuẩn, không cần cài đặt thêm.",
             lang: "Python",
             tags: ["music", "lyrics", "red theme"],
-            featured: true,
+            featured: false,
             tiktokVideo: "https://www.tiktok.com/embed/v2/7565953044748242184",
             links: [
                 {name: "Xem code trên Ideone", url: "https://ideone.com/NdMbUs", icon: "fas fa-code"},
@@ -111,7 +111,7 @@ const CONFIG = {
             description: "Mã nguồn HTML/CSS/JS tạo thiệp Valentine với hiệu ứng 3D. Bao gồm hai phiên bản: bản thường và bản có góc quay camera. Phù hợp để gửi tặng người thương.[tải về nhớ giải nén ra nhé!!]",
             lang: "HTML/CSS/JS",
             tags: ["valentine", "3d", "interactive", "camera"],
-            featured: true,
+            featured: false,
             tiktokVideo: "https://www.tiktok.com/embed/v2/7612518932695518471",
             links: [
                 {name: "Bản thường (Valentine 3D)", url: "https://drive.google.com/file/d/1NLCtfnBtK2i2cIN93PpJKzWxufw48J2W/view?usp=sharing", icon: "fas fa-download"},
@@ -129,6 +129,18 @@ const CONFIG = {
             tiktokVideo: "https://www.tiktok.com/embed/v2/7612675489421004040",  
             links: [
                 {name: "Xem code trên Ideone", url: "https://ideone.com/qYTtzr", icon: "fas fa-code"},
+            ]
+        },
+        {
+            id: "11",
+            title: "Một bài hát không vui mấy X Em mới là người yêu anh ",
+            description: "Rỗng",
+            lang: "Python",
+            tags: ["music", "lyrics"],
+            featured: true,
+            tiktokVideo: "https://www.tiktok.com/embed/v2/7631244676732914951",  
+            links: [
+                {name: "Xem code trên Ideone", url: "https://ideone.com/dnWfZ5", icon: "fas fa-code"},
             ]
         }
     ],
@@ -235,6 +247,11 @@ async function loadMusicPlaylist() {
         name: 'Hoa Sữa',
         file: 'Hoa Sữa ( HNT Remix ) __ Hot TikTok 2025 - Audio Lyrics Video.mp3',
         artist: ' HNT Remix '
+    },
+    {
+        name:'Một bài hát không vui mấy',
+        file: 'T.R.I x @Dangrangto x DONAL - một bài hát không vui mấy (extended ver.) _ OFFICIAL LYRICS VIDEO.mp3'
+        artist:'T.R.I x @Dangrangto x DONAL'
     }
 ];
     
