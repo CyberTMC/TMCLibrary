@@ -250,7 +250,7 @@ async function loadMusicPlaylist() {
     },
     {
         name:'Một bài hát không vui mấy',
-        file: 'T.R.I x @Dangrangto x DONAL - một bài hát không vui mấy (extended ver.) _ OFFICIAL LYRICS VIDEO.mp3'
+        file: 'T.R.I x @Dangrangto x DONAL - một bài hát không vui mấy (extended ver.) _ OFFICIAL LYRICS VIDEO.mp3',
         artist:'T.R.I x @Dangrangto x DONAL'
     }
 ];
