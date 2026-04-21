@@ -213,7 +213,7 @@ const progressBar = document.querySelector('.progress-bar');
 async function loadMusicPlaylist() {
     console.log('🎵 Loading music playlist...');
     
-    // ĐÃ SỬA: Thêm dấu phẩy và đầy đủ artist cho tất cả bài hát
+    // ĐÃ SỬA: Thêm dấu phẩy và đầy đủ artist
     const samplePlaylist = [
         { 
             name: 'Track 06', 
@@ -243,12 +243,12 @@ async function loadMusicPlaylist() {
         {
             name: 'Hoa Sữa',
             file: 'Hoa Sữa ( HNT Remix ) __ Hot TikTok 2025 - Audio Lyrics Video.mp3',
-            artist: 'HNT Remix'  // ĐÃ SỬA: thêm artist
+            artist: 'HNT Remix'
         },
         {
             name: 'Một bài hát không vui mấy',
             file: 'T.R.I x @Dangrangto x DONAL - một bài hát không vui mấy (extended ver.) _ OFFICIAL LYRICS VIDEO.mp3',
-            artist: 'T.R.I x @Dangrangto x DONAL'  // ĐÃ SỬA: thêm artist
+            artist: 'T.R.I x @Dangrangto x DONAL'
         }
     ];
     
@@ -257,7 +257,7 @@ async function loadMusicPlaylist() {
         id: index + 1,
         title: song.name,
         artist: song.artist,
-        url: CONFIG.music.musicFolder + encodeURIComponent(song.file), // ĐÃ SỬA: encode URL
+        url: CONFIG.music.musicFolder + encodeURIComponent(song.file),
         file: song.file
     }));
     
@@ -284,7 +284,7 @@ function getDifferentRandomSong(currentIndex) {
     return { song: musicPlaylist[newIndex], index: newIndex };
 }
 
-// Phát bài hát theo index (ĐÃ SỬA: thêm kiểm tra lỗi)
+// Phát bài hát theo index
 function playSongByIndex(index) {
     if (!musicPlaylist.length || index < 0 || index >= musicPlaylist.length) {
         console.error('Invalid song index');
@@ -292,24 +292,19 @@ function playSongByIndex(index) {
     }
     
     const song = musicPlaylist[index];
-    
-    // ĐÃ SỬA: Kiểm tra song và url tồn tại
     if (!song || !song.url) {
-        console.error('Song or URL missing for index:', index);
+        console.error('Song or URL missing');
         return false;
     }
     
     currentSongIndex = index;
     
-    // Cập nhật source audio
     bgMusic.src = song.url;
     bgMusic.load();
     
-    // Cập nhật UI
-    currentSongTitle.textContent = song.title || 'Unknown Title';
-    currentSongArtist.textContent = song.artist || 'Unknown Artist';
+    currentSongTitle.textContent = song.title;
+    currentSongArtist.textContent = song.artist;
     
-    // Phát nhạc
     const playPromise = bgMusic.play();
     if (playPromise !== undefined) {
         playPromise
@@ -324,119 +319,6 @@ function playSongByIndex(index) {
     }
     
     return true;
-}
-
-// Phần còn lại của code giữ nguyên (các hàm khác không bị lỗi)
-// ... (tiếp tục với initMusicPlayer, updateMusicUI, v.v.)
-
-// ==================== MUSIC PLAYER FUNCTIONS ====================
-
-// Initialize music player
-async function initMusicPlayer() {
-    console.log('🎵 Initializing music player...');
-    
-    // Set initial volume
-    if (bgMusic) {
-        bgMusic.volume = CONFIG.music.defaultVolume;
-        if (volumeSlider) volumeSlider.value = CONFIG.music.defaultVolume * 100;
-    }
-    
-    // Load playlist
-    await loadMusicPlaylist();
-    
-    // Load saved settings
-    loadMusicSettings();
-    
-    // Initially hide controls
-    if (musicControls) musicControls.classList.add('hidden');
-    
-    // Add event listeners cho audio
-    if (bgMusic) {
-        bgMusic.addEventListener('play', () => {
-            updateMusicUI('playing');
-            saveMusicSettings();
-        });
-        
-        bgMusic.addEventListener('pause', () => {
-            updateMusicUI('paused');
-            saveMusicSettings();
-        });
-        
-        bgMusic.addEventListener('ended', () => {
-            console.log('🎵 Song ended, playing next random song...');
-            playNextRandomSong();
-        });
-        
-        bgMusic.addEventListener('timeupdate', updateProgress);
-        
-        bgMusic.addEventListener('loadedmetadata', () => {
-            if (durationTimeEl) durationTimeEl.textContent = formatTime(bgMusic.duration);
-        });
-        
-        bgMusic.addEventListener('canplaythrough', () => {
-            console.log('🎵 Audio loaded successfully');
-            if (autoplayAttempts < MAX_AUTOPLAY_ATTEMPTS && bgMusic.paused) {
-                attemptAutoplay();
-            }
-        });
-    }
-    
-    // Chọn bài hát ngẫu nhiên đầu tiên
-    if (musicPlaylist.length > 0) {
-        playRandomSong();
-    }
-    
-    isMusicInitialized = true;
-}
-
-// Hàm thử tự động phát nhạc
-function attemptAutoplay() {
-    if (!isMusicInitialized || !bgMusic) return;
-    
-    autoplayAttempts++;
-    console.log(`🎵 Autoplay attempt ${autoplayAttempts}/${MAX_AUTOPLAY_ATTEMPTS}`);
-    
-    const playPromise = bgMusic.play();
-    
-    if (playPromise !== undefined) {
-        playPromise
-            .then(() => {
-                console.log('✅ AUTOPLAY SUCCESSFUL!');
-                updateMusicUI('playing');
-                saveMusicSettings();
-                autoplayAttempts = 0;
-            })
-            .catch(error => {
-                console.log(`❌ Autoplay attempt ${autoplayAttempts} failed:`, error.message);
-                
-                if (autoplayAttempts < MAX_AUTOPLAY_ATTEMPTS) {
-                    const delay = autoplayAttempts * 500;
-                    console.log(`🎵 Retrying in ${delay}ms...`);
-                    setTimeout(() => attemptAutoplay(), delay);
-                } else {
-                    console.log('🎵 Max autoplay attempts reached, waiting for user interaction');
-                    updateMusicUI('paused');
-                    showAutoplayNotification();
-                }
-            });
-    }
-}
-
-// Format thời gian (giây -> mm:ss)
-function formatTime(seconds) {
-    if (isNaN(seconds)) return '0:00';
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-}
-
-// Cập nhật thanh tiến trình
-function updateProgress() {
-    if (!bgMusic || !bgMusic.duration || !progressFill || !currentTimeEl) return;
-    const progress = (bgMusic.currentTime / bgMusic.duration) * 100;
-    progressFill.style.width = `${progress}%`;
-    currentTimeEl.textContent = formatTime(bgMusic.currentTime);
-    if (durationTimeEl) durationTimeEl.textContent = formatTime(bgMusic.duration);
 }
 
 // Phát bài hát ngẫu nhiên
@@ -457,7 +339,7 @@ function playNextRandomSong() {
     return false;
 }
 
-// Phát bài trước (ngẫu nhiên)
+// Phát bài trước
 function playPreviousSong() {
     if (musicPlaylist.length <= 1) {
         return playRandomSong();
@@ -465,30 +347,41 @@ function playPreviousSong() {
     return playNextRandomSong();
 }
 
+// Format thời gian
+function formatTime(seconds) {
+    if (isNaN(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+// Cập nhật thanh tiến trình
+function updateProgress() {
+    if (bgMusic.duration) {
+        const progress = (bgMusic.currentTime / bgMusic.duration) * 100;
+        progressFill.style.width = `${progress}%`;
+        currentTimeEl.textContent = formatTime(bgMusic.currentTime);
+        durationTimeEl.textContent = formatTime(bgMusic.duration);
+    }
+}
+
 // Update music UI
 function updateMusicUI(state) {
-    if (!playPauseBtn) return;
     const playPauseIcon = playPauseBtn.querySelector('i');
-    if (!playPauseIcon) return;
     
     if (state === 'playing') {
         playPauseIcon.className = 'fas fa-pause';
-        if (musicStatus) {
-            musicStatus.textContent = 'playing';
-            musicStatus.classList.remove('paused');
-        }
+        musicStatus.textContent = 'playing';
+        musicStatus.classList.remove('paused');
     } else {
         playPauseIcon.className = 'fas fa-play';
-        if (musicStatus) {
-            musicStatus.textContent = 'paused';
-            musicStatus.classList.add('paused');
-        }
+        musicStatus.textContent = 'paused';
+        musicStatus.classList.add('paused');
     }
 }
 
 // Save music settings
 function saveMusicSettings() {
-    if (!bgMusic) return;
     const settings = {
         volume: bgMusic.volume,
         isMuted: bgMusic.muted,
@@ -502,25 +395,23 @@ function saveMusicSettings() {
 // Load music settings
 function loadMusicSettings() {
     const saved = localStorage.getItem('tmcMusicSettings');
-    if (saved && bgMusic) {
+    if (saved) {
         try {
             const settings = JSON.parse(saved);
             bgMusic.volume = settings.volume || CONFIG.music.defaultVolume;
             bgMusic.muted = settings.isMuted || false;
-            if (volumeSlider) volumeSlider.value = (settings.volume || CONFIG.music.defaultVolume) * 100;
+            volumeSlider.value = (settings.volume || CONFIG.music.defaultVolume) * 100;
             updateVolumeIcon(settings.volume || CONFIG.music.defaultVolume);
             
             if (settings.currentSongIndex !== undefined && musicPlaylist[settings.currentSongIndex]) {
                 currentSongIndex = settings.currentSongIndex;
                 const song = musicPlaylist[currentSongIndex];
-                if (song) {
-                    bgMusic.src = song.url;
-                    if (currentSongTitle) currentSongTitle.textContent = song.title;
-                    if (currentSongArtist) currentSongArtist.textContent = song.artist;
-                    
-                    if (settings.currentTime) {
-                        bgMusic.currentTime = settings.currentTime;
-                    }
+                bgMusic.src = song.url;
+                currentSongTitle.textContent = song.title;
+                currentSongArtist.textContent = song.artist;
+                
+                if (settings.currentTime) {
+                    bgMusic.currentTime = settings.currentTime;
                 }
             }
         } catch (e) {
@@ -531,8 +422,7 @@ function loadMusicSettings() {
 
 // Update volume icon
 function updateVolumeIcon(volume) {
-    if (!volumeIcon) return;
-    if (volume === 0 || (bgMusic && bgMusic.muted)) {
+    if (volume === 0 || bgMusic.muted) {
         volumeIcon.className = 'fas fa-volume-mute';
     } else if (volume < 0.5) {
         volumeIcon.className = 'fas fa-volume-down';
@@ -541,7 +431,26 @@ function updateVolumeIcon(volume) {
     }
 }
 
-// Hiển thị thông báo nếu autoplay bị chặn
+// Toggle music controls
+function toggleMusicControls() {
+    musicControls.classList.toggle('hidden');
+    musicToggle.classList.toggle('active');
+}
+
+// Force play music
+function forcePlayMusic() {
+    if (bgMusic.paused && musicPlaylist.length > 0) {
+        bgMusic.play()
+            .then(() => {
+                console.log('✅ Music started by user interaction');
+                updateMusicUI('playing');
+                saveMusicSettings();
+            })
+            .catch(err => console.log('❌ Cannot play:', err));
+    }
+}
+
+// Hiển thị thông báo autoplay
 function showAutoplayNotification() {
     if (!document.querySelector('.autoplay-notice')) {
         const notice = document.createElement('div');
@@ -558,7 +467,6 @@ function showAutoplayNotification() {
             border-radius: 20px;
             font-size: 0.8rem;
             z-index: 9998;
-            animation: slideIn 0.3s ease;
             box-shadow: 0 4px 15px rgba(0,255,157,0.2);
         `;
         document.body.appendChild(notice);
@@ -573,22 +481,488 @@ function showAutoplayNotification() {
     }
 }
 
-// Force play music
-function forcePlayMusic() {
-    if (bgMusic && bgMusic.paused && musicPlaylist.length > 0) {
-        bgMusic.play()
+// Attempt autoplay
+function attemptAutoplay() {
+    if (!isMusicInitialized) return;
+    
+    autoplayAttempts++;
+    console.log(`🎵 Autoplay attempt ${autoplayAttempts}/${MAX_AUTOPLAY_ATTEMPTS}`);
+    
+    const playPromise = bgMusic.play();
+    
+    if (playPromise !== undefined) {
+        playPromise
             .then(() => {
-                console.log('✅ Music started by user interaction');
+                console.log('✅ AUTOPLAY SUCCESSFUL!');
                 updateMusicUI('playing');
                 saveMusicSettings();
-                
-                const notice = document.querySelector('.autoplay-notice');
-                if (notice) notice.remove();
+                autoplayAttempts = 0;
             })
-            .catch(err => console.log('❌ Cannot play:', err));
+            .catch(error => {
+                console.log(`❌ Autoplay attempt ${autoplayAttempts} failed:`, error.message);
+                
+                if (autoplayAttempts < MAX_AUTOPLAY_ATTEMPTS) {
+                    const delay = autoplayAttempts * 500;
+                    setTimeout(() => attemptAutoplay(), delay);
+                } else {
+                    updateMusicUI('paused');
+                    showAutoplayNotification();
+                }
+            });
     }
 }
 
-// ==================== PHẦN CÒN LẠI GIỮ NGUYÊN ====================
-// (Các hàm renderCodeTimeline, openCodePanel, closePanel, filterAndSortCodes, init, v.v.)
-// ... code của bạn từ đây trở đi giữ nguyên không thay đổi
+// Initialize music player
+async function initMusicPlayer() {
+    console.log('🎵 Initializing music player...');
+    
+    bgMusic.volume = CONFIG.music.defaultVolume;
+    volumeSlider.value = CONFIG.music.defaultVolume * 100;
+    
+    await loadMusicPlaylist();
+    loadMusicSettings();
+    
+    musicControls.classList.add('hidden');
+    
+    bgMusic.addEventListener('play', () => {
+        updateMusicUI('playing');
+        saveMusicSettings();
+    });
+    
+    bgMusic.addEventListener('pause', () => {
+        updateMusicUI('paused');
+        saveMusicSettings();
+    });
+    
+    bgMusic.addEventListener('ended', () => {
+        console.log('🎵 Song ended, playing next random song...');
+        playNextRandomSong();
+    });
+    
+    bgMusic.addEventListener('timeupdate', updateProgress);
+    
+    bgMusic.addEventListener('loadedmetadata', () => {
+        durationTimeEl.textContent = formatTime(bgMusic.duration);
+    });
+    
+    bgMusic.addEventListener('canplaythrough', () => {
+        console.log('🎵 Audio loaded successfully');
+        if (autoplayAttempts < MAX_AUTOPLAY_ATTEMPTS && bgMusic.paused) {
+            attemptAutoplay();
+        }
+    });
+    
+    if (musicPlaylist.length > 0) {
+        playRandomSong();
+    }
+    
+    isMusicInitialized = true;
+}
+
+// ==================== UTILITY FUNCTIONS ====================
+
+function countFeaturedCodes() {
+    return CONFIG.codes.filter(code => code.featured).length;
+}
+
+function updateStatistics() {
+    totalCodesElement.textContent = CONFIG.codes.length;
+    featuredCodesElement.textContent = countFeaturedCodes();
+}
+
+// ==================== RENDER FUNCTIONS ====================
+
+function renderCodeTimeline(codes) {
+    if (codes.length === 0) {
+        codeTimeline.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    
+    codeTimeline.style.display = 'block';
+    emptyState.style.display = 'none';
+    
+    codeTimeline.innerHTML = codes.map(code => `
+        <div class="timeline-item ${code.featured ? 'featured' : ''}" data-id="${code.id}">
+            <div class="timeline-content">
+                <div class="timeline-header">
+                    <h3 class="timeline-title">${code.title}</h3>
+                    <div class="timeline-badges">
+                        ${code.featured ? '<span class="timeline-badge featured">featured</span>' : ''}
+                        <span class="timeline-badge language">${code.lang}</span>
+                    </div>
+                </div>
+                
+                <p class="timeline-description">${code.description}</p>
+                
+                ${code.tags.length > 0 ? `
+                    <div class="timeline-tags">
+                        ${code.tags.map(tag => `<span class="timeline-tag">#${tag}</span>`).join('')}
+                    </div>
+                ` : ''}
+                
+                <div class="timeline-actions">
+                    <button class="timeline-btn primary view-code-btn" data-id="${code.id}">
+                        <i class="fas fa-code"></i>
+                        view code
+                    </button>
+                    ${code.tiktokVideo ? `
+                        <button class="timeline-btn video-btn" data-id="${code.id}">
+                            <i class="fab fa-tiktok"></i>
+                            watch demo
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    document.querySelectorAll('.timeline-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            if (!e.target.closest('.view-code-btn') && !e.target.closest('.video-btn')) {
+                const codeId = item.getAttribute('data-id');
+                openCodePanel(codeId);
+            }
+        });
+    });
+    
+    document.querySelectorAll('.view-code-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const codeId = btn.getAttribute('data-id');
+            openCodePanel(codeId);
+        });
+    });
+    
+    document.querySelectorAll('.video-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const codeId = btn.getAttribute('data-id');
+            openCodePanel(codeId);
+            
+            setTimeout(() => {
+                const videoSection = document.querySelector('#videoSection');
+                if (videoSection) {
+                    videoSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 300);
+        });
+    });
+}
+
+function openCodePanel(codeId) {
+    const code = CONFIG.codes.find(c => c.id === codeId);
+    if (!code) return;
+    
+    currentCodeId = codeId;
+    
+    panelTitle.textContent = `${code.title.toLowerCase().replace(/\s+/g, '_')}.py`;
+    panelDescription.textContent = code.description;
+    
+    if (code.tiktokVideo) {
+        videoSection.style.display = 'block';
+        tiktokVideo.src = code.tiktokVideo;
+    } else {
+        videoSection.style.display = 'none';
+    }
+    
+    codeLinks.innerHTML = code.links.map(link => `
+        <div class="link-item" onclick="window.open('${link.url}', '_blank')">
+            <div class="link-icon">
+                <i class="${link.icon}"></i>
+            </div>
+            <div class="link-info">
+                <div class="link-title">${link.name}</div>
+                <div class="link-url">${link.url}</div>
+            </div>
+        </div>
+    `).join('');
+    
+    const shareUrl = `${CONFIG.baseUrl}?id=${codeId}`;
+    const shareText = encodeURIComponent(`Check out this Python code: ${code.title}`);
+    
+    copyLinkBtn.onclick = () => {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            const originalText = copyLinkBtn.querySelector('span').textContent;
+            copyLinkBtn.innerHTML = '<i class="fas fa-check"></i><span>copied!</span>';
+            copyLinkBtn.style.borderColor = '#00ff9d';
+            copyLinkBtn.style.color = '#00ff9d';
+            
+            setTimeout(() => {
+                copyLinkBtn.innerHTML = '<i class="fas fa-copy"></i><span>copy link</span>';
+                copyLinkBtn.style.borderColor = '';
+                copyLinkBtn.style.color = '';
+            }, 2000);
+        });
+    };
+    
+    shareFacebook.onclick = () => {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+    };
+    
+    shareTwitter.onclick = () => {
+        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${shareText}`, '_blank');
+    };
+    
+    detailPanel.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closePanel() {
+    detailPanel.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    tiktokVideo.src = '';
+    currentCodeId = null;
+}
+
+function filterAndSortCodes() {
+    let filteredCodes = [...CONFIG.codes];
+    
+    if (currentFilter) {
+        const searchTerm = currentFilter.toLowerCase();
+        filteredCodes = filteredCodes.filter(code => 
+            code.title.toLowerCase().includes(searchTerm) ||
+            code.description.toLowerCase().includes(searchTerm) ||
+            code.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+        );
+    }
+    
+    filteredCodes.sort((a, b) => (b.featured - a.featured));
+    
+    renderCodeTimeline(filteredCodes);
+}
+
+// ==================== EVENT LISTENERS ====================
+
+searchInput.addEventListener('input', (e) => {
+    currentFilter = e.target.value;
+    filterAndSortCodes();
+});
+
+viewControls.forEach(control => {
+    control.addEventListener('click', () => {
+        viewControls.forEach(c => c.classList.remove('active'));
+        control.classList.add('active');
+        currentView = control.getAttribute('data-view');
+    });
+});
+
+panelClose.addEventListener('click', closePanel);
+
+document.addEventListener('click', (e) => {
+    if (!detailPanel.contains(e.target) && !e.target.closest('.timeline-item') && 
+        !e.target.closest('.view-code-btn') && !e.target.closest('.video-btn')) {
+        closePanel();
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && detailPanel.classList.contains('active')) {
+        closePanel();
+    }
+});
+
+// Music event listeners
+musicToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMusicControls();
+    forcePlayMusic();
+});
+
+playPauseBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (bgMusic.paused) {
+        bgMusic.play().catch(() => {});
+    } else {
+        bgMusic.pause();
+    }
+});
+
+stopBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+    updateMusicUI('paused');
+    saveMusicSettings();
+});
+
+prevBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    playPreviousSong();
+});
+
+nextBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    playNextRandomSong();
+});
+
+volumeSlider.addEventListener('input', (e) => {
+    e.stopPropagation();
+    const volume = e.target.value / 100;
+    bgMusic.volume = volume;
+    updateVolumeIcon(volume);
+    saveMusicSettings();
+});
+
+volumeIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    bgMusic.muted = !bgMusic.muted;
+    const volume = bgMusic.muted ? 0 : bgMusic.volume;
+    updateVolumeIcon(volume);
+    saveMusicSettings();
+});
+
+progressBar.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const rect = progressBar.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    bgMusic.currentTime = percent * bgMusic.duration;
+});
+
+musicControls.addEventListener('click', (e) => {
+    e.stopPropagation();
+});
+
+document.addEventListener('click', (e) => {
+    if (!musicPlayer.contains(e.target) && !musicControls.classList.contains('hidden')) {
+        musicControls.classList.add('hidden');
+        musicToggle.classList.remove('active');
+    }
+});
+
+// Auto play triggers
+document.addEventListener('click', function playOnClick() {
+    if (bgMusic.paused && musicPlaylist.length > 0) {
+        bgMusic.play().then(() => {
+            console.log('✅ Music started by click');
+            updateMusicUI('playing');
+            saveMusicSettings();
+            const notice = document.querySelector('.autoplay-notice');
+            if (notice) notice.remove();
+        }).catch(() => {});
+    }
+}, { once: true });
+
+document.addEventListener('scroll', function playOnScroll() {
+    if (bgMusic.paused && musicPlaylist.length > 0) {
+        bgMusic.play().then(() => {
+            console.log('✅ Music started by scroll');
+            updateMusicUI('playing');
+            saveMusicSettings();
+        }).catch(() => {});
+    }
+}, { once: true });
+
+document.addEventListener('touchstart', function playOnTouch() {
+    if (bgMusic.paused && musicPlaylist.length > 0) {
+        bgMusic.play().then(() => {
+            console.log('✅ Music started by touch');
+            updateMusicUI('playing');
+            saveMusicSettings();
+        }).catch(() => {});
+    }
+}, { once: true });
+
+document.addEventListener('keydown', function playOnKey() {
+    if (bgMusic.paused && musicPlaylist.length > 0) {
+        bgMusic.play().then(() => {
+            console.log('✅ Music started by keypress');
+            updateMusicUI('playing');
+            saveMusicSettings();
+        }).catch(() => {});
+    }
+}, { once: true });
+
+document.addEventListener('mousemove', function playOnMouseMove() {
+    if (bgMusic.paused && musicPlaylist.length > 0) {
+        bgMusic.play().then(() => {
+            console.log('✅ Music started by mouse move');
+            updateMusicUI('playing');
+            saveMusicSettings();
+        }).catch(() => {});
+    }
+}, { once: true });
+
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && bgMusic.paused && musicPlaylist.length > 0) {
+        bgMusic.play().then(() => {
+            console.log('✅ Music resumed on tab focus');
+            updateMusicUI('playing');
+            saveMusicSettings();
+        }).catch(() => {});
+    }
+});
+
+// ==================== INITIALIZATION ====================
+
+function init() {
+    console.log('🚀 TMCLibrary initializing...');
+    
+    updateStatistics();
+    filterAndSortCodes();
+    initMusicPlayer();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeId = urlParams.get('id');
+    
+    if (codeId) {
+        setTimeout(() => {
+            openCodePanel(codeId);
+        }, 500);
+    }
+    
+    // Typing effect for search placeholder
+    const searchPlaceholders = [
+        "search code...",
+        "find python files...",
+        "filter by tags...",
+        "look for music codes..."
+    ];
+    
+    let placeholderIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    
+    function typePlaceholder() {
+        const currentText = searchPlaceholders[placeholderIndex];
+        
+        if (!isDeleting) {
+            searchInput.placeholder = currentText.substring(0, charIndex + 1);
+            charIndex++;
+            
+            if (charIndex === currentText.length) {
+                isDeleting = true;
+                setTimeout(typePlaceholder, 2000);
+                return;
+            }
+        } else {
+            searchInput.placeholder = currentText.substring(0, charIndex - 1);
+            charIndex--;
+            
+            if (charIndex === 0) {
+                isDeleting = false;
+                placeholderIndex = (placeholderIndex + 1) % searchPlaceholders.length;
+            }
+        }
+        
+        setTimeout(typePlaceholder, isDeleting ? 50 : 100);
+    }
+    
+    setTimeout(typePlaceholder, 1000);
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+setTimeout(() => {
+    if (bgMusic && bgMusic.paused && musicPlaylist.length > 0) {
+        bgMusic.play()
+            .then(() => {
+                console.log('✅ Final autoplay successful!');
+                updateMusicUI('playing');
+                saveMusicSettings();
+            })
+            .catch(() => {
+                console.log('❌ Final autoplay failed - waiting for user interaction');
+            });
+    }
+}, 2000);
