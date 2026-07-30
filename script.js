@@ -26,7 +26,7 @@ const CONFIG = {
             description: "Code Python hiển thị lời bài hát với hiệu ứng chữ màu đỏ ấn tượng. Sử dụng thư viện chuẩn, không cần cài đặt thêm.",
             lang: "Python",
             tags: ["music", "lyrics", "red theme"],
-            featured: false,
+            featured: true,
             tiktokVideo: "https://www.tiktok.com/embed/v2/7565953044748242184",
             links: [
                 { name: "Xem code trên Ideone", url: "https://ideone.com/NdMbUs", icon: "fa-solid fa-code" }
@@ -125,7 +125,7 @@ const CONFIG = {
             description: "Code Python hiển thị lời bài hát Hoa sữa với hiệu ứng màu sắc và chuyển động đẹp mắt, phù hợp với nhạc trữ tình.",
             lang: "Python",
             tags: ["music", "lyrics", "romantic", "slow"],
-            featured: true,
+            featured: false,
             tiktokVideo: "https://www.tiktok.com/embed/v2/7612675489421004040",
             links: [
                 { name: "Xem code trên Ideone", url: "https://ideone.com/qYTtzr", icon: "fa-solid fa-code" }
