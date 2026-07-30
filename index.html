@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080b12">
+    <meta name="description" content="TMCLibrary - Thư viện mã nguồn, hiệu ứng và dự án sáng tạo của CyberTMC.">
+
+    <title>TMCLibrary | Creative Code Library</title>
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="noise-layer"></div>
+
+    <header class="site-header" id="top">
+        <div class="container header-inner">
+            <a class="brand" href="#top" aria-label="TMCLibrary">
+                <span class="brand-logo-wrap">
+                    <img class="brand-logo" src="android-chrome-192x192.png" alt="TMCLibrary logo">
+                </span>
+                <span class="brand-copy">
+                    <strong>TMCLibrary</strong>
+                    <small>creative code archive</small>
+                </span>
+            </a>
+
+            <nav class="main-nav" aria-label="Điều hướng chính">
+                <a href="#library" class="nav-link active">Thư viện</a>
+                <a href="#featured" class="nav-link">Nổi bật</a>
+                <a href="#about" class="nav-link">Giới thiệu</a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="icon-button" id="themeButton" type="button" aria-label="Đổi giao diện">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <a class="primary-button header-cta" href="#library">
+                    <span>Khám phá</span>
+                    <i class="fa-solid fa-arrow-down"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container hero-grid">
+                <div class="hero-copy">
+                    <div class="eyebrow">
+                        <span class="eyebrow-dot"></span>
+                        Kho mã nguồn được tuyển chọn
+                    </div>
+
+                    <h1>
+                        Nơi lưu giữ những
+                        <span class="gradient-text">ý tưởng bằng code.</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        Khám phá các dự án Python, hiệu ứng lời bài hát và trải nghiệm web sáng tạo do CyberTMC phát triển và chia sẻ.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="#library" class="primary-button">
+                            <i class="fa-solid fa-layer-group"></i>
+                            Xem thư viện
+                        </a>
+                        <button class="secondary-button" id="randomCodeButton" type="button">
+                            <i class="fa-solid fa-shuffle"></i>
+                            Mở ngẫu nhiên
+                        </button>
+                    </div>
+
+                    <div class="hero-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon"><i class="fa-solid fa-code"></i></span>
+                            <div>
+                                <strong id="heroTotalCodes">0</strong>
+                                <small>dự án</small>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon"><i class="fa-solid fa-eye"></i></span>
+                            <div>
+                                <strong id="heroTotalViews">0</strong>
+                                <small>lượt xem</small>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon"><i class="fa-solid fa-star"></i></span>
+                            <div>
+                                <strong id="heroFeaturedCodes">0</strong>
+                                <small>nổi bật</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-visual" aria-hidden="true">
+                    <div class="code-window">
+                        <div class="window-bar">
+                            <div class="window-dots">
+                                <span></span><span></span><span></span>
+                            </div>
+                            <span class="window-title">tmc_library.py</span>
+                            <span class="window-action"><i class="fa-solid fa-ellipsis"></i></span>
+                        </div>
+                        <div class="code-area">
+                            <div class="code-line"><span class="line-number">01</span><span><em>class</em> <b>TMCLibrary</b>:</span></div>
+                            <div class="code-line"><span class="line-number">02</span><span>&nbsp;&nbsp;<em>def</em> <b>explore</b>(self):</span></div>
+                            <div class="code-line"><span class="line-number">03</span><span>&nbsp;&nbsp;&nbsp;&nbsp;ideas = <i>[</i></span></div>
+                            <div class="code-line accent"><span class="line-number">04</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<q>music</q>, <q>lyrics</q>,</span></div>
+                            <div class="code-line accent"><span class="line-number">05</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<q>animation</q>, <q>web</q></span></div>
+                            <div class="code-line"><span class="line-number">06</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<i>]</i></span></div>
+                            <div class="code-line"><span class="line-number">07</span><span>&nbsp;&nbsp;&nbsp;&nbsp;<em>return</em> <q>Build something memorable.</q></span></div>
+                        </div>
+                        <div class="window-footer">
+                            <span><i class="fa-solid fa-code-branch"></i> main</span>
+                            <span><i class="fa-solid fa-circle-check"></i> ready</span>
+                            <span>UTF-8</span>
+                        </div>
+                    </div>
+                    <div class="floating-chip chip-one"><i class="fa-brands fa-python"></i> Python</div>
+                    <div class="floating-chip chip-two"><i class="fa-solid fa-wand-magic-sparkles"></i> Creative UI</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="library-section" id="library">
+            <div class="container">
+                <div class="section-heading-row">
+                    <div>
+                        <span class="section-kicker">Bộ sưu tập</span>
+                        <h2>Tất cả dự án</h2>
+                        <p>Tìm kiếm theo tên, mô tả, ngôn ngữ hoặc thẻ nội dung.</p>
+                    </div>
+                    <div class="library-summary">
+                        <span id="resultCount">0 dự án</span>
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <label class="search-box" for="searchInput">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="searchInput" type="search" placeholder="Tìm kiếm trong thư viện..." autocomplete="off">
+                        <kbd>/</kbd>
+                    </label>
+
+                    <div class="filter-row" id="filterRow">
+                        <button class="filter-button active" data-filter="all" type="button">Tất cả</button>
+                        <button class="filter-button" data-filter="featured" type="button">Nổi bật</button>
+                        <button class="filter-button" data-filter="Python" type="button">Python</button>
+                        <button class="filter-button" data-filter="HTML/CSS/JS" type="button">Web</button>
+                    </div>
+
+                    <div class="view-switcher" aria-label="Kiểu hiển thị">
+                        <button class="view-button active" data-view="grid" type="button" aria-label="Dạng lưới">
+                            <i class="fa-solid fa-grip"></i>
+                        </button>
+                        <button class="view-button" data-view="list" type="button" aria-label="Dạng danh sách">
+                            <i class="fa-solid fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="code-grid" id="codeGrid"></div>
+
+                <div class="empty-state" id="emptyState" hidden>
+                    <div class="empty-icon"><i class="fa-solid fa-folder-open"></i></div>
+                    <h3>Không tìm thấy dự án</h3>
+                    <p>Hãy thử từ khóa hoặc bộ lọc khác.</p>
+                    <button class="secondary-button" id="resetSearchButton" type="button">Đặt lại tìm kiếm</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="featured-section" id="featured">
+            <div class="container featured-banner">
+                <div>
+                    <span class="section-kicker">Bộ sưu tập nổi bật</span>
+                    <h2>Mỗi dự án là một trải nghiệm riêng.</h2>
+                    <p>Thumbnail riêng theo từng ID giúp thư viện trực quan, dễ nhận diện và chuyên nghiệp hơn.</p>
+                </div>
+                <button class="primary-button" id="featuredButton" type="button">
+                    <i class="fa-solid fa-star"></i>
+                    Xem nội dung nổi bật
+                </button>
+            </div>
+        </section>
+
+        <section class="about-section" id="about">
+            <div class="container about-grid">
+                <div>
+                    <span class="section-kicker">Về TMCLibrary</span>
+                    <h2>Gọn gàng để tìm. Đẹp mắt để khám phá.</h2>
+                </div>
+                <p>
+                    TMCLibrary là thư viện cá nhân dành cho các đoạn mã, bản thử nghiệm và dự án sáng tạo. Giao diện được tối ưu cho cả máy tính lẫn điện thoại, hỗ trợ thumbnail theo ID, tìm kiếm nhanh, lượt xem và liên kết chia sẻ.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <a class="brand footer-brand" href="#top">
+                <span class="brand-logo-wrap">
+                    <img class="brand-logo" src="android-chrome-192x192.png" alt="TMCLibrary logo">
+                </span>
+                <span class="brand-copy">
+                    <strong>TMCLibrary</strong>
+                    <small>by CyberTMC</small>
+                </span>
+            </a>
+            <p>© <span id="currentYear"></span> TMCLibrary. Built with creativity.</p>
+            <a href="#top" class="back-to-top">Lên đầu trang <i class="fa-solid fa-arrow-up"></i></a>
+        </div>
+    </footer>
+
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <aside class="detail-drawer" id="detailDrawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+        <button class="drawer-close" id="drawerClose" type="button" aria-label="Đóng chi tiết">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="drawer-cover">
+            <img id="drawerThumbnail" src="" alt="">
+            <div class="drawer-cover-overlay"></div>
+            <div class="drawer-cover-content">
+                <div class="drawer-badges" id="drawerBadges"></div>
+                <h2 id="drawerTitle">Tên dự án</h2>
+                <div class="drawer-meta">
+                    <span><i class="fa-solid fa-hashtag"></i> ID <b id="drawerId">0</b></span>
+                    <span><i class="fa-solid fa-eye"></i> <b id="drawerViews">0</b> lượt xem</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="drawer-body">
+            <section class="drawer-section">
+                <span class="drawer-label">Giới thiệu</span>
+                <p id="drawerDescription"></p>
+                <div class="drawer-tags" id="drawerTags"></div>
+            </section>
+
+            <section class="drawer-section" id="videoSection" hidden>
+                <div class="drawer-section-heading">
+                    <span class="drawer-label">Video demo</span>
+                    <i class="fa-brands fa-tiktok"></i>
+                </div>
+                <div class="video-frame">
+                    <iframe id="tiktokVideo" src="" title="TikTok demo" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </section>
+
+            <section class="drawer-section">
+                <span class="drawer-label">Liên kết mã nguồn</span>
+                <div class="source-links" id="sourceLinks"></div>
+            </section>
+
+            <section class="drawer-section">
+                <span class="drawer-label">Chia sẻ dự án</span>
+                <div class="share-buttons">
+                    <button class="share-button" id="copyLinkButton" type="button"><i class="fa-solid fa-link"></i> Sao chép</button>
+                    <button class="share-button" id="facebookShareButton" type="button"><i class="fa-brands fa-facebook-f"></i> Facebook</button>
+                    <button class="share-button" id="xShareButton" type="button"><i class="fa-brands fa-x-twitter"></i> X</button>
+                </div>
+            </section>
+        </div>
+    </aside>
+
+    <div class="music-widget" id="musicWidget">
+        <button class="music-toggle" id="musicToggle" type="button" aria-label="Mở trình phát nhạc">
+            <i class="fa-solid fa-music"></i>
+        </button>
+        <div class="music-panel" id="musicPanel">
+            <div class="music-main">
+                <div class="music-art"><i class="fa-solid fa-wave-square"></i></div>
+                <div class="music-copy">
+                    <strong id="currentSongTitle">Background music</strong>
+                    <span id="currentSongArtist">TMCLibrary playlist</span>
+                </div>
+                <button class="music-control main-control" id="playPauseButton" type="button" aria-label="Phát hoặc tạm dừng">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+            </div>
+            <div class="music-progress-row">
+                <span id="currentTime">0:00</span>
+                <button class="music-progress" id="musicProgress" type="button" aria-label="Tua nhạc">
+                    <span id="musicProgressFill"></span>
+                </button>
+                <span id="durationTime">0:00</span>
+            </div>
+            <div class="music-actions">
+                <button class="music-control" id="previousButton" type="button"><i class="fa-solid fa-backward-step"></i></button>
+                <button class="music-control" id="nextButton" type="button"><i class="fa-solid fa-forward-step"></i></button>
+                <div class="volume-wrap">
+                    <i class="fa-solid fa-volume-low" id="volumeIcon"></i>
+                    <input id="volumeSlider" type="range" min="0" max="100" value="30">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <audio id="backgroundMusic" preload="metadata"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
