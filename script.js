@@ -827,8 +827,13 @@ function loadSong(index, autoplay = false, resumeTime = 0) {
 }
 
 function setupMusicPlayer() {
-    const resumeTime = loadMusicSettings();
-    loadSong(state.currentSongIndex, false, resumeTime);
+    loadMusicSettings();
+
+    const randomSongIndex = Math.floor(
+        Math.random() * CONFIG.music.playlist.length
+    );
+
+    loadSong(randomSongIndex, true, 0);
     updateVolumeIcon();
 
     elements.musicToggle.addEventListener("click", (event) => {
