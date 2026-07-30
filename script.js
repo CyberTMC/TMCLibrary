@@ -146,14 +146,16 @@ const CONFIG = {
         {
             id: "12",
             title: "hate that i made you love me",
-            description: "",
+            description: "Lyrics Player Python với giao diện hiện đại, đồng bộ lời bài hát chuẩn theo nhạc, hiệu ứng chữ và cửa sổ mượt mà, mang đến trải nghiệm xem lyric đẹp mắt và đầy cảm xúc.",
             lang: "Python",
             tags: ["music"],
             featured: true,
             tiktokVideo: "https://www.tiktok.com/embed/v2/7664244982215167252",
-            links: [{ name: "Xem code trên Ideone", url: "https://ideone.com/T5vhD5", icon: "fa-solid fa-code" }]
+            links: [
+                { name: "Xem code trên Ideone", url: "https://ideone.com/T5vhD5", icon: "fa-solid fa-code" }
+            ]
         }
-        
+
     ],
     music: {
         folder: "background-music/",
@@ -927,10 +929,10 @@ async function init() {
     setupTheme();
     bindEvents();
     setupMusicPlayer();
-    
+
     // Load views từ Google Sheet
     state.views = await loadViewsFromSheet();
-    
+
     updateStatistics();
     renderCodes();
     elements.currentYear.textContent = String(new Date().getFullYear());
