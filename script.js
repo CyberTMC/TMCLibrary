@@ -162,6 +162,11 @@ const CONFIG = {
         defaultVolume: 0.3,
         playlist: [
             {
+                title: "Dự Báo Thời Tiết Hôm Nay Mưa",
+                artist: "GREY D",
+                file: "GREY D - dự báo thời tiết hôm nay mưa.mp3"
+            },
+            {
                 title: "Track 06",
                 artist: "Tyronee, VSTRA, Obito",
                 file: "[ Lyrics ] Track 06 #U2013 Tyronee, VSTRA, Obito.mp3"
