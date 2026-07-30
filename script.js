@@ -826,14 +826,54 @@ function loadSong(index, autoplay = false, resumeTime = 0) {
     saveMusicSettings();
 }
 
+function enableMusicAfterInteraction() {
+    const audio = elements.backgroundMusic;
+    const events = ["pointerdown", "touchstart", "mousedown", "keydown"];
+    let starting = false;
+
+    const cleanup = () => {
+        events.forEach((eventName) => {
+            document.removeEventListener(eventName, startMusic, true);
+        });
+    };
+
+    const startMusic = () => {
+        if (starting || !audio.paused) {
+            cleanup();
+            return;
+        }
+
+        starting = true;
+
+        audio.play()
+            .then(cleanup)
+            .catch(() => {
+                starting = false;
+            });
+    };
+
+    events.forEach((eventName) => {
+        document.addEventListener(eventName, startMusic, {
+            capture: true,
+            passive: true
+        });
+    });
+}
+
 function setupMusicPlayer() {
     loadMusicSettings();
 
-    const randomSongIndex = Math.floor(
-        Math.random() * CONFIG.music.playlist.length
-    );
+    const playlist = CONFIG.music.playlist;
+    const randomSongIndex = playlist.length
+        ? Math.floor(Math.random() * playlist.length)
+        : 0;
 
-    loadSong(randomSongIndex, true, 0);
+    loadSong(randomSongIndex, false, 0);
+
+    elements.backgroundMusic.play().catch(() => {
+        enableMusicAfterInteraction();
+    });
+
     updateVolumeIcon();
 
     elements.musicToggle.addEventListener("click", (event) => {
