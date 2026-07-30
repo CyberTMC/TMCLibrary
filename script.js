@@ -154,6 +154,18 @@ const CONFIG = {
             links: [
                 { name: "Xem code trên Ideone", url: "https://ideone.com/T5vhD5", icon: "fa-solid fa-code" }
             ]
+        },
+         {
+            id: "13",
+            title: "hate that i made you love me",
+            description: "None",
+            lang: "Python",
+            tags: ["music"],
+            featured: true,
+            tiktokVideo: "https://www.tiktok.com/embed/v2/7664244982215167252",
+            links: [
+                { name: "Xem code trên Ideone", url: "tb.html", icon: "fa-solid fa-code" }
+            ]
         }
 
     ],
