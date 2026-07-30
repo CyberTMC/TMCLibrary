@@ -160,11 +160,11 @@ const CONFIG = {
             title: "Comming Soon!",
             description: "None",
             lang: "Python",
-            tags: ["music" "Remix"],
+            tags: ["music", "Remix"],
             featured: true,
             tiktokVideo: "https://www.tiktok.com",
             links: [
-                { name: "Xem code trên Ideone", url: "tb.html", icon: "fa-solid fa-code" }
+                { name: "Xem thông báo phát hành", url: "tb.html", icon: "fa-solid fa-clock" }
             ]
         }
 
