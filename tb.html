@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Thông báo phát hành</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow: hidden;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #ffffff;
+            background:
+                radial-gradient(circle at top left, #45266d 0%, transparent 38%),
+                radial-gradient(circle at bottom right, #1e5d72 0%, transparent 40%),
+                linear-gradient(135deg, #090b16, #15142c);
+        }
+
+        .background-glow {
+            position: fixed;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .glow-one {
+            top: -120px;
+            left: -100px;
+            background: #ae5cff;
+        }
+
+        .glow-two {
+            right: -100px;
+            bottom: -120px;
+            background: #31c5ff;
+        }
+
+        .release-box {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 760px;
+            padding: 48px 36px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 22px;
+            padding: 9px 16px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #eee4ff;
+            background: rgba(167, 103, 255, 0.18);
+            border: 1px solid rgba(194, 153, 255, 0.3);
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #be8cff;
+            box-shadow: 0 0 14px #be8cff;
+            animation: pulse 1.5s infinite;
+        }
+
+        h1 {
+            margin-bottom: 16px;
+            font-size: clamp(36px, 7vw, 72px);
+            line-height: 1.05;
+            letter-spacing: -2px;
+        }
+
+        .gradient-text {
+            color: transparent;
+            background: linear-gradient(90deg, #ffffff, #cfaeff, #8be3ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+        }
+
+        .description {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 17px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .release-time {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .countdown {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-top: 34px;
+        }
+
+        .time-item {
+            padding: 20px 10px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .time-number {
+            display: block;
+            font-size: clamp(28px, 5vw, 44px);
+            font-weight: 800;
+        }
+
+        .time-label {
+            display: block;
+            margin-top: 6px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .status {
+            display: none;
+            margin-top: 34px;
+            padding: 20px;
+            border-radius: 18px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #d8ffea;
+            background: rgba(53, 210, 128, 0.12);
+            border: 1px solid rgba(89, 255, 164, 0.25);
+        }
+
+        .footer {
+            margin-top: 28px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0.55;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .release-box {
+                padding: 38px 20px;
+                border-radius: 22px;
+            }
+
+            .countdown {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            h1 {
+                letter-spacing: -1px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+
+    <main class="release-box">
+        <div class="badge">
+            <span class="badge-dot"></span>
+            SẮP RA MẮT
+        </div>
+
+        <h1 class="gradient-text">
+            Đang chuẩn bị 
+        </h1>
+
+        <p class="description">
+            Nội dung hiện chưa được mở.
+        </p>
+
+        <div class="release-time">
+            19:00 · 31/07/2026
+        </div>
+
+        <section class="countdown" id="countdown">
+            <div class="time-item">
+                <span class="time-number" id="days">00</span>
+                <span class="time-label">Ngày</span>
+            </div>
+
+            <div class="time-item">
+                <span class="time-number" id="hours">00</span>
+                <span class="time-label">Giờ</span>
+            </div>
+
+            <div class="time-item">
+                <span class="time-number" id="minutes">00</span>
+                <span class="time-label">Phút</span>
+            </div>
+
+            <div class="time-item">
+                <span class="time-number" id="seconds">00</span>
+                <span class="time-label">Giây</span>
+            </div>
+        </section>
+
+        <div class="status" id="releasedStatus">
+            Đã chính thức phát hành
+        </div>
+
+        <div class="footer">
+            Thời gian được tính theo múi giờ Việt Nam
+        </div>
+    </main>
+
+    <script>
+        const releaseTime = new Date("2026-07-31T19:00:00+07:00").getTime();
+
+        const countdown = document.getElementById("countdown");
+        const releasedStatus = document.getElementById("releasedStatus");
+
+        const daysElement = document.getElementById("days");
+        const hoursElement = document.getElementById("hours");
+        const minutesElement = document.getElementById("minutes");
+        const secondsElement = document.getElementById("seconds");
+
+        function formatNumber(number) {
+            return String(number).padStart(2, "0");
+        }
+
+        function updateCountdown() {
+            const now = Date.now();
+            const distance = releaseTime - now;
+
+            if (distance <= 0) {
+                countdown.style.display = "none";
+                releasedStatus.style.display = "block";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor(
+                (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+            );
+            const minutes = Math.floor(
+                (distance % (1000 * 60 * 60)) / (1000 * 60)
+            );
+            const seconds = Math.floor(
+                (distance % (1000 * 60)) / 1000
+            );
+
+            daysElement.textContent = formatNumber(days);
+            hoursElement.textContent = formatNumber(hours);
+            minutesElement.textContent = formatNumber(minutes);
+            secondsElement.textContent = formatNumber(seconds);
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
