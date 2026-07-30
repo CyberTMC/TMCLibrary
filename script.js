@@ -150,7 +150,7 @@ const CONFIG = {
             lang: "Python",
             tags: ["music"],
             featured: true,
-            tiktokVideo: "",
+            tiktokVideo: "https://www.tiktok.com/embed/v2/7664244982215167252",
             links: [{ name: "Xem code trên Ideone", url: "", icon: "fa-solid fa-code" }]
         }
         
