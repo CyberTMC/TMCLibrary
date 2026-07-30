@@ -157,12 +157,12 @@ const CONFIG = {
         },
          {
             id: "13",
-            title: "hate that i made you love me",
+            title: "Comming Soon!",
             description: "None",
             lang: "Python",
-            tags: ["music"],
+            tags: ["music" "Remix"],
             featured: true,
-            tiktokVideo: "https://www.tiktok.com/embed/v2/7664244982215167252",
+            tiktokVideo: "https://www.tiktok.com",
             links: [
                 { name: "Xem code trên Ideone", url: "tb.html", icon: "fa-solid fa-code" }
             ]
