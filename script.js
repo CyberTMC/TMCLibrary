@@ -157,14 +157,14 @@ const CONFIG = {
         },
          {
             id: "13",
-            title: "Comming Soon!",
-            description: "None",
+            title: "HongKong 1 Remix Trending",
+            description: "Code phát lời bài hát đồng bộ nhạc, hiệu ứng đẹp mắt và tự động chạy cực mượt!",
             lang: "Python",
             tags: ["music", "Remix"],
             featured: true,
-            tiktokVideo: "https://www.tiktok.com",
+            tiktokVideo: "https://www.tiktok.com/@tranchinnn/video/7668380596384779538",
             links: [
-                { name: "Xem thông báo phát hành", url: "tb.html", icon: "fa-solid fa-clock" }
+                { name: "Xem thông báo phát hành", url: "https://ideone.com/pMgz0N", icon: "fa-solid fa-clock" }
             ]
         }
 
