@@ -162,9 +162,21 @@ const CONFIG = {
             lang: "Python",
             tags: ["music", "Remix"],
             featured: true,
-            tiktokVideo: "https://www.tiktok.com/@tranchinnn/video/7668380596384779538",
+            tiktokVideo: "https://www.tiktok.com/embed/v2/7668380596384779538",
             links: [
                 { name: "Xem thông báo phát hành", url: "https://ideone.com/pMgz0N", icon: "fa-solid fa-clock" }
+            ]
+        },
+         {
+            id: "14",
+            title: "Chờ chút X Nơi này có anh",
+            description: "Code phát lời bài hát đồng bộ nhạc, hiệu ứng đẹp mắt và tự động chạy cực mượt!",
+            lang: "Python",
+            tags: ["music", "Remix"],
+            featured: true,
+            tiktokVideo: "https://www.tiktok.com/embed/v2/7700669132135501063?lang=vi-VN",
+            links: [
+                { name: "Xem code trên Ideone", url: "https://ideone.com/T5vhD5", icon: "fa-solid fa-code" }
             ]
         }
 
