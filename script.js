@@ -176,7 +176,7 @@ const CONFIG = {
             featured: true,
             tiktokVideo: "https://www.tiktok.com/embed/v2/7700669132135501063?lang=vi-VN",
             links: [
-                { name: "Xem code trên Ideone", url: "https://ideone.com/T5vhD5", icon: "fa-solid fa-code" }
+                { name: "File rar", url: "https://drive.google.com/file/d/1En6jFoqqdqAq0A4crK74ye41iDBkxgUp/view?usp=sharing", icon: "fa-solid fa-code" }
             ]
         }
 
